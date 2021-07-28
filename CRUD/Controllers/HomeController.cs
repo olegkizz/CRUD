@@ -1,4 +1,4 @@
-﻿using CRUD.Models;
+﻿using IdentityNLayer.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using System;
@@ -7,7 +7,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace CRUD.Controllers
+namespace IdentityNLayer.Controllers
 {
     public class HomeController : Controller
     {

@@ -2,27 +2,29 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using IdentityNLayer.BLL.DTO;
+using IdentityNLayer.BLL.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
-using CRUD.Data;
-using CRUD.Models;
+using IdentityNLayer.Models;
+using IdentityNLayer.BLL.Interfaces;
 
-namespace CRUD.Controllers
+namespace IdentityNLayer.Controllers
 {
-    public class ContactsController : Controller
+    public class StudentsController : Controller
     {
-        private readonly ApplicationDbContext _context;
+        private readonly IStudentService _studentService;
 
-        public ContactsController(ApplicationDbContext context)
+        public StudentsController(IStudentService studentService)
         {
-            _context = context;
+            _studentService = studentService;
         }
 
         // GET: Contacts
         public async Task<IActionResult> Index()
         {
-            return View(await _context.Contact.ToListAsync());
+            return View(_studentService.GetStudents());
         }
 
         // GET: Contacts/Details/5
@@ -32,15 +34,15 @@ namespace CRUD.Controllers
             {
                 return NotFound();
             }
-
+/*
             var contact = await _context.Contact
                 .FirstOrDefaultAsync(m => m.ContactId == id);
             if (contact == null)
             {
                 return NotFound();
             }
-
-            return View(contact);
+*/
+            return View();
         }
 
         // GET: Contacts/Create
@@ -54,15 +56,15 @@ namespace CRUD.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("ContactId,Name,Address,City,State,Zip,Email")] Contact contact)
+        public async Task<IActionResult> Create([Bind("ContactId,Name,Address,City,State,Zip,Email")] StudentDTO student)
         {
-            if (ModelState.IsValid)
+      /*      if (ModelState.IsValid)
             {
                 _context.Add(contact);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
-            }
-            return View(contact);
+            }*/
+            return View();
         }
 
         // GET: Contacts/Edit/5
@@ -73,12 +75,12 @@ namespace CRUD.Controllers
                 return NotFound();
             }
 
-            var contact = await _context.Contact.FindAsync(id);
+      /*      var contact = await _context.Contact.FindAsync(id);
             if (contact == null)
             {
                 return NotFound();
-            }
-            return View(contact);
+            }*/
+            return View();
         }
 
         // POST: Contacts/Edit/5
@@ -86,13 +88,13 @@ namespace CRUD.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("ContactId,Name,Address,City,State,Zip,Email")] Contact contact)
+        public async Task<IActionResult> Edit(int id, [Bind("ContactId,Name,Address,City,State,Zip,Email")] StudentDTO student)
         {
-            if (id != contact.ContactId)
+            if (id != student.Id)
             {
                 return NotFound();
             }
-
+/*
             if (ModelState.IsValid)
             {
                 try
@@ -112,8 +114,8 @@ namespace CRUD.Controllers
                     }
                 }
                 return RedirectToAction(nameof(Index));
-            }
-            return View(contact);
+            }*/
+            return View();
         }
 
         // GET: Contacts/Delete/5
@@ -124,14 +126,14 @@ namespace CRUD.Controllers
                 return NotFound();
             }
 
-            var contact = await _context.Contact
+    /*        var contact = await _context.Contact
                 .FirstOrDefaultAsync(m => m.ContactId == id);
             if (contact == null)
             {
                 return NotFound();
             }
-
-            return View(contact);
+*/
+            return View();
         }
 
         // POST: Contacts/Delete/5
@@ -139,15 +141,15 @@ namespace CRUD.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var contact = await _context.Contact.FindAsync(id);
+ /*           var contact = await _context.Contact.FindAsync(id);
             _context.Contact.Remove(contact);
-            await _context.SaveChangesAsync();
+            await _context.SaveChangesAsync();*/
             return RedirectToAction(nameof(Index));
         }
 
         private bool ContactExists(int id)
         {
-            return _context.Contact.Any(e => e.ContactId == id);
+            return true;
         }
     }
 }

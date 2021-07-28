@@ -1,4 +1,4 @@
-﻿@model IEnumerable<CRUD.Models.Contact>
+﻿@model IEnumerable<IdentityNLayer.BLL.DTO.StudentDTO>
 
 @{
     ViewData["Title"] = "Index";
@@ -55,9 +55,9 @@
                 @Html.DisplayFor(modelItem => item.Email)
             </td>
             <td>
-                <a asp-action="Edit" asp-route-id="@item.ContactId">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.ContactId">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.ContactId">Delete</a>
+                <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
+                <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
+                <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
             </td>
         </tr>
 }
