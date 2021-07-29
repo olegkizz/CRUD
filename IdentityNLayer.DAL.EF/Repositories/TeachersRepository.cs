@@ -8,35 +8,35 @@ using IdentityNLayer.DAL.Entities;
 
 namespace IdentityNLayer.DAL.EF.Repositories
 {
-    public class GroupsRepository : IRepository<Group>
+    public class TeachersRepository : IRepository<Teacher>
     {
         private ApplicationContext _context;
 
-        public GroupsRepository(ApplicationContext context)
+        public TeachersRepository(ApplicationContext context)
         {
             _context = context;
         }
-        public IEnumerable<Group> GetAll()
+        public IEnumerable<Teacher> GetAll()
         {
-            return _context.Groups;
+            return _context.Teachers.ToList();
         }
 
-        public Group Get(int id)
-        {
-            throw new NotImplementedException();
-        }
-
-        public IEnumerable<Group> Find(Func<Group, bool> predicate)
+        public Teacher Get(int id)
         {
             throw new NotImplementedException();
         }
 
-        public void Create(Group item)
+        public IEnumerable<Teacher> Find(Func<Teacher, bool> predicate)
         {
             throw new NotImplementedException();
         }
 
-        public void Update(Group item)
+        public void Create(Teacher item)
+        {
+            _context.Teachers.Add(item);
+        }
+
+        public void Update(Teacher item)
         {
             throw new NotImplementedException();
         }

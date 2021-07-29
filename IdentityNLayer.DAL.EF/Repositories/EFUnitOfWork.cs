@@ -11,22 +11,25 @@ namespace IdentityNLayer.DAL.EF.Repositories
 {
     public class EFUnitOfWork : IUnitOfWork
     {
-        private StudentContext _context;
+        private ApplicationContext _context;
         private IRepository<Student> _studentRepository;
         private IRepository<Group> _groupRepository;
+        private IRepository<Teacher> _teacherRepository;
 
-        public EFUnitOfWork(StudentContext context,
+        public EFUnitOfWork(ApplicationContext context,
             IRepository<Student> studentRepository,
-            IRepository<Group> groupRepository)
+            IRepository<Group> groupRepository,
+            IRepository<Teacher> teacherRepository)
         {
             _context = context;
             _studentRepository = studentRepository;
             _groupRepository = groupRepository;
+            _teacherRepository = teacherRepository;
         }
         public IRepository<Student> Students => _studentRepository;
-
         public IRepository<Group> Groups => _groupRepository;
-        
+        public IRepository<Teacher> Teachers => _teacherRepository;
+
 
         public void Save()
         {

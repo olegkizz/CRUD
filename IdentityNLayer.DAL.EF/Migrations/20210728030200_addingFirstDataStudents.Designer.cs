@@ -9,7 +9,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace IdentityNLayer.DAL.EF.Migrations
 {
-    [DbContext(typeof(StudentContext))]
+    [DbContext(typeof(ApplicationContext))]
     [Migration("20210728030200_addingFirstDataStudents")]
     partial class addingFirstDataStudents
     {

@@ -10,9 +10,9 @@ namespace IdentityNLayer.DAL.EF.Repositories
 {
     public class StudentsRepository : IRepository<Student>
     {
-        private StudentContext _context;
+        private ApplicationContext _context;
 
-        public StudentsRepository(StudentContext context)
+        public StudentsRepository(ApplicationContext context)
         {
             _context = context;
         }        

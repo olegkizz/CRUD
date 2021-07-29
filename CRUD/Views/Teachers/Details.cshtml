@@ -1,4 +1,5 @@
-﻿@model IdentityNLayer.BLL.DTO.StudentDTO
+﻿@model IdentityNLayer.BLL.DTO.TeacherDTO
+
 
 @{
     ViewData["Title"] = "Details";
@@ -7,19 +8,25 @@
 <h1>Details</h1>
 
 <div>
-    <h4>Contact</h4>
+    <h4>Teacher</h4>
     <hr />
     <dl class="row">
-        <dt class = "col-sm-2">
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.CareerStart)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.CareerStart)
+        </dd>
+        <dt class="col-sm-2">
             @Html.DisplayNameFor(model => model.Name)
         </dt>
-        <dd class = "col-sm-10">
+        <dd class="col-sm-10">
             @Html.DisplayFor(model => model.Name)
         </dd>
-        <dt class = "col-sm-2">
+        <dt class="col-sm-2">
             @Html.DisplayNameFor(model => model.Email)
         </dt>
-        <dd class = "col-sm-10">
+        <dd class="col-sm-10">
             @Html.DisplayFor(model => model.Email)
         </dd>
     </dl>

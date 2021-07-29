@@ -12,6 +12,8 @@ namespace IdentityNLayer.DAL.Interfaces
     {
         IRepository<Group> Groups { get; }
         IRepository<Student> Students { get; }
+        IRepository<Teacher> Teachers { get; }
+
         void Save();
     }
 }

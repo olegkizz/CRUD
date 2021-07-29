@@ -11,19 +11,20 @@ using IdentityNLayer.DAL.Interfaces;
 
 namespace IdentityNLayer.BLL.Services
 {
-    public class StudentService : IStudentService
+    public class TeacherService : ITeacherService
     {
         private IUnitOfWork Db { get; set; }
 
-        public StudentService(IUnitOfWork db)
+        public TeacherService(IUnitOfWork db)
         {
             Db = db;
         }
-        public IEnumerable<StudentDTO> GetAll()
+
+        public IEnumerable<TeacherDTO> GetAll()
         {
-            var mapper = new MapperConfiguration(cfg => 
-                cfg.CreateMap<Student, StudentDTO>()).CreateMapper();
-            return mapper.Map<IEnumerable<Student>, List<StudentDTO>>(Db.Students.GetAll());
+            var mapper = new MapperConfiguration(cfg =>
+                cfg.CreateMap<Teacher, TeacherDTO>()).CreateMapper();
+            return mapper.Map<IEnumerable<Teacher>, List<TeacherDTO>>(Db.Teachers.GetAll());
         }
     }
 }

@@ -1,9 +1,9 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Authorization.Infrastructure;
-using Microsoft.AspNetCore.Identity;
 using System.Threading.Tasks;
 using IdentityNLayer.BLL.DTO;
-using IdentityNLayer.Authorization;
+using Constants = IdentityNLayer.Authorization.Constants;
+using Microsoft.AspNetCore.Identity;
 
 namespace IdentityNLayer.BLL.Authorization
 {

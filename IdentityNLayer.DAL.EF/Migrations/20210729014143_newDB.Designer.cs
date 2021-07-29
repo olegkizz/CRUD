@@ -4,14 +4,16 @@ using IdentityNLayer.DAL.EF.Context;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace IdentityNLayer.DAL.EF.Migrations
 {
     [DbContext(typeof(ApplicationContext))]
-    partial class StudentContextModelSnapshot : ModelSnapshot
+    [Migration("20210729014143_newDB")]
+    partial class newDB
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -32,12 +34,7 @@ namespace IdentityNLayer.DAL.EF.Migrations
                     b.Property<int>("Status")
                         .HasColumnType("int");
 
-                    b.Property<int>("TeacherId")
-                        .HasColumnType("int");
-
                     b.HasKey("Id");
-
-                    b.HasIndex("TeacherId");
 
                     b.ToTable("Groups");
 
@@ -46,15 +43,13 @@ namespace IdentityNLayer.DAL.EF.Migrations
                         {
                             Id = 1,
                             Number = "Nemiga-1",
-                            Status = 1,
-                            TeacherId = 1
+                            Status = 0
                         },
                         new
                         {
                             Id = 2,
                             Number = "Nemiga-2",
-                            Status = 0,
-                            TeacherId = 1
+                            Status = 0
                         });
                 });
 
@@ -322,17 +317,6 @@ namespace IdentityNLayer.DAL.EF.Migrations
                     b.HasKey("UserId", "LoginProvider", "Name");
 
                     b.ToTable("AspNetUserTokens");
-                });
-
-            modelBuilder.Entity("IdentityNLayer.DAL.Entities.Group", b =>
-                {
-                    b.HasOne("IdentityNLayer.DAL.Entities.Teacher", "Teacher")
-                        .WithMany()
-                        .HasForeignKey("TeacherId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Teacher");
                 });
 
             modelBuilder.Entity("IdentityNLayer.DAL.Entities.Student", b =>

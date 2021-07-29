@@ -36,13 +36,13 @@ namespace IdentityNLayer
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddDbContext<StudentContext>(options =>
+            services.AddDbContext<ApplicationContext>(options =>
                 options.UseSqlServer(
                     Configuration.GetConnectionString("DefaultConnection")));
 
             services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
                 .AddRoles<IdentityRole>()
-                .AddEntityFrameworkStores<StudentContext>();
+                .AddEntityFrameworkStores<ApplicationContext>();
             services.AddControllersWithViews(config =>
             {
                 // using Microsoft.AspNetCore.Mvc.Authorization;
@@ -68,14 +68,16 @@ namespace IdentityNLayer
             services.AddScoped<IAuthorizationHandler,
                 ContactManagerAuthorizationHandler>();
 
-            services.AddScoped<IUnitOfWork,
+            services.AddTransient<IUnitOfWork,
                 EFUnitOfWork>();
-            services.AddScoped<IRepository<Student>,
+            services.AddTransient<IRepository<Student>,
                 StudentsRepository>();
-            services.AddScoped<IRepository<Group>,
+            services.AddTransient<IRepository<Group>,
                 GroupsRepository>();
-            services.AddScoped<IStudentService,
-                StudentService>();
+            services.AddTransient<IRepository<Teacher>,
+                TeachersRepository>();
+            /*services.AddScoped<IStudentService,
+                StudentService>();*/
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

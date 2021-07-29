@@ -9,22 +9,24 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using IdentityNLayer.Models;
 using IdentityNLayer.BLL.Interfaces;
+using IdentityNLayer.DAL.Interfaces;
 
 namespace IdentityNLayer.Controllers
 {
     public class StudentsController : Controller
     {
+        private readonly IUnitOfWork _db;
         private readonly IStudentService _studentService;
 
-        public StudentsController(IStudentService studentService)
+        public StudentsController(IUnitOfWork db)
         {
-            _studentService = studentService;
+            _studentService = new StudentService(db);
         }
 
         // GET: Contacts
         public async Task<IActionResult> Index()
         {
-            return View(_studentService.GetStudents());
+            return View(_studentService.GetAll());
         }
 
         // GET: Contacts/Details/5

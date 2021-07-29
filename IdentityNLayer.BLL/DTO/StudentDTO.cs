@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Web;
+using IdentityNLayer.DAL.Entities;
 
 namespace IdentityNLayer.BLL.DTO
 {
@@ -10,12 +11,8 @@ namespace IdentityNLayer.BLL.DTO
     {
         public int Id { get; set; }
         public string Name { get; set; }
-        public string Address { get; set; }
-        public string City { get; set; }
-        public string State { get; set; }
-        public string Zip { get; set; }
         public string Email { get; set; }
         public int GroupId { get; set; }
-
+        public StudentType Type { get; set; }
     }
 }
