@@ -14,16 +14,43 @@ namespace IdentityNLayer.BLL.Services
     public class StudentService : IStudentService
     {
         private IUnitOfWork Db { get; set; }
-
-        public StudentService(IUnitOfWork db)
+        private readonly IMapper _mapper;
+        public StudentService(IUnitOfWork db, IMapper mapper = null)
         {
             Db = db;
+            _mapper = mapper;
         }
         public IEnumerable<StudentDTO> GetAll()
         {
-            var mapper = new MapperConfiguration(cfg => 
-                cfg.CreateMap<Student, StudentDTO>()).CreateMapper();
-            return mapper.Map<IEnumerable<Student>, List<StudentDTO>>(Db.Students.GetAll());
+            return _mapper.Map<List<StudentDTO>>(Db.Students.GetAll());
+        }
+        public StudentDTO GetById(int id)
+        {
+            return _mapper.Map<StudentDTO>(Db.Students.Get(id));
+        }
+        public void Create(StudentDTO studentDto)
+        {
+            /*.ForMember("Group", opt
+                => opt.MapFrom(st => Db.Students.Get(st.GroupId)))*/
+            Db.Students.Create(_mapper.Map<StudentDTO, Student>(studentDto));
+            Db.Save();
+        }
+
+        public Array GetStudentTypes()
+        {
+            return Enum.GetValues(typeof(StudentType));
+        }
+
+        public void Update(StudentDTO entity)
+        {
+            Db.Students.Update(_mapper.Map<StudentDTO, Student>(entity));
+            Db.Save();
+        }
+
+        public void Delete(int id)
+        {
+            Db.Students.Delete(id);
+            Db.Save();
         }
     }
 }

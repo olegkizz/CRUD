@@ -1,4 +1,6 @@
-﻿namespace IdentityNLayer.DAL.Entities
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace IdentityNLayer.DAL.Entities
 {
     public class Student : Person
     {

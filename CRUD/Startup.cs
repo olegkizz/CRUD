@@ -11,6 +11,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using AutoMapper;
 using IdentityNLayer.BLL.Authorization;
 using IdentityNLayer.BLL.Services;
 using IdentityNLayer.DAL;
@@ -21,6 +22,7 @@ using IdentityNLayer.DAL.EF.Repositories;
 using IdentityNLayer.DAL.Entities;
 using IdentityNLayer.DAL.Interfaces;
 using IdentityNLayer.BLL.Interfaces;
+using IdentityNLayer.BLL.Mapper;
 
 namespace IdentityNLayer
 {
@@ -40,13 +42,12 @@ namespace IdentityNLayer
                 options.UseSqlServer(
                     Configuration.GetConnectionString("DefaultConnection")));
 
+       
             services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
                 .AddRoles<IdentityRole>()
                 .AddEntityFrameworkStores<ApplicationContext>();
             services.AddControllersWithViews(config =>
             {
-                // using Microsoft.AspNetCore.Mvc.Authorization;
-                // using Microsoft.AspNetCore.Authorization;
                 var policy = new AuthorizationPolicyBuilder()
                     .RequireAuthenticatedUser()
                     .Build();
@@ -76,6 +77,14 @@ namespace IdentityNLayer
                 GroupsRepository>();
             services.AddTransient<IRepository<Teacher>,
                 TeachersRepository>();
+            var mapperConfig = new MapperConfiguration(mc =>
+            {
+                mc.AddProfile(new MappingProfile());
+            });
+
+            IMapper mapper = mapperConfig.CreateMapper();
+            services.AddSingleton(mapper);
+
             /*services.AddScoped<IStudentService,
                 StudentService>();*/
         }

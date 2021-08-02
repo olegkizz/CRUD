@@ -10,6 +10,7 @@ using Microsoft.EntityFrameworkCore;
 using IdentityNLayer.Models;
 using IdentityNLayer.BLL.Interfaces;
 using IdentityNLayer.DAL.Interfaces;
+using AutoMapper;
 
 namespace IdentityNLayer.Controllers
 {
@@ -17,10 +18,13 @@ namespace IdentityNLayer.Controllers
     {
         private readonly IUnitOfWork _db;
         private readonly IStudentService _studentService;
+        private readonly IGroupService _groupService;
+        private readonly IMapper _mapper;
 
-        public StudentsController(IUnitOfWork db)
+        public StudentsController(IUnitOfWork db, IMapper mapper)
         {
-            _studentService = new StudentService(db);
+            _studentService = new StudentService(db, mapper);
+            _groupService = new GroupService(db, mapper);
         }
 
         // GET: Contacts
@@ -29,27 +33,11 @@ namespace IdentityNLayer.Controllers
             return View(_studentService.GetAll());
         }
 
-        // GET: Contacts/Details/5
-        public async Task<IActionResult> Details(int? id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
-/*
-            var contact = await _context.Contact
-                .FirstOrDefaultAsync(m => m.ContactId == id);
-            if (contact == null)
-            {
-                return NotFound();
-            }
-*/
-            return View();
-        }
-
         // GET: Contacts/Create
         public IActionResult Create()
         {
+            ViewBag.Groups = _groupService.GetAll();
+            ViewBag.StudentTypes = _studentService.GetStudentTypes();
             return View();
         }
 
@@ -58,14 +46,13 @@ namespace IdentityNLayer.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("ContactId,Name,Address,City,State,Zip,Email")] StudentDTO student)
+        public async Task<IActionResult> Create([Bind("Name, Email, Type, GroupId")] StudentDTO student)
         {
-      /*      if (ModelState.IsValid)
+            if (ModelState.IsValid)
             {
-                _context.Add(contact);
-                await _context.SaveChangesAsync();
+                _studentService.Create(student);
                 return RedirectToAction(nameof(Index));
-            }*/
+            }
             return View();
         }
 
@@ -77,12 +64,16 @@ namespace IdentityNLayer.Controllers
                 return NotFound();
             }
 
-      /*      var contact = await _context.Contact.FindAsync(id);
-            if (contact == null)
+            StudentDTO student = _studentService.GetById((int)id);
+            ViewBag.Groups = _groupService.GetAll();
+            ViewBag.StudentTypes = _studentService.GetStudentTypes();
+           
+            if (student == null)
             {
                 return NotFound();
-            }*/
-            return View();
+            }
+
+            return View(student);
         }
 
         // POST: Contacts/Edit/5
@@ -90,33 +81,25 @@ namespace IdentityNLayer.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("ContactId,Name,Address,City,State,Zip,Email")] StudentDTO student)
+        public async Task<IActionResult> Edit(int id, [Bind("Id, Name, Email, Type, GroupId")] StudentDTO student)
         {
             if (id != student.Id)
             {
                 return NotFound();
             }
-/*
+
             if (ModelState.IsValid)
             {
                 try
                 {
-                    _context.Update(contact);
-                    await _context.SaveChangesAsync();
+                    _studentService.Update(student);
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!ContactExists(contact.ContactId))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
+                    throw new DbUpdateConcurrencyException();
                 }
                 return RedirectToAction(nameof(Index));
-            }*/
+            }
             return View();
         }
 
@@ -128,14 +111,13 @@ namespace IdentityNLayer.Controllers
                 return NotFound();
             }
 
-    /*        var contact = await _context.Contact
-                .FirstOrDefaultAsync(m => m.ContactId == id);
-            if (contact == null)
+            StudentDTO student = _studentService.GetById((int)id);
+            if (student == null)
             {
                 return NotFound();
             }
-*/
-            return View();
+
+            return View(student);
         }
 
         // POST: Contacts/Delete/5
@@ -143,15 +125,9 @@ namespace IdentityNLayer.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
- /*           var contact = await _context.Contact.FindAsync(id);
-            _context.Contact.Remove(contact);
-            await _context.SaveChangesAsync();*/
+            _studentService.Delete((int)id);
+               
             return RedirectToAction(nameof(Index));
-        }
-
-        private bool ContactExists(int id)
-        {
-            return true;
         }
     }
 }

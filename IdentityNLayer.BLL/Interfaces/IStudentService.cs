@@ -12,5 +12,6 @@ namespace IdentityNLayer.BLL.Interfaces
 {
     public interface IStudentService : IService<StudentDTO>
     {
+        public Array GetStudentTypes();
     }
 }
