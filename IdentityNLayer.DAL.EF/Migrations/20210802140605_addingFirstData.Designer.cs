@@ -10,8 +10,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace IdentityNLayer.DAL.EF.Migrations
 {
     [DbContext(typeof(ApplicationContext))]
-    [Migration("20210729015631_newGroupEntity")]
-    partial class newGroupEntity
+    [Migration("20210802140605_addingFirstData")]
+    partial class addingFirstData
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -34,7 +34,7 @@ namespace IdentityNLayer.DAL.EF.Migrations
                     b.Property<int>("Status")
                         .HasColumnType("int");
 
-                    b.Property<int>("TeacherId")
+                    b.Property<int?>("TeacherId")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
@@ -56,7 +56,7 @@ namespace IdentityNLayer.DAL.EF.Migrations
                             Id = 2,
                             Number = "Nemiga-2",
                             Status = 0,
-                            TeacherId = 1
+                            TeacherId = 2
                         });
                 });
 
@@ -128,6 +128,22 @@ namespace IdentityNLayer.DAL.EF.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Teachers");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            CareerStart = new DateTime(2015, 7, 20, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Email = "Teach1@teacher.com",
+                            Name = "Teach1"
+                        },
+                        new
+                        {
+                            Id = 2,
+                            CareerStart = new DateTime(2017, 2, 21, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Email = "Teach2@teacher.com",
+                            Name = "Teach2"
+                        });
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
@@ -330,9 +346,7 @@ namespace IdentityNLayer.DAL.EF.Migrations
                 {
                     b.HasOne("IdentityNLayer.DAL.Entities.Teacher", "Teacher")
                         .WithMany()
-                        .HasForeignKey("TeacherId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("TeacherId");
 
                     b.Navigation("Teacher");
                 });

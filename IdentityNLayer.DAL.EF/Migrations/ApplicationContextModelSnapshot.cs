@@ -4,16 +4,14 @@ using IdentityNLayer.DAL.EF.Context;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
-using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace IdentityNLayer.DAL.EF.Migrations
 {
     [DbContext(typeof(ApplicationContext))]
-    [Migration("20210729014143_newDB")]
-    partial class newDB
+    partial class ApplicationContextModelSnapshot : ModelSnapshot
     {
-        protected override void BuildTargetModel(ModelBuilder modelBuilder)
+        protected override void BuildModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -34,7 +32,12 @@ namespace IdentityNLayer.DAL.EF.Migrations
                     b.Property<int>("Status")
                         .HasColumnType("int");
 
+                    b.Property<int?>("TeacherId")
+                        .HasColumnType("int");
+
                     b.HasKey("Id");
+
+                    b.HasIndex("TeacherId");
 
                     b.ToTable("Groups");
 
@@ -43,13 +46,15 @@ namespace IdentityNLayer.DAL.EF.Migrations
                         {
                             Id = 1,
                             Number = "Nemiga-1",
-                            Status = 0
+                            Status = 1,
+                            TeacherId = 1
                         },
                         new
                         {
                             Id = 2,
                             Number = "Nemiga-2",
-                            Status = 0
+                            Status = 0,
+                            TeacherId = 2
                         });
                 });
 
@@ -121,6 +126,22 @@ namespace IdentityNLayer.DAL.EF.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Teachers");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            CareerStart = new DateTime(2015, 7, 20, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Email = "Teach1@teacher.com",
+                            Name = "Teach1"
+                        },
+                        new
+                        {
+                            Id = 2,
+                            CareerStart = new DateTime(2017, 2, 21, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Email = "Teach2@teacher.com",
+                            Name = "Teach2"
+                        });
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
@@ -317,6 +338,15 @@ namespace IdentityNLayer.DAL.EF.Migrations
                     b.HasKey("UserId", "LoginProvider", "Name");
 
                     b.ToTable("AspNetUserTokens");
+                });
+
+            modelBuilder.Entity("IdentityNLayer.DAL.Entities.Group", b =>
+                {
+                    b.HasOne("IdentityNLayer.DAL.Entities.Teacher", "Teacher")
+                        .WithMany()
+                        .HasForeignKey("TeacherId");
+
+                    b.Navigation("Teacher");
                 });
 
             modelBuilder.Entity("IdentityNLayer.DAL.Entities.Student", b =>

@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace IdentityNLayer.DAL.EF.Migrations
 {
-    public partial class addingGroupContext : Migration
+    public partial class addingFirstData : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -47,17 +47,18 @@ namespace IdentityNLayer.DAL.EF.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Groups",
+                name: "Teachers",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    OwnerId = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Name = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                    CareerStart = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    Name = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Email = table.Column<string>(type: "nvarchar(max)", nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Groups", x => x.Id);
+                    table.PrimaryKey("PK_Teachers", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -167,18 +168,36 @@ namespace IdentityNLayer.DAL.EF.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Groups",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Number = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Status = table.Column<int>(type: "int", nullable: false),
+                    TeacherId = table.Column<int>(type: "int", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Groups", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Groups_Teachers_TeacherId",
+                        column: x => x.TeacherId,
+                        principalTable: "Teachers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Students",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
+                    GroupId = table.Column<int>(type: "int", nullable: false),
+                    Type = table.Column<int>(type: "int", nullable: false),
                     Name = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Address = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    City = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    State = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Zip = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Email = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    GroupId = table.Column<int>(type: "int", nullable: false)
+                    Email = table.Column<string>(type: "nvarchar(max)", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -190,6 +209,41 @@ namespace IdentityNLayer.DAL.EF.Migrations
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
+
+            migrationBuilder.InsertData(
+                table: "Teachers",
+                columns: new[] { "Id", "CareerStart", "Email", "Name" },
+                values: new object[] { 1, new DateTime(2015, 7, 20, 0, 0, 0, 0, DateTimeKind.Unspecified), "Teach1@teacher.com", "Teach1" });
+
+            migrationBuilder.InsertData(
+                table: "Teachers",
+                columns: new[] { "Id", "CareerStart", "Email", "Name" },
+                values: new object[] { 2, new DateTime(2017, 2, 21, 0, 0, 0, 0, DateTimeKind.Unspecified), "Teach2@teacher.com", "Teach2" });
+
+            migrationBuilder.InsertData(
+                table: "Groups",
+                columns: new[] { "Id", "Number", "Status", "TeacherId" },
+                values: new object[] { 1, "Nemiga-1", 1, 1 });
+
+            migrationBuilder.InsertData(
+                table: "Groups",
+                columns: new[] { "Id", "Number", "Status", "TeacherId" },
+                values: new object[] { 2, "Nemiga-2", 0, 2 });
+
+            migrationBuilder.InsertData(
+                table: "Students",
+                columns: new[] { "Id", "Email", "GroupId", "Name", "Type" },
+                values: new object[] { 1, null, 1, "Oleg", 0 });
+
+            migrationBuilder.InsertData(
+                table: "Students",
+                columns: new[] { "Id", "Email", "GroupId", "Name", "Type" },
+                values: new object[] { 2, null, 1, "Vova", 1 });
+
+            migrationBuilder.InsertData(
+                table: "Students",
+                columns: new[] { "Id", "Email", "GroupId", "Name", "Type" },
+                values: new object[] { 3, null, 2, "Nikita", 2 });
 
             migrationBuilder.CreateIndex(
                 name: "IX_AspNetRoleClaims_RoleId",
@@ -231,6 +285,11 @@ namespace IdentityNLayer.DAL.EF.Migrations
                 filter: "[NormalizedUserName] IS NOT NULL");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Groups_TeacherId",
+                table: "Groups",
+                column: "TeacherId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Students_GroupId",
                 table: "Students",
                 column: "GroupId");
@@ -264,6 +323,9 @@ namespace IdentityNLayer.DAL.EF.Migrations
 
             migrationBuilder.DropTable(
                 name: "Groups");
+
+            migrationBuilder.DropTable(
+                name: "Teachers");
         }
     }
 }
