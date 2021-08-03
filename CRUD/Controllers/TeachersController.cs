@@ -10,12 +10,11 @@ namespace IdentityNLayer.Controllers
 {
     public class TeachersController : Controller
     {
-        private readonly IUnitOfWork _db;
         private readonly ITeacherService _teacherService;
 
-        public TeachersController(IUnitOfWork db)
+        public TeachersController(ITeacherService teacherService)
         {
-            _teacherService = new TeacherService(db);
+            _teacherService = teacherService;
         }
 
         // GET: Teachers

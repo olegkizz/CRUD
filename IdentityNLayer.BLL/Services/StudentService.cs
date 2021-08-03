@@ -15,7 +15,7 @@ namespace IdentityNLayer.BLL.Services
     {
         private IUnitOfWork Db { get; set; }
         private readonly IMapper _mapper;
-        public StudentService(IUnitOfWork db, IMapper mapper = null)
+        public StudentService(IUnitOfWork db, IMapper mapper)
         {
             Db = db;
             _mapper = mapper;

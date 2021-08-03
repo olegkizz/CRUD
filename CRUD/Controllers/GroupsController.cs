@@ -16,12 +16,12 @@ namespace IdentityNLayer.Controllers
 {
     public class GroupsController : Controller
     {
-        private readonly IUnitOfWork _db;
+        
         private readonly IGroupService _groupService;
 
-        public GroupsController(IUnitOfWork db)
+        public GroupsController(IGroupService groupService)
         {
-            _groupService = new GroupService(db);
+            _groupService = groupService;
         }
 
         // GET: Contacts

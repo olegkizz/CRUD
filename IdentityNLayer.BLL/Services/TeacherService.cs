@@ -13,21 +13,21 @@ namespace IdentityNLayer.BLL.Services
 {
     public class TeacherService : ITeacherService
     {
-        private IUnitOfWork Db { get; set; }
-        private IMapper _mapper { get; set; }
-        public TeacherService(IUnitOfWork db, IMapper mapper = null)
+        private readonly IUnitOfWork _db;
+        private readonly IMapper _mapper;
+        public TeacherService(IUnitOfWork db, IMapper mapper)
         {
-            Db = db;
+            _db = db;
             _mapper = mapper;
         }
 
         public IEnumerable<TeacherDTO> GetAll()
         {
-            return _mapper.Map<IEnumerable<Teacher>, List<TeacherDTO>>(Db.Teachers.GetAll());
+            return _mapper.Map<IEnumerable<Teacher>, List<TeacherDTO>>(_db.Teachers.GetAll());
         }
         public TeacherDTO GetById(int id)
         { 
-            return _mapper.Map<Teacher, TeacherDTO>(Db.Teachers.Get(id));
+            return _mapper.Map<Teacher, TeacherDTO>(_db.Teachers.Get(id));
         }
 
         public void Create(TeacherDTO entity)
