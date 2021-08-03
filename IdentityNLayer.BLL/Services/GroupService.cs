@@ -14,7 +14,7 @@ namespace IdentityNLayer.BLL.Services
     {
         private IUnitOfWork Db { get; set; }
         private IMapper _mapper { get; set; }
-        public GroupService(IUnitOfWork db, IMapper mapper = null)
+        public GroupService(IUnitOfWork db, IMapper mapper)
         {
             Db = db;
             _mapper = mapper;

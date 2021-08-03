@@ -16,15 +16,14 @@ namespace IdentityNLayer.Controllers
 {
     public class StudentsController : Controller
     {
-        private readonly IUnitOfWork _db;
         private readonly IStudentService _studentService;
         private readonly IGroupService _groupService;
-        private readonly IMapper _mapper;
 
-        public StudentsController(IUnitOfWork db, IMapper mapper)
+
+        public StudentsController(IStudentService studentService, IGroupService groupService)
         {
-            _studentService = new StudentService(db, mapper);
-            _groupService = new GroupService(db, mapper);
+            _studentService = studentService;
+            _groupService = groupService;
         }
 
         // GET: Contacts
@@ -67,7 +66,7 @@ namespace IdentityNLayer.Controllers
             StudentDTO student = _studentService.GetById((int)id);
             ViewBag.Groups = _groupService.GetAll();
             ViewBag.StudentTypes = _studentService.GetStudentTypes();
-           
+
             if (student == null)
             {
                 return NotFound();
@@ -126,7 +125,7 @@ namespace IdentityNLayer.Controllers
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             _studentService.Delete((int)id);
-               
+
             return RedirectToAction(nameof(Index));
         }
     }
