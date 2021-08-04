@@ -1,12 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using AutoMapper;
-using IdentityNLayer.BLL.DTO;
 using IdentityNLayer.BLL.Interfaces;
-using IdentityNLayer.DAL.Entities;
+using IdentityNLayer.Core.Entities;
 using IdentityNLayer.DAL.Interfaces;
 
 namespace IdentityNLayer.BLL.Services
@@ -14,25 +9,23 @@ namespace IdentityNLayer.BLL.Services
     public class StudentService : IStudentService
     {
         private IUnitOfWork Db { get; set; }
-        private readonly IMapper _mapper;
-        public StudentService(IUnitOfWork db, IMapper mapper = null)
+        public StudentService(IUnitOfWork db)
         {
             Db = db;
-            _mapper = mapper;
         }
-        public IEnumerable<StudentDTO> GetAll()
+        public IEnumerable<Student> GetAll()
         {
-            return _mapper.Map<List<StudentDTO>>(Db.Students.GetAll());
+            return Db.Students.GetAll();
         }
-        public StudentDTO GetById(int id)
+        public Student GetById(int id)
         {
-            return _mapper.Map<StudentDTO>(Db.Students.Get(id));
+            return Db.Students.Get(id);
         }
-        public void Create(StudentDTO studentDto)
+        public void Create(Student student)
         {
             /*.ForMember("Group", opt
                 => opt.MapFrom(st => Db.Students.Get(st.GroupId)))*/
-            Db.Students.Create(_mapper.Map<StudentDTO, Student>(studentDto));
+            Db.Students.Create(student);
             Db.Save();
         }
 
@@ -41,9 +34,9 @@ namespace IdentityNLayer.BLL.Services
             return Enum.GetValues(typeof(StudentType));
         }
 
-        public void Update(StudentDTO entity)
+        public void Update(Student entity)
         {
-            Db.Students.Update(_mapper.Map<StudentDTO, Student>(entity));
+            Db.Students.Update(entity);
             Db.Save();
         }
 

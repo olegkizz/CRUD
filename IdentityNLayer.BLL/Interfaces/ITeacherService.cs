@@ -1,13 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using IdentityNLayer.BLL.DTO;
+﻿using IdentityNLayer.Core.Entities;
 
 namespace IdentityNLayer.BLL.Interfaces
 {
-    public interface ITeacherService : IService<TeacherDTO>
+    public interface ITeacherService : IService<Teacher>
     {
     }
 }

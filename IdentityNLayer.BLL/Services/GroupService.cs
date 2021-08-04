@@ -1,11 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using AutoMapper;
-using IdentityNLayer.BLL.DTO;
 using IdentityNLayer.BLL.Interfaces;
-using IdentityNLayer.DAL.Entities;
+using IdentityNLayer.Core.Entities;
 using IdentityNLayer.DAL.Interfaces;
 
 namespace IdentityNLayer.BLL.Services
@@ -13,27 +9,25 @@ namespace IdentityNLayer.BLL.Services
     public class GroupService : IGroupService
     {
         private IUnitOfWork Db { get; set; }
-        private IMapper _mapper { get; set; }
-        public GroupService(IUnitOfWork db, IMapper mapper = null)
+        public GroupService(IUnitOfWork db)
         {
             Db = db;
-            _mapper = mapper;
         }
-        public IEnumerable<GroupDTO> GetAll()
+        public IEnumerable<Group> GetAll()
         {
-            return _mapper.Map<IEnumerable<Group>, List<GroupDTO>>(Db.Groups.GetAll());
+            return Db.Groups.GetAll();
         }
-        public GroupDTO GetById(int id)
+        public Group GetById(int id)
         {
-            return _mapper.Map<Group, GroupDTO>(Db.Groups.Get(id));
+            return Db.Groups.Get(id);
         }
 
-        public void Create(GroupDTO entity)
+        public void Create(Group entity)
         {
             throw new NotImplementedException();
         }
 
-        public void Update(GroupDTO entity)
+        public void Update(Group entity)
         {
             throw new NotImplementedException();
         }

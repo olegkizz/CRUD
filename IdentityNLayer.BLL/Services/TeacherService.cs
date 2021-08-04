@@ -1,12 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using AutoMapper;
-using IdentityNLayer.BLL.DTO;
 using IdentityNLayer.BLL.Interfaces;
-using IdentityNLayer.DAL.Entities;
+using IdentityNLayer.Core.Entities;
 using IdentityNLayer.DAL.Interfaces;
 
 namespace IdentityNLayer.BLL.Services
@@ -14,28 +9,26 @@ namespace IdentityNLayer.BLL.Services
     public class TeacherService : ITeacherService
     {
         private IUnitOfWork Db { get; set; }
-        private IMapper _mapper { get; set; }
-        public TeacherService(IUnitOfWork db, IMapper mapper = null)
+        public TeacherService(IUnitOfWork db)
         {
             Db = db;
-            _mapper = mapper;
         }
 
-        public IEnumerable<TeacherDTO> GetAll()
+        public IEnumerable<Teacher> GetAll()
         {
-            return _mapper.Map<IEnumerable<Teacher>, List<TeacherDTO>>(Db.Teachers.GetAll());
+            return Db.Teachers.GetAll();
         }
-        public TeacherDTO GetById(int id)
+        public Teacher GetById(int id)
         { 
-            return _mapper.Map<Teacher, TeacherDTO>(Db.Teachers.Get(id));
+            return Db.Teachers.Get(id);
         }
 
-        public void Create(TeacherDTO entity)
+        public void Create(Teacher entity)
         {
             throw new NotImplementedException();
         }
 
-        public void Update(TeacherDTO entity)
+        public void Update(Teacher entity)
         {
             throw new NotImplementedException();
         }

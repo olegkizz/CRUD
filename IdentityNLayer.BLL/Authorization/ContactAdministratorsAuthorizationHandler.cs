@@ -1,16 +1,16 @@
 ﻿using System.Threading.Tasks;
 using IdentityNLayer.Authorization;
-using IdentityNLayer.BLL.DTO;
+using IdentityNLayer.Core.Entities;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Authorization.Infrastructure;
 
 namespace IdentityNLayer.BLL.Authorization
 {
-    public class ContactAdministratorsAuthorizationHandler : AuthorizationHandler<OperationAuthorizationRequirement, StudentDTO>
+    public class ContactAdministratorsAuthorizationHandler : AuthorizationHandler<OperationAuthorizationRequirement, Student>
     {
         protected override Task HandleRequirementAsync(AuthorizationHandlerContext context,
             OperationAuthorizationRequirement requirement,
-            StudentDTO resource)
+            Student resource)
         {
             // Administrators can do anything.
             if (context.User.IsInRole(Constants.ContactAdministratorsRole))

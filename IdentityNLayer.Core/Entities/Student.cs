@@ -1,6 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations;
-
-namespace IdentityNLayer.DAL.Entities
+﻿namespace IdentityNLayer.Core.Entities
 {
     public class Student : Person
     {

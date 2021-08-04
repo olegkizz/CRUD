@@ -1,10 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using IdentityNLayer.DAL.EF.Context;
-using IdentityNLayer.DAL.Entities;
+using IdentityNLayer.Core.Entities;
 using IdentityNLayer.DAL.Interfaces;
 
 namespace IdentityNLayer.DAL.EF.Repositories

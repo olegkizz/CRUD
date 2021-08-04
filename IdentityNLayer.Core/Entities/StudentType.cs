@@ -1,4 +1,4 @@
-﻿namespace IdentityNLayer.DAL.Entities
+﻿namespace IdentityNLayer.Core.Entities
 {
     public enum StudentType
     {

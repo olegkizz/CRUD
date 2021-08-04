@@ -1,10 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Web;
-using IdentityNLayer.DAL;
 using IdentityNLayer.DAL.EF.Context;
-using IdentityNLayer.DAL.Entities;
+using IdentityNLayer.Core.Entities;
 using Microsoft.EntityFrameworkCore;
 
 namespace IdentityNLayer.DAL.EF.Repositories

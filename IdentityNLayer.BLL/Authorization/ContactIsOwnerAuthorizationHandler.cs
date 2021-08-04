@@ -1,5 +1,5 @@
 ﻿using System.Threading.Tasks;
-using IdentityNLayer.BLL.DTO;
+using IdentityNLayer.Core.Entities;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Authorization.Infrastructure;
 using Microsoft.AspNetCore.Identity;
@@ -8,7 +8,7 @@ using Constants = IdentityNLayer.Authorization.Constants;
 namespace IdentityNLayer.BLL.Authorization
 {
     public class ContactIsOwnerAuthorizationHandler
-        : AuthorizationHandler<OperationAuthorizationRequirement, StudentDTO>
+        : AuthorizationHandler<OperationAuthorizationRequirement, Student>
     {
         UserManager<IdentityUser> _userManager;
 
@@ -20,7 +20,7 @@ namespace IdentityNLayer.BLL.Authorization
 
         protected override Task HandleRequirementAsync(AuthorizationHandlerContext context,
             OperationAuthorizationRequirement requirement,
-            StudentDTO resource)
+            Student resource)
         {
             if (resource == null)
             {

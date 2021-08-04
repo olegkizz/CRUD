@@ -1,12 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using IdentityNLayer.DAL.Entities;
-using Microsoft.AspNetCore.Identity;
+using IdentityNLayer.Core.Entities;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.DependencyInjection;
 
 namespace IdentityNLayer.DAL.EF.Context
 {
@@ -31,16 +25,20 @@ namespace IdentityNLayer.DAL.EF.Context
             Teacher teacher1 = new Teacher
             {
                 Id = 1,
-                Name = "Teach1",
+                FirstName = "Teach",
+                LastName = "First",
                 Email = "Teach1@teacher.com",
-                CareerStart = new DateTime(2015, 7, 20)
+                BirthDate = new DateTime(1985, 2, 21),
+                Bio = "Super Teacher"
             };
             Teacher teacher2 = new Teacher
             {
                 Id = 2,
-                Name = "Teach2",
+                FirstName = "Teach",
+                LastName = "Second",
                 Email = "Teach2@teacher.com",
-                CareerStart = new DateTime(2017, 2, 21)
+                BirthDate = new DateTime(1992, 2, 21),
+                Bio = "Super Teacher"
             };
 
             modelBuilder.Entity<Teacher>().HasData(
@@ -55,14 +53,16 @@ namespace IdentityNLayer.DAL.EF.Context
                 Id = 1,
                 Number = "Nemiga-1",
                 Status = GroupStatus.Started,
-                TeacherId = teacher1.Id
+                TeacherId = teacher1.Id,
+                StartDate = new DateTime(2021, 9, 21)
             };
             Group secondGroup = new Group
             {
                 Id = 2,
                 Number = "Nemiga-2",
                 Status = GroupStatus.Pending,
-                TeacherId = teacher2.Id
+                TeacherId = teacher2.Id,
+                StartDate = new DateTime(2021, 10, 21)
             };
             modelBuilder.Entity<Group>().HasData(
                 new Group[]
@@ -75,15 +75,15 @@ namespace IdentityNLayer.DAL.EF.Context
                 {
                     new Student
                     {
-                        Id = 1, Name = "Oleg", GroupId = firstGroup.Id, Type = StudentType.Online
+                        Id = 1, FirstName = "Oleg", LastName = "Kizz", GroupId = firstGroup.Id, Type = StudentType.Online
                     },
                     new Student
                     {
-                        Id = 2, Name = "Vova",  GroupId = firstGroup.Id, Type = StudentType.Offline
+                        Id = 2, FirstName = "Vova", LastName = "Braslav",  GroupId = firstGroup.Id, Type = StudentType.Offline
                     },
                     new Student
                     {
-                        Id = 3, Name = "Nikita", GroupId = secondGroup.Id,  Type = StudentType.Mix
+                        Id = 3, FirstName = "Nikita", LastName = "Chebur", GroupId = secondGroup.Id,  Type = StudentType.Mix
                     }
                 }
             );
