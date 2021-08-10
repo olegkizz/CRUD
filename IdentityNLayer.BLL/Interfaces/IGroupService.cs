@@ -2,7 +2,7 @@
 
 namespace IdentityNLayer.BLL.Interfaces
 {
-    public interface IGroupService : IService<Group>
+    public interface IGroupService : IBaseService<Group>
     {
     }
 }

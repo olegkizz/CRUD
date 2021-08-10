@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using IdentityNLayer.DAL.EF.Context;
 using IdentityNLayer.Core.Entities;
+using Microsoft.EntityFrameworkCore;
+using System.Linq;
 
 namespace IdentityNLayer.DAL.EF.Repositories
 {
@@ -20,7 +22,10 @@ namespace IdentityNLayer.DAL.EF.Repositories
 
         public Group Get(int id)
         {
-            throw new NotImplementedException();
+            return _context.Groups
+                .Include(g => g.Enrollments)
+                .Where(g => g.Id == id)
+                .First();
         }
 
         public IEnumerable<Group> Find(Func<Group, bool> predicate)

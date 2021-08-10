@@ -2,7 +2,7 @@
 
 namespace IdentityNLayer.BLL.Interfaces
 {
-    public interface ITeacherService : IService<Teacher>
+    public interface ITeacherService : IBaseService<Teacher>
     {
     }
 }

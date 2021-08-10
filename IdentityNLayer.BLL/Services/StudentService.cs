@@ -23,11 +23,23 @@ namespace IdentityNLayer.BLL.Services
         }
         public void Create(Student student)
         {
-            /*.ForMember("Group", opt
-                => opt.MapFrom(st => Db.Students.Get(st.GroupId)))*/
             Db.Students.Create(student);
             Db.Save();
         }
+   /*     public void Create(Student student, int[] selectedGroups = null)
+        {
+            *//*.ForMember("Group", opt
+                => opt.MapFrom(st => Db.Students.Get(st.GroupId)))*//*
+            foreach(int groupId in selectedGroups)
+            {
+                Db.Enrollments.Create(new Enrollment()
+                {
+
+                });
+            }
+            Create(student);
+            Db.Save();
+        }*/
 
         public Array GetStudentTypes()
         {
@@ -44,6 +56,38 @@ namespace IdentityNLayer.BLL.Services
         {
             Db.Students.Delete(id);
             Db.Save();
+        }
+        public List<Group> GetStudentGroups(int studentId)
+        {
+            List<Group> groups = new();
+            foreach (Enrollment en in Db.Students.Get(studentId).Enrollments)
+            {
+                groups.Add(en.Group);
+            }
+            return groups;
+        }
+
+        public void Enrol(int studentId, int groupdId, bool confirmed = true)
+        {
+            int enrollmentExists =
+                ((List<Enrollment>)Db.Enrollments.Find(en => en.StudentID == studentId && en.GroupID == groupdId)).Count;
+            if(enrollmentExists == 0)
+                Db.Enrollments.Create(new Enrollment
+                {
+                    StudentID = studentId,
+                    GroupID = groupdId,
+                    State = confirmed ? ActionsStudentGroup.Applied : ActionsStudentGroup.Requested
+                });
+        }
+        public void UnEnrol(int studentId, int groupdId, bool confirmed = true)
+        {
+            Enrollment enrollment = 
+                ((List<Enrollment>)Db.Enrollments.Find(en => en.StudentID == studentId && en.GroupID == groupdId))[0];
+            if (enrollment != null)
+            {
+                enrollment.State = ActionsStudentGroup.Aborted;
+                Db.Enrollments.Update(enrollment);
+            } else throw new ArgumentNullException($"Student {studentId} is not enrol in th group {groupdId}");
         }
     }
 }

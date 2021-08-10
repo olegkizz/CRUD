@@ -1,16 +1,10 @@
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Identity.UI;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using AutoMapper;
 using IdentityNLayer.BLL.Authorization;
 using IdentityNLayer.BLL.Services;
@@ -19,7 +13,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc.Authorization;
 using IdentityNLayer.DAL.EF.Context;
 using IdentityNLayer.DAL.EF.Repositories;
-using IdentityNLayer.DAL.Entities;
+using IdentityNLayer.Core.Entities;
 using IdentityNLayer.DAL.Interfaces;
 using IdentityNLayer.BLL.Interfaces;
 using IdentityNLayer.BLL.Mapper;
@@ -77,6 +71,12 @@ namespace IdentityNLayer
                 GroupsRepository>();
             services.AddTransient<IRepository<Teacher>,
                 TeachersRepository>();
+            services.AddTransient<IRepository<StudentToGroupAction>,
+                StudentToGroupActionsRepository>();
+            services.AddTransient<IRepository<Enrollment>,
+                EnrollmentsRepository>();
+            services.AddTransient<IRepository<Course>,
+               CoursesRepository>();
             var mapperConfig = new MapperConfiguration(mc =>
             {
                 mc.AddProfile(new MappingProfile());
@@ -85,8 +85,14 @@ namespace IdentityNLayer
             IMapper mapper = mapperConfig.CreateMapper();
             services.AddSingleton(mapper);
 
-            /*services.AddScoped<IStudentService,
-                StudentService>();*/
+            services.AddScoped<IStudentService,
+                StudentService>();
+            services.AddScoped<IGroupService,
+                GroupService>();
+            services.AddScoped<ITeacherService,
+                TeacherService>();
+            services.AddScoped<IStudentToGroupActionService,
+              StudentToGroupActionService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

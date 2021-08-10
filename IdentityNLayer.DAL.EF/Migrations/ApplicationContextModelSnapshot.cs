@@ -19,12 +19,137 @@ namespace IdentityNLayer.DAL.EF.Migrations
                 .HasAnnotation("ProductVersion", "5.0.8")
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-            modelBuilder.Entity("IdentityNLayer.DAL.Entities.Group", b =>
+            modelBuilder.Entity("IdentityNLayer.Core.Entities.Course", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<DateTime>("Created")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Description")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Program")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("StartDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Title")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("TopicId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("TopicId");
+
+                    b.ToTable("Course");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            Created = new DateTime(2021, 8, 9, 6, 45, 59, 54, DateTimeKind.Local).AddTicks(8149),
+                            Description = "Super MVC",
+                            StartDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Title = "ASP",
+                            TopicId = 1
+                        },
+                        new
+                        {
+                            Id = 2,
+                            Created = new DateTime(2021, 8, 9, 6, 45, 59, 57, DateTimeKind.Local).AddTicks(4385),
+                            Description = "Super Spring",
+                            StartDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Title = "Java",
+                            TopicId = 2
+                        });
+                });
+
+            modelBuilder.Entity("IdentityNLayer.Core.Entities.Enrollment", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<DateTime>("Created")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("GroupID")
+                        .HasColumnType("int");
+
+                    b.Property<int>("State")
+                        .HasColumnType("int");
+
+                    b.Property<int>("StudentID")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("GroupID");
+
+                    b.HasIndex("StudentID");
+
+                    b.ToTable("Enrollments");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            Created = new DateTime(2021, 6, 15, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            GroupID = 1,
+                            State = 0,
+                            StudentID = 1
+                        },
+                        new
+                        {
+                            Id = 2,
+                            Created = new DateTime(2021, 7, 15, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            GroupID = 2,
+                            State = 0,
+                            StudentID = 1
+                        },
+                        new
+                        {
+                            Id = 3,
+                            Created = new DateTime(2021, 5, 15, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            GroupID = 2,
+                            State = 0,
+                            StudentID = 2
+                        },
+                        new
+                        {
+                            Id = 4,
+                            Created = new DateTime(2021, 5, 29, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            GroupID = 1,
+                            State = 0,
+                            StudentID = 2
+                        },
+                        new
+                        {
+                            Id = 5,
+                            Created = new DateTime(2021, 4, 17, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            GroupID = 2,
+                            State = 0,
+                            StudentID = 3
+                        });
+                });
+
+            modelBuilder.Entity("IdentityNLayer.Core.Entities.Group", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<int>("CourseId")
+                        .HasColumnType("int");
 
                     b.Property<string>("Number")
                         .HasColumnType("nvarchar(max)");
@@ -40,6 +165,8 @@ namespace IdentityNLayer.DAL.EF.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("CourseId");
+
                     b.HasIndex("TeacherId");
 
                     b.ToTable("Groups");
@@ -48,6 +175,7 @@ namespace IdentityNLayer.DAL.EF.Migrations
                         new
                         {
                             Id = 1,
+                            CourseId = 1,
                             Number = "Nemiga-1",
                             StartDate = new DateTime(2021, 9, 21, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Status = 1,
@@ -56,6 +184,7 @@ namespace IdentityNLayer.DAL.EF.Migrations
                         new
                         {
                             Id = 2,
+                            CourseId = 2,
                             Number = "Nemiga-2",
                             StartDate = new DateTime(2021, 10, 21, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Status = 0,
@@ -63,7 +192,7 @@ namespace IdentityNLayer.DAL.EF.Migrations
                         });
                 });
 
-            modelBuilder.Entity("IdentityNLayer.DAL.Entities.Student", b =>
+            modelBuilder.Entity("IdentityNLayer.Core.Entities.Student", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -79,9 +208,6 @@ namespace IdentityNLayer.DAL.EF.Migrations
                     b.Property<string>("FirstName")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("GroupId")
-                        .HasColumnType("int");
-
                     b.Property<string>("LastName")
                         .HasColumnType("nvarchar(max)");
 
@@ -93,8 +219,6 @@ namespace IdentityNLayer.DAL.EF.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("GroupId");
-
                     b.ToTable("Students");
 
                     b.HasData(
@@ -102,7 +226,6 @@ namespace IdentityNLayer.DAL.EF.Migrations
                         {
                             Id = 1,
                             FirstName = "Oleg",
-                            GroupId = 1,
                             LastName = "Kizz",
                             Type = 0
                         },
@@ -110,7 +233,6 @@ namespace IdentityNLayer.DAL.EF.Migrations
                         {
                             Id = 2,
                             FirstName = "Vova",
-                            GroupId = 1,
                             LastName = "Braslav",
                             Type = 1
                         },
@@ -118,13 +240,40 @@ namespace IdentityNLayer.DAL.EF.Migrations
                         {
                             Id = 3,
                             FirstName = "Nikita",
-                            GroupId = 2,
                             LastName = "Chebur",
                             Type = 2
                         });
                 });
 
-            modelBuilder.Entity("IdentityNLayer.DAL.Entities.Teacher", b =>
+            modelBuilder.Entity("IdentityNLayer.Core.Entities.StudentToGroupAction", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<int>("Action")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("Date")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("GroupId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("StudentId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("GroupId");
+
+                    b.HasIndex("StudentId");
+
+                    b.ToTable("StudentToGroupActions");
+                });
+
+            modelBuilder.Entity("IdentityNLayer.Core.Entities.Teacher", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -174,6 +323,43 @@ namespace IdentityNLayer.DAL.EF.Migrations
                             Email = "Teach2@teacher.com",
                             FirstName = "Teach",
                             LastName = "Second"
+                        });
+                });
+
+            modelBuilder.Entity("IdentityNLayer.Core.Entities.Topic", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<string>("Description")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int?>("ParentId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Title")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ParentId");
+
+                    b.ToTable("Topic");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            Description = "Super MVC",
+                            Title = ".NET"
+                        },
+                        new
+                        {
+                            Id = 2,
+                            Description = "Super Spring",
+                            Title = "Spring"
                         });
                 });
 
@@ -373,26 +559,81 @@ namespace IdentityNLayer.DAL.EF.Migrations
                     b.ToTable("AspNetUserTokens");
                 });
 
-            modelBuilder.Entity("IdentityNLayer.DAL.Entities.Group", b =>
+            modelBuilder.Entity("IdentityNLayer.Core.Entities.Course", b =>
                 {
-                    b.HasOne("IdentityNLayer.DAL.Entities.Teacher", "Teacher")
+                    b.HasOne("IdentityNLayer.Core.Entities.Topic", "Topic")
+                        .WithMany()
+                        .HasForeignKey("TopicId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Topic");
+                });
+
+            modelBuilder.Entity("IdentityNLayer.Core.Entities.Enrollment", b =>
+                {
+                    b.HasOne("IdentityNLayer.Core.Entities.Group", "Group")
+                        .WithMany("Enrollments")
+                        .HasForeignKey("GroupID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("IdentityNLayer.Core.Entities.Student", "Student")
+                        .WithMany("Enrollments")
+                        .HasForeignKey("StudentID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Group");
+
+                    b.Navigation("Student");
+                });
+
+            modelBuilder.Entity("IdentityNLayer.Core.Entities.Group", b =>
+                {
+                    b.HasOne("IdentityNLayer.Core.Entities.Course", "Course")
+                        .WithMany()
+                        .HasForeignKey("CourseId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("IdentityNLayer.Core.Entities.Teacher", "Teacher")
                         .WithMany()
                         .HasForeignKey("TeacherId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.Navigation("Course");
+
                     b.Navigation("Teacher");
                 });
 
-            modelBuilder.Entity("IdentityNLayer.DAL.Entities.Student", b =>
+            modelBuilder.Entity("IdentityNLayer.Core.Entities.StudentToGroupAction", b =>
                 {
-                    b.HasOne("IdentityNLayer.DAL.Entities.Group", "Group")
+                    b.HasOne("IdentityNLayer.Core.Entities.Group", "Group")
                         .WithMany()
                         .HasForeignKey("GroupId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("IdentityNLayer.Core.Entities.Student", "Student")
+                        .WithMany()
+                        .HasForeignKey("StudentId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.Navigation("Group");
+
+                    b.Navigation("Student");
+                });
+
+            modelBuilder.Entity("IdentityNLayer.Core.Entities.Topic", b =>
+                {
+                    b.HasOne("IdentityNLayer.Core.Entities.Topic", "Parent")
+                        .WithMany()
+                        .HasForeignKey("ParentId");
+
+                    b.Navigation("Parent");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -444,6 +685,16 @@ namespace IdentityNLayer.DAL.EF.Migrations
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+                });
+
+            modelBuilder.Entity("IdentityNLayer.Core.Entities.Group", b =>
+                {
+                    b.Navigation("Enrollments");
+                });
+
+            modelBuilder.Entity("IdentityNLayer.Core.Entities.Student", b =>
+                {
+                    b.Navigation("Enrollments");
                 });
 #pragma warning restore 612, 618
         }

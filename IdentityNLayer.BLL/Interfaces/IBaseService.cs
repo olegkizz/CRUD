@@ -2,7 +2,7 @@
 
 namespace IdentityNLayer.BLL.Interfaces
 {
-    public interface IService<T> where T : class
+    public interface IBaseService<T> where T : class
     {
         IEnumerable<T> GetAll();
         T GetById(int id);

@@ -9,6 +9,6 @@ namespace IdentityNLayer.Core.Entities
         public string LastName { get; set; }
         public DateTime? BirthDate { get; set; }
         public string Email { get; set; }
-        public string? Phone { get; set; }
+        public string Phone { get; set; }
     }
 }

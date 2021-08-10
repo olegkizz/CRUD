@@ -1,33 +1,30 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using IdentityNLayer.BLL.DTO;
+﻿using System.Threading.Tasks;
 using IdentityNLayer.BLL.Interfaces;
 using IdentityNLayer.BLL.Services;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.EntityFrameworkCore;
-using IdentityNLayer.DAL.EF.Context;
-using IdentityNLayer.DAL.Entities;
 using IdentityNLayer.DAL.Interfaces;
+using AutoMapper;
+using IdentityNLayer.Models;
+using IdentityNLayer.Core.Entities;
+using Microsoft.EntityFrameworkCore;
 
 namespace IdentityNLayer.Controllers
 {
     public class GroupsController : Controller
     {
-        private readonly IUnitOfWork _db;
         private readonly IGroupService _groupService;
+        private readonly IMapper _mapper;
 
-        public GroupsController(IUnitOfWork db)
+        public GroupsController(IGroupService groupService, IMapper mapper)
         {
-            _groupService = new GroupService(db);
+            _groupService = groupService;
+            _mapper = mapper;
         }
 
         // GET: Contacts
         public async Task<IActionResult> Index()
         {
-            return View(_groupService.GetAll());
+            return View(_mapper.Map<GroupModel>(_groupService.GetAll()));
         }
 
         // GET: Contacts/Details/5
@@ -59,14 +56,14 @@ namespace IdentityNLayer.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("ContactId,Name,Address,City,State,Zip,Email")] GroupDTO group)
+        public async Task<IActionResult> Create([Bind("Id,Number,Status,TeacherId")] GroupModel group)
         {
-            /*      if (ModelState.IsValid)
-                  {
-                      _context.Add(contact);
-                      await _context.SaveChangesAsync();
-                      return RedirectToAction(nameof(Index));
-                  }*/
+            if (ModelState.IsValid)
+            {
+                _groupService.Create(_mapper.Map<Group>(group));
+
+                return RedirectToAction(nameof(Index));
+            }
             return View();
         }
 
@@ -78,11 +75,12 @@ namespace IdentityNLayer.Controllers
                 return NotFound();
             }
 
-            /*      var contact = await _context.Contact.FindAsync(id);
-                  if (contact == null)
-                  {
-                      return NotFound();
-                  }*/
+            var teacher = _mapper.Map<GroupModel>(_groupService.GetById((int)id));
+
+            if (teacher == null)
+            {
+                return NotFound();
+            }
             return View();
         }
 
@@ -91,33 +89,32 @@ namespace IdentityNLayer.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("ContactId,Name,Address,City,State,Zip,Email")] GroupDTO group)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,Number,Status,TeacherId")] GroupModel group)
         {
             if (id != group.Id)
             {
                 return NotFound();
             }
-            /*
-                        if (ModelState.IsValid)
-                        {
-                            try
-                            {
-                                _context.Update(contact);
-                                await _context.SaveChangesAsync();
-                            }
-                            catch (DbUpdateConcurrencyException)
-                            {
-                                if (!ContactExists(contact.ContactId))
-                                {
-                                    return NotFound();
-                                }
-                                else
-                                {
-                                    throw;
-                                }
-                            }
-                            return RedirectToAction(nameof(Index));
-                        }*/
+
+            if (ModelState.IsValid)
+            {
+                try
+                {
+                    _groupService.Update(_mapper.Map<Group>(group));
+                }
+                catch (DbUpdateConcurrencyException)
+                {
+                    if (!GroupExists(group.Id))
+                    {
+                        return NotFound();
+                    }
+                    else
+                    {
+                        throw;
+                    }
+                }
+                return RedirectToAction(nameof(Index));
+            }
             return View();
         }
 
@@ -129,13 +126,12 @@ namespace IdentityNLayer.Controllers
                 return NotFound();
             }
 
-            /*        var contact = await _context.Contact
-                        .FirstOrDefaultAsync(m => m.ContactId == id);
-                    if (contact == null)
-                    {
-                        return NotFound();
-                    }
-        */
+            GroupModel teacher = _mapper.Map<GroupModel>(_groupService.GetById((int)id));
+            if (teacher == null)
+            {
+                return NotFound();
+            }
+
             return View();
         }
 
@@ -150,7 +146,7 @@ namespace IdentityNLayer.Controllers
             return RedirectToAction(nameof(Index));
         }
 
-        private bool ContactExists(int id)
+        private bool GroupExists(int id)
         {
             return true;
         }

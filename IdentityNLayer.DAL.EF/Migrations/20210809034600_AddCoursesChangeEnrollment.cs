@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace IdentityNLayer.DAL.EF.Migrations
 {
-    public partial class addingFirstData : Migration
+    public partial class AddCoursesChangeEnrollment : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -47,18 +47,61 @@ namespace IdentityNLayer.DAL.EF.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Students",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Type = table.Column<int>(type: "int", nullable: false),
+                    FirstName = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    LastName = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    BirthDate = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    Email = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Phone = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Students", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Teachers",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    CareerStart = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    Name = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Email = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                    Bio = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    LinkToProfile = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    FirstName = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    LastName = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    BirthDate = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    Email = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Phone = table.Column<string>(type: "nvarchar(max)", nullable: true)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Teachers", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Topic",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Title = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Description = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    ParentId = table.Column<int>(type: "int", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Topic", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Topic_Topic_ParentId",
+                        column: x => x.ParentId,
+                        principalTable: "Topic",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
@@ -168,6 +211,30 @@ namespace IdentityNLayer.DAL.EF.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Course",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Title = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Description = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Program = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    TopicId = table.Column<int>(type: "int", nullable: false),
+                    StartDate = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    Created = table.Column<DateTime>(type: "datetime2", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Course", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Course_Topic_TopicId",
+                        column: x => x.TopicId,
+                        principalTable: "Topic",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Groups",
                 columns: table => new
                 {
@@ -175,75 +242,142 @@ namespace IdentityNLayer.DAL.EF.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Number = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Status = table.Column<int>(type: "int", nullable: false),
-                    TeacherId = table.Column<int>(type: "int", nullable: true)
+                    TeacherId = table.Column<int>(type: "int", nullable: false),
+                    StartDate = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    CourseId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Groups", x => x.Id);
                     table.ForeignKey(
+                        name: "FK_Groups_Course_CourseId",
+                        column: x => x.CourseId,
+                        principalTable: "Course",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
                         name: "FK_Groups_Teachers_TeacherId",
                         column: x => x.TeacherId,
                         principalTable: "Teachers",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
-                name: "Students",
+                name: "Enrollments",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    GroupId = table.Column<int>(type: "int", nullable: false),
-                    Type = table.Column<int>(type: "int", nullable: false),
-                    Name = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Email = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                    Created = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    GroupID = table.Column<int>(type: "int", nullable: false),
+                    StudentID = table.Column<int>(type: "int", nullable: false),
+                    State = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Students", x => x.Id);
+                    table.PrimaryKey("PK_Enrollments", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Students_Groups_GroupId",
+                        name: "FK_Enrollments_Groups_GroupID",
+                        column: x => x.GroupID,
+                        principalTable: "Groups",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_Enrollments_Students_StudentID",
+                        column: x => x.StudentID,
+                        principalTable: "Students",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "StudentToGroupActions",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    StudentId = table.Column<int>(type: "int", nullable: false),
+                    GroupId = table.Column<int>(type: "int", nullable: false),
+                    Action = table.Column<int>(type: "int", nullable: false),
+                    Date = table.Column<DateTime>(type: "datetime2", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_StudentToGroupActions", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_StudentToGroupActions_Groups_GroupId",
                         column: x => x.GroupId,
                         principalTable: "Groups",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_StudentToGroupActions_Students_StudentId",
+                        column: x => x.StudentId,
+                        principalTable: "Students",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.InsertData(
-                table: "Teachers",
-                columns: new[] { "Id", "CareerStart", "Email", "Name" },
-                values: new object[] { 1, new DateTime(2015, 7, 20, 0, 0, 0, 0, DateTimeKind.Unspecified), "Teach1@teacher.com", "Teach1" });
+                table: "Students",
+                columns: new[] { "Id", "BirthDate", "Email", "FirstName", "LastName", "Phone", "Type" },
+                values: new object[,]
+                {
+                    { 1, null, null, "Oleg", "Kizz", null, 0 },
+                    { 2, null, null, "Vova", "Braslav", null, 1 },
+                    { 3, null, null, "Nikita", "Chebur", null, 2 }
+                });
 
             migrationBuilder.InsertData(
                 table: "Teachers",
-                columns: new[] { "Id", "CareerStart", "Email", "Name" },
-                values: new object[] { 2, new DateTime(2017, 2, 21, 0, 0, 0, 0, DateTimeKind.Unspecified), "Teach2@teacher.com", "Teach2" });
+                columns: new[] { "Id", "Bio", "BirthDate", "Email", "FirstName", "LastName", "LinkToProfile", "Phone" },
+                values: new object[,]
+                {
+                    { 1, "Super Teacher", new DateTime(1985, 2, 21, 0, 0, 0, 0, DateTimeKind.Unspecified), "Teach1@teacher.com", "Teach", "First", null, null },
+                    { 2, "Super Teacher", new DateTime(1992, 2, 21, 0, 0, 0, 0, DateTimeKind.Unspecified), "Teach2@teacher.com", "Teach", "Second", null, null }
+                });
+
+            migrationBuilder.InsertData(
+                table: "Topic",
+                columns: new[] { "Id", "Description", "ParentId", "Title" },
+                values: new object[,]
+                {
+                    { 1, "Super MVC", null, ".NET" },
+                    { 2, "Super Spring", null, "Spring" }
+                });
+
+            migrationBuilder.InsertData(
+                table: "Course",
+                columns: new[] { "Id", "Created", "Description", "Program", "StartDate", "Title", "TopicId" },
+                values: new object[] { 1, new DateTime(2021, 8, 9, 6, 45, 59, 54, DateTimeKind.Local).AddTicks(8149), "Super MVC", null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), "ASP", 1 });
+
+            migrationBuilder.InsertData(
+                table: "Course",
+                columns: new[] { "Id", "Created", "Description", "Program", "StartDate", "Title", "TopicId" },
+                values: new object[] { 2, new DateTime(2021, 8, 9, 6, 45, 59, 57, DateTimeKind.Local).AddTicks(4385), "Super Spring", null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), "Java", 2 });
 
             migrationBuilder.InsertData(
                 table: "Groups",
-                columns: new[] { "Id", "Number", "Status", "TeacherId" },
-                values: new object[] { 1, "Nemiga-1", 1, 1 });
+                columns: new[] { "Id", "CourseId", "Number", "StartDate", "Status", "TeacherId" },
+                values: new object[] { 1, 1, "Nemiga-1", new DateTime(2021, 9, 21, 0, 0, 0, 0, DateTimeKind.Unspecified), 1, 1 });
 
             migrationBuilder.InsertData(
                 table: "Groups",
-                columns: new[] { "Id", "Number", "Status", "TeacherId" },
-                values: new object[] { 2, "Nemiga-2", 0, 2 });
+                columns: new[] { "Id", "CourseId", "Number", "StartDate", "Status", "TeacherId" },
+                values: new object[] { 2, 2, "Nemiga-2", new DateTime(2021, 10, 21, 0, 0, 0, 0, DateTimeKind.Unspecified), 0, 2 });
 
             migrationBuilder.InsertData(
-                table: "Students",
-                columns: new[] { "Id", "Email", "GroupId", "Name", "Type" },
-                values: new object[] { 1, null, 1, "Oleg", 0 });
-
-            migrationBuilder.InsertData(
-                table: "Students",
-                columns: new[] { "Id", "Email", "GroupId", "Name", "Type" },
-                values: new object[] { 2, null, 1, "Vova", 1 });
-
-            migrationBuilder.InsertData(
-                table: "Students",
-                columns: new[] { "Id", "Email", "GroupId", "Name", "Type" },
-                values: new object[] { 3, null, 2, "Nikita", 2 });
+                table: "Enrollments",
+                columns: new[] { "Id", "Created", "GroupID", "State", "StudentID" },
+                values: new object[,]
+                {
+                    { 1, new DateTime(2021, 6, 15, 0, 0, 0, 0, DateTimeKind.Unspecified), 1, 0, 1 },
+                    { 4, new DateTime(2021, 5, 29, 0, 0, 0, 0, DateTimeKind.Unspecified), 1, 0, 2 },
+                    { 2, new DateTime(2021, 7, 15, 0, 0, 0, 0, DateTimeKind.Unspecified), 2, 0, 1 },
+                    { 3, new DateTime(2021, 5, 15, 0, 0, 0, 0, DateTimeKind.Unspecified), 2, 0, 2 },
+                    { 5, new DateTime(2021, 4, 17, 0, 0, 0, 0, DateTimeKind.Unspecified), 2, 0, 3 }
+                });
 
             migrationBuilder.CreateIndex(
                 name: "IX_AspNetRoleClaims_RoleId",
@@ -285,14 +419,44 @@ namespace IdentityNLayer.DAL.EF.Migrations
                 filter: "[NormalizedUserName] IS NOT NULL");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Course_TopicId",
+                table: "Course",
+                column: "TopicId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Enrollments_GroupID",
+                table: "Enrollments",
+                column: "GroupID");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Enrollments_StudentID",
+                table: "Enrollments",
+                column: "StudentID");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Groups_CourseId",
+                table: "Groups",
+                column: "CourseId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Groups_TeacherId",
                 table: "Groups",
                 column: "TeacherId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Students_GroupId",
-                table: "Students",
+                name: "IX_StudentToGroupActions_GroupId",
+                table: "StudentToGroupActions",
                 column: "GroupId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_StudentToGroupActions_StudentId",
+                table: "StudentToGroupActions",
+                column: "StudentId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Topic_ParentId",
+                table: "Topic",
+                column: "ParentId");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
@@ -313,7 +477,10 @@ namespace IdentityNLayer.DAL.EF.Migrations
                 name: "AspNetUserTokens");
 
             migrationBuilder.DropTable(
-                name: "Students");
+                name: "Enrollments");
+
+            migrationBuilder.DropTable(
+                name: "StudentToGroupActions");
 
             migrationBuilder.DropTable(
                 name: "AspNetRoles");
@@ -325,7 +492,16 @@ namespace IdentityNLayer.DAL.EF.Migrations
                 name: "Groups");
 
             migrationBuilder.DropTable(
+                name: "Students");
+
+            migrationBuilder.DropTable(
+                name: "Course");
+
+            migrationBuilder.DropTable(
                 name: "Teachers");
+
+            migrationBuilder.DropTable(
+                name: "Topic");
         }
     }
 }

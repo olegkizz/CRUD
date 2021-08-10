@@ -18,13 +18,17 @@ namespace IdentityNLayer.DAL.EF.Repositories
         public IEnumerable<Student> GetAll()
         {
             return _context.Students
-               .Include(s => s.Group)
-               .ToList();
+                .Include(s => s.Enrollments)
+                .ThenInclude(s => s.Group)
+                .ToList();
         }
 
         public Student Get(int id)
         {
-            return _context.Students.Find(id);
+            return _context.Students
+                .Include(s => s.Enrollments)
+                .Where(s => s.Id == id)
+                .First();
         }
 
         public IEnumerable<Student> Find(Func<Student, bool> predicate)

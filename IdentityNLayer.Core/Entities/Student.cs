@@ -1,9 +1,10 @@
-﻿namespace IdentityNLayer.Core.Entities
+﻿using System.Collections.Generic;
+
+namespace IdentityNLayer.Core.Entities
 {
     public class Student : Person
     {
-        public int GroupId { get; set; }
-        public Group Group { get; set; }
+        public virtual ICollection<Enrollment> Enrollments { get; set; }
         public StudentType Type { get; set; }
     }
 }

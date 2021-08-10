@@ -17,6 +17,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\IdentityNLayer.Core\IdentityNLayer.Core.csproj" />
     <ProjectReference Include="..\IdentityNLayer.DAL.EF\IdentityNLayer.DAL.EF.csproj" />
   </ItemGroup>
 

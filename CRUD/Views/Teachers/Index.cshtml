@@ -1,4 +1,4 @@
-﻿@model IEnumerable<IdentityNLayer.BLL.DTO.TeacherDTO>
+﻿@model IEnumerable<IdentityNLayer.Models.TeacherModel>
 
 @{
     ViewData["Title"] = "Index";
@@ -13,10 +13,10 @@
     <thead>
         <tr>
             <th>
-                @Html.DisplayNameFor(model => model.CareerStart)
+                @Html.DisplayNameFor(model => model.FirstName)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Name)
+                @Html.DisplayNameFor(model => model.LinkToProfile)
             </th>
             <th>
                 @Html.DisplayNameFor(model => model.Email)
@@ -28,10 +28,10 @@
 @foreach (var item in Model) {
         <tr>
             <td>
-                @Html.DisplayFor(modelItem => item.CareerStart)
+                @Html.DisplayFor(modelItem => item.FirstName)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.Name)
+                @Html.DisplayFor(modelItem => item.LinkToProfile)
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.Email)

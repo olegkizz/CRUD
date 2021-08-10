@@ -1,27 +1,27 @@
 ﻿using System.Threading.Tasks;
-using IdentityNLayer.BLL.DTO;
 using IdentityNLayer.BLL.Interfaces;
-using IdentityNLayer.BLL.Services;
 using Microsoft.AspNetCore.Mvc;
-
-using IdentityNLayer.DAL.Interfaces;
+using AutoMapper;
+using IdentityNLayer.Models;
+using IdentityNLayer.Core.Entities;
+using Microsoft.EntityFrameworkCore;
 
 namespace IdentityNLayer.Controllers
 {
     public class TeachersController : Controller
     {
-        private readonly IUnitOfWork _db;
         private readonly ITeacherService _teacherService;
-
-        public TeachersController(IUnitOfWork db)
+        private readonly IMapper _mapper;
+        public TeachersController(ITeacherService teacherService, IMapper mapper)
         {
-            _teacherService = new TeacherService(db);
+            _teacherService = teacherService;
+            _mapper = mapper;
         }
 
         // GET: Teachers
         public async Task<IActionResult> Index()
         {
-            return View(_teacherService.GetAll());
+            return View(_mapper.Map<TeacherModel>(_teacherService.GetAll()));
         }
 
         // GET: Contacts/Details/5
@@ -53,7 +53,7 @@ namespace IdentityNLayer.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("ContactId,Name,Address,City,State,Zip,Email")] TeacherDTO teacher)
+        public async Task<IActionResult> Create([Bind("Id,Name,Email,LinkToProfile,Bio")] TeacherModel teacher)
         {
             /*      if (ModelState.IsValid)
                   {
@@ -72,12 +72,12 @@ namespace IdentityNLayer.Controllers
                 return NotFound();
             }
 
-            /*      var contact = await _context.Contact.FindAsync(id);
-                  if (contact == null)
-                  {
-                      return NotFound();
-                  }*/
-            return View();
+            TeacherModel teacher = _mapper.Map<TeacherModel>(_teacherService.GetById((int)id));
+            if (teacher == null)
+            {
+                return NotFound();
+            }
+            return View(teacher);
         }
 
         // POST: Contacts/Edit/5
@@ -85,33 +85,32 @@ namespace IdentityNLayer.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("ContactId,Name,Address,City,State,Zip,Email")] TeacherDTO teacher)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,Name,Email,LinkToProfile,Bio")] TeacherModel teacher)
         {
             if (id != teacher.Id)
             {
                 return NotFound();
             }
-            /*
-                        if (ModelState.IsValid)
-                        {
-                            try
-                            {
-                                _context.Update(contact);
-                                await _context.SaveChangesAsync();
-                            }
-                            catch (DbUpdateConcurrencyException)
-                            {
-                                if (!ContactExists(contact.ContactId))
-                                {
-                                    return NotFound();
-                                }
-                                else
-                                {
-                                    throw;
-                                }
-                            }
-                            return RedirectToAction(nameof(Index));
-                        }*/
+
+            if (ModelState.IsValid)
+            {
+                try
+                {
+                    _teacherService.Update(_mapper.Map<Teacher>(teacher));
+                }
+                catch (DbUpdateConcurrencyException)
+                {
+                    if (!TeacherExists(teacher.Id))
+                    {
+                        return NotFound();
+                    }
+                    else
+                    {
+                        throw;
+                    }
+                }
+                return RedirectToAction(nameof(Index));
+            }
             return View();
         }
 
@@ -123,13 +122,12 @@ namespace IdentityNLayer.Controllers
                 return NotFound();
             }
 
-            /*        var contact = await _context.Contact
-                        .FirstOrDefaultAsync(m => m.ContactId == id);
-                    if (contact == null)
-                    {
-                        return NotFound();
-                    }
-        */
+            TeacherModel teacher = _mapper.Map<TeacherModel>(_teacherService.GetById((int)id));
+            if (teacher == null)
+            {
+                return NotFound();
+            }
+
             return View();
         }
 
@@ -144,7 +142,7 @@ namespace IdentityNLayer.Controllers
             return RedirectToAction(nameof(Index));
         }
 
-        private bool ContactExists(int id)
+        private bool TeacherExists(int id)
         {
             return true;
         }
