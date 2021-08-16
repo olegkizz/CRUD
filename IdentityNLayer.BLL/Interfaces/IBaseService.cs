@@ -6,7 +6,7 @@ namespace IdentityNLayer.BLL.Interfaces
     {
         IEnumerable<T> GetAll();
         T GetById(int id);
-        void Create(T entity);
+        int Create(T entity);
         void Update(T entity);
         void Delete(int id);
     }

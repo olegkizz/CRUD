@@ -8,6 +8,5 @@ namespace IdentityNLayer.BLL.Interfaces
     {
         public Array GetStudentTypes();
         public List<Group> GetStudentGroups(int studentId);
-        public void Enrol(int studentId, int groupdId, bool confirmed = true);
     }
 }

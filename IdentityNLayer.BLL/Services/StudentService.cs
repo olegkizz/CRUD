@@ -1,17 +1,21 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using IdentityNLayer.BLL.Interfaces;
 using IdentityNLayer.Core.Entities;
 using IdentityNLayer.DAL.Interfaces;
+using Microsoft.AspNetCore.Identity;
 
 namespace IdentityNLayer.BLL.Services
 {
     public class StudentService : IStudentService
     {
         private IUnitOfWork Db { get; set; }
+
         public StudentService(IUnitOfWork db)
         {
             Db = db;
+           
         }
         public IEnumerable<Student> GetAll()
         {
@@ -21,25 +25,41 @@ namespace IdentityNLayer.BLL.Services
         {
             return Db.Students.Get(id);
         }
-        public void Create(Student student)
+        public int Create(Student student)
         {
             Db.Students.Create(student);
             Db.Save();
+            return student.Id;
         }
-   /*     public void Create(Student student, int[] selectedGroups = null)
+ /*       public async Task<int> CreateAsync(Student student)
         {
-            *//*.ForMember("Group", opt
-                => opt.MapFrom(st => Db.Students.Get(st.GroupId)))*//*
-            foreach(int groupId in selectedGroups)
-            {
-                Db.Enrollments.Create(new Enrollment()
-                {
+            IdentityRole identityRole = new IdentityRole();
+            identityRole.Name = UserRoles.Student.ToString();
+            await _roleManager.CreateAsync(identityRole);
 
-                });
+            IdentityResult chkUser = await _userManager.CreateAsync(student.User, student.User.PasswordHash);
+
+            //Add default User to Role Admin    
+            if (chkUser.Succeeded)
+            {
+                await _userManager.AddToRoleAsync(student.User, identityRole.Name);
             }
-            Create(student);
-            Db.Save();
+            return Create(student);
         }*/
+        /*     public void Create(Student student, int[] selectedGroups = null)
+             {
+                 *//*.ForMember("Group", opt
+                     => opt.MapFrom(st => Db.Students.Get(st.GroupId)))*//*
+                 foreach(int groupId in selectedGroups)
+                 {
+                     Db.Enrollments.Create(new Enrollment()
+                     {
+
+                     });
+                 }
+                 Create(student);
+                 Db.Save();
+             }*/
 
         public Array GetStudentTypes()
         {
@@ -60,34 +80,12 @@ namespace IdentityNLayer.BLL.Services
         public List<Group> GetStudentGroups(int studentId)
         {
             List<Group> groups = new();
-            foreach (Enrollment en in Db.Students.Get(studentId).Enrollments)
+            foreach (Enrollment en in Db.Enrollments.Find(en => en.UserID == Db.Students.Get(studentId).UserId))
             {
-                groups.Add(en.Group);
+                if(en.State != ActionsStudentGroup.Aborted)
+                    groups.Add(en.Group);
             }
             return groups;
-        }
-
-        public void Enrol(int studentId, int groupdId, bool confirmed = true)
-        {
-            int enrollmentExists =
-                ((List<Enrollment>)Db.Enrollments.Find(en => en.StudentID == studentId && en.GroupID == groupdId)).Count;
-            if(enrollmentExists == 0)
-                Db.Enrollments.Create(new Enrollment
-                {
-                    StudentID = studentId,
-                    GroupID = groupdId,
-                    State = confirmed ? ActionsStudentGroup.Applied : ActionsStudentGroup.Requested
-                });
-        }
-        public void UnEnrol(int studentId, int groupdId, bool confirmed = true)
-        {
-            Enrollment enrollment = 
-                ((List<Enrollment>)Db.Enrollments.Find(en => en.StudentID == studentId && en.GroupID == groupdId))[0];
-            if (enrollment != null)
-            {
-                enrollment.State = ActionsStudentGroup.Aborted;
-                Db.Enrollments.Update(enrollment);
-            } else throw new ArgumentNullException($"Student {studentId} is not enrol in th group {groupdId}");
         }
     }
 }

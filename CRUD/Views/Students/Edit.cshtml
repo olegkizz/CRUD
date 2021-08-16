@@ -1,5 +1,4 @@
-﻿@using IdentityNLayer.Models
-@model IdentityNLayer.Models.StudentModel
+﻿@model IdentityNLayer.Models.StudentModel
 
 
 @{
@@ -14,6 +13,7 @@
     <div class="col-md-4">
         <form asp-action="Edit">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" asp-for="@Model.UserId" />
             <div class="form-group">
                 <label asp-for="FirstName" class="control-label"></label>
                 <input asp-for="FirstName" class="form-control" />
@@ -25,9 +25,9 @@
                 <span asp-validation-for="LastName" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="Email" class="control-label"></label>
-                <input asp-for="Email" class="form-control" />
-                <span asp-validation-for="Email" class="text-danger"></span>
+                <label asp-for="User.Email" class="control-label"></label>
+                <input asp-for="User.Email" class="form-control" />
+                <span asp-validation-for="User.Email" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="BirthDate" class="control-label"></label>
@@ -35,9 +35,9 @@
                 @Html.ValidationMessageFor(m => m.BirthDate, "", new { @class = "text-danger" })
             </div>
             <div class="form-group">
-                <label asp-for="Phone" class="control-label"></label>
-                <input asp-for="Phone" class="form-control" />
-                <span asp-validation-for="Phone" class="text-danger"></span>
+                <label asp-for="User.PhoneNumber" class="control-label"></label>
+                <input asp-for="User.PhoneNumber" class="form-control" />
+                <span asp-validation-for="User.PhoneNumber" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="Type" class="control-label"></label>
@@ -49,29 +49,13 @@
                 </select>
                 <span asp-validation-for="Type" class="text-danger"></span>
             </div>
-           @* <div class="form-group">
-                <label asp-for="AssignGroupId" class="control-label"></label>
-                @Html.CheckBoxFor(m.AssignGroups => m.AssignGroups)
-            </div>*@
             <div class="form-group">
-                @{
-                    int cnt = 0;
-
-                    foreach (var groups in Model.AssignGroups)
-                    {
-                        if (cnt++ % 3 == 0)
-                        {
-                            @:</tr><tr>
-                            }
-                            @:<td>
-                                <input type="checkbox"
-                                       name="AssignGroups"
-                                       value="@groups.GroupID"
-                                       @(Html.Raw(groups.Assigned ? "checked=\"checked\"" : "")) />
-                                @groups.GroupID @:  @groups.Number
-                            @:</td>
-                        }
-                    @:</tr>
+                <label asp-for="AssignGroups" class="control-label"></label>
+                @for (int i = 0; i < Model.AssignGroups.Count(); ++i)
+                {
+                    <input type="hidden" asp-for="@Model.AssignGroups[i].GroupID" />
+                    @Html.CheckBoxFor(m => m.AssignGroups[i].Assigned)
+                    @Model.AssignGroups[i].Number
                 }
             </div>
             <div class="form-group">

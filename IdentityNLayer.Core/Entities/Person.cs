@@ -1,4 +1,6 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Identity;
+using System;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace IdentityNLayer.Core.Entities
 {
@@ -8,7 +10,7 @@ namespace IdentityNLayer.Core.Entities
         public string FirstName { get; set; }
         public string LastName { get; set; }
         public DateTime? BirthDate { get; set; }
-        public string Email { get; set; }
-        public string Phone { get; set; }
+        public string UserId { get; set; }
+        public virtual IdentityUser User { get; set; }
     }
 }

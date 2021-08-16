@@ -1,23 +1,26 @@
 ﻿using IdentityNLayer.Core.Entities;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
 
 namespace IdentityNLayer.Models
 {
     public class StudentModel : PersonModel
     {
         public string Type { get; set; }
-        public ICollection<Enrollment> Enrollments { get; set; }
-        public int AssignGroupId { get; set; }
         [BindProperty]
         public List<AssignGroupModel> AssignGroups { get; set; }
-
-        public StudentModel() { }
-        public StudentModel(IEnumerable<Group> groups = null)
+        public string[] StudentTypes { get; set; }
+        public List<string> Errors { get; set; }
+        public StudentModel() 
+        {
+            StudentTypes = Enum.GetNames(typeof(StudentType));
+        }
+        public StudentModel CreateAssignGroups(IEnumerable<Group> groups = null)
         {
             List<AssignGroupModel> assignGroups = new List<AssignGroupModel>();
-            if(groups != null)
+            if (groups != null)
                 foreach (Group gr in groups)
                 {
                     assignGroups.Add(new AssignGroupModel()
@@ -28,6 +31,7 @@ namespace IdentityNLayer.Models
                     });
                 }
             AssignGroups = assignGroups;
+            return this;
         }
     }
 }

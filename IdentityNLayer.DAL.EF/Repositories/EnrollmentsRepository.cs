@@ -21,7 +21,7 @@ namespace IdentityNLayer.DAL.EF.Repositories
         {
             return _context.Enrollments
                .Include(s => s.Group)
-               .Include(s => s.Student)
+               .Include(s => s.User)
                .ToList();
         }
 
@@ -29,14 +29,17 @@ namespace IdentityNLayer.DAL.EF.Repositories
         {
             return _context.Enrollments
                 .Include(s => s.Group)
-                .Include(s => s.Student)
+                .Include(s => s.User)
                 .Where(s => s.Id == id)
                 .First();
         }
 
         public IEnumerable<Enrollment> Find(Func<Enrollment, bool> predicate)
         {
-            return _context.Enrollments.Where(predicate).ToList();
+            return _context.Enrollments
+                .Include(s => s.Group)
+                .Where(predicate)
+                .ToList();
         }
 
         public void Create(Enrollment item)
@@ -47,6 +50,7 @@ namespace IdentityNLayer.DAL.EF.Repositories
         public void Update(Enrollment item)
         {
             _context.Entry(item).State = EntityState.Modified;
+            _context.Enrollments.Update(item);
         }
 
         public void Delete(int id)

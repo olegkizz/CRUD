@@ -1,4 +1,5 @@
 ﻿using IdentityNLayer.Core.Entities;
+using IdentityNLayer.DAL.EF.Context;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,9 +10,15 @@ namespace IdentityNLayer.DAL.EF.Repositories
 {
     public class CoursesRepository : IRepository<Course>
     {
+        private ApplicationContext _context;
+
+        public CoursesRepository(ApplicationContext context)
+        {
+            _context = context;
+        }
         public void Create(Course item)
         {
-            throw new NotImplementedException();
+            _context.Courses.Add(item);
         }
 
         public void Delete(int id)
