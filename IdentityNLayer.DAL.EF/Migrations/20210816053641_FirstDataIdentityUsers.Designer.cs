@@ -10,8 +10,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace IdentityNLayer.DAL.EF.Migrations
 {
     [DbContext(typeof(ApplicationContext))]
-    [Migration("20210809034600_AddCoursesChangeEnrollment")]
-    partial class AddCoursesChangeEnrollment
+    [Migration("20210816053641_FirstDataIdentityUsers")]
+    partial class FirstDataIdentityUsers
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -50,13 +50,13 @@ namespace IdentityNLayer.DAL.EF.Migrations
 
                     b.HasIndex("TopicId");
 
-                    b.ToTable("Course");
+                    b.ToTable("Courses");
 
                     b.HasData(
                         new
                         {
                             Id = 1,
-                            Created = new DateTime(2021, 8, 9, 6, 45, 59, 54, DateTimeKind.Local).AddTicks(8149),
+                            Created = new DateTime(2021, 8, 16, 8, 36, 39, 286, DateTimeKind.Local).AddTicks(2830),
                             Description = "Super MVC",
                             StartDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Title = "ASP",
@@ -65,7 +65,7 @@ namespace IdentityNLayer.DAL.EF.Migrations
                         new
                         {
                             Id = 2,
-                            Created = new DateTime(2021, 8, 9, 6, 45, 59, 57, DateTimeKind.Local).AddTicks(4385),
+                            Created = new DateTime(2021, 8, 16, 8, 36, 39, 290, DateTimeKind.Local).AddTicks(787),
                             Description = "Super Spring",
                             StartDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Title = "Java",
@@ -80,23 +80,28 @@ namespace IdentityNLayer.DAL.EF.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<DateTime>("Created")
-                        .HasColumnType("datetime2");
-
                     b.Property<int>("GroupID")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Role")
                         .HasColumnType("int");
 
                     b.Property<int>("State")
                         .HasColumnType("int");
 
-                    b.Property<int>("StudentID")
-                        .HasColumnType("int");
+                    b.Property<DateTime>("Updated")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("datetime2")
+                        .HasDefaultValueSql("getdate()");
+
+                    b.Property<string>("UserID")
+                        .HasColumnType("nvarchar(450)");
 
                     b.HasKey("Id");
 
                     b.HasIndex("GroupID");
 
-                    b.HasIndex("StudentID");
+                    b.HasIndex("UserID");
 
                     b.ToTable("Enrollments");
 
@@ -104,42 +109,47 @@ namespace IdentityNLayer.DAL.EF.Migrations
                         new
                         {
                             Id = 1,
-                            Created = new DateTime(2021, 6, 15, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             GroupID = 1,
+                            Role = 0,
                             State = 0,
-                            StudentID = 1
+                            Updated = new DateTime(2021, 8, 16, 8, 36, 42, 96, DateTimeKind.Local).AddTicks(5931),
+                            UserID = "92659287-e6cd-47b7-ab8e-f6461e2a4824"
                         },
                         new
                         {
                             Id = 2,
-                            Created = new DateTime(2021, 7, 15, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             GroupID = 2,
+                            Role = 0,
                             State = 0,
-                            StudentID = 1
+                            Updated = new DateTime(2021, 8, 16, 8, 36, 42, 96, DateTimeKind.Local).AddTicks(6387),
+                            UserID = "92659287-e6cd-47b7-ab8e-f6461e2a4824"
                         },
                         new
                         {
                             Id = 3,
-                            Created = new DateTime(2021, 5, 15, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             GroupID = 2,
+                            Role = 0,
                             State = 0,
-                            StudentID = 2
+                            Updated = new DateTime(2021, 8, 16, 8, 36, 42, 96, DateTimeKind.Local).AddTicks(6703),
+                            UserID = "f50662f8-e597-4da1-91e5-147401352687"
                         },
                         new
                         {
                             Id = 4,
-                            Created = new DateTime(2021, 5, 29, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             GroupID = 1,
+                            Role = 0,
                             State = 0,
-                            StudentID = 2
+                            Updated = new DateTime(2021, 8, 16, 8, 36, 42, 96, DateTimeKind.Local).AddTicks(7015),
+                            UserID = "f50662f8-e597-4da1-91e5-147401352687"
                         },
                         new
                         {
                             Id = 5,
-                            Created = new DateTime(2021, 4, 17, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             GroupID = 2,
+                            Role = 0,
                             State = 0,
-                            StudentID = 3
+                            Updated = new DateTime(2021, 8, 16, 8, 36, 42, 96, DateTimeKind.Local).AddTicks(7368),
+                            UserID = "f75d5d50-eb31-41db-a856-9eb9b3ce04df"
                         });
                 });
 
@@ -204,22 +214,21 @@ namespace IdentityNLayer.DAL.EF.Migrations
                     b.Property<DateTime?>("BirthDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<string>("Email")
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<string>("FirstName")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("LastName")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("Phone")
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<int>("Type")
                         .HasColumnType("int");
 
+                    b.Property<string>("UserId")
+                        .HasColumnType("nvarchar(450)");
+
                     b.HasKey("Id");
+
+                    b.HasIndex("UserId");
 
                     b.ToTable("Students");
 
@@ -227,23 +236,29 @@ namespace IdentityNLayer.DAL.EF.Migrations
                         new
                         {
                             Id = 1,
+                            BirthDate = new DateTime(2005, 12, 11, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             FirstName = "Oleg",
                             LastName = "Kizz",
-                            Type = 0
+                            Type = 0,
+                            UserId = "92659287-e6cd-47b7-ab8e-f6461e2a4824"
                         },
                         new
                         {
                             Id = 2,
+                            BirthDate = new DateTime(2006, 10, 11, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             FirstName = "Vova",
                             LastName = "Braslav",
-                            Type = 1
+                            Type = 1,
+                            UserId = "f50662f8-e597-4da1-91e5-147401352687"
                         },
                         new
                         {
                             Id = 3,
+                            BirthDate = new DateTime(2005, 4, 12, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             FirstName = "Nikita",
                             LastName = "Chebur",
-                            Type = 2
+                            Type = 2,
+                            UserId = "f75d5d50-eb31-41db-a856-9eb9b3ce04df"
                         });
                 });
 
@@ -288,9 +303,6 @@ namespace IdentityNLayer.DAL.EF.Migrations
                     b.Property<DateTime?>("BirthDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<string>("Email")
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<string>("FirstName")
                         .HasColumnType("nvarchar(max)");
 
@@ -300,10 +312,12 @@ namespace IdentityNLayer.DAL.EF.Migrations
                     b.Property<string>("LinkToProfile")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("Phone")
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<string>("UserId")
+                        .HasColumnType("nvarchar(450)");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("UserId");
 
                     b.ToTable("Teachers");
 
@@ -313,18 +327,18 @@ namespace IdentityNLayer.DAL.EF.Migrations
                             Id = 1,
                             Bio = "Super Teacher",
                             BirthDate = new DateTime(1985, 2, 21, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            Email = "Teach1@teacher.com",
                             FirstName = "Teach",
-                            LastName = "First"
+                            LastName = "First",
+                            UserId = "dfe55b49-e24f-4eca-af56-7fba99e6ff7c"
                         },
                         new
                         {
                             Id = 2,
                             Bio = "Super Teacher",
                             BirthDate = new DateTime(1992, 2, 21, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            Email = "Teach2@teacher.com",
                             FirstName = "Teach",
-                            LastName = "Second"
+                            LastName = "Second",
+                            UserId = "a703ccc6-6d55-4842-abef-e4346f03b64e"
                         });
                 });
 
@@ -390,6 +404,36 @@ namespace IdentityNLayer.DAL.EF.Migrations
                         .HasFilter("[NormalizedName] IS NOT NULL");
 
                     b.ToTable("AspNetRoles");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = "f2b1c587-d7bd-47e5-85a9-f2d175ac6051",
+                            ConcurrencyStamp = "ba87353f-f873-451f-acc8-ea00352e1943",
+                            Name = "Admin",
+                            NormalizedName = "ADMIN"
+                        },
+                        new
+                        {
+                            Id = "b38d5417-0aa2-413a-8604-49ac98c3ab37",
+                            ConcurrencyStamp = "2c67aa4e-1eb9-4464-a818-a072057082b8",
+                            Name = "Manager",
+                            NormalizedName = "MANAGER"
+                        },
+                        new
+                        {
+                            Id = "0f7353b9-c3fd-45a6-b129-549c2415c361",
+                            ConcurrencyStamp = "555bb501-7ba0-425c-84a5-ded7905c6574",
+                            Name = "Student",
+                            NormalizedName = "STUDENT"
+                        },
+                        new
+                        {
+                            Id = "00559986-a345-4592-95f2-0e23f87b6346",
+                            ConcurrencyStamp = "fdb9a83c-2fb4-410c-a287-7fbf683bb4ce",
+                            Name = "Teacher",
+                            NormalizedName = "TEACHER"
+                        });
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -479,6 +523,113 @@ namespace IdentityNLayer.DAL.EF.Migrations
                         .HasFilter("[NormalizedUserName] IS NOT NULL");
 
                     b.ToTable("AspNetUsers");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = "d5a30392-28d4-479d-ae75-a69b8da97a40",
+                            AccessFailedCount = 0,
+                            ConcurrencyStamp = "ca7639d3-b284-4bae-a386-3b70bc7c744a",
+                            Email = "admin@admin.com",
+                            EmailConfirmed = true,
+                            LockoutEnabled = false,
+                            NormalizedUserName = "ADMIN@ADMIN.COM",
+                            PasswordHash = "AQAAAAEAACcQAAAAEJsN6sWDpTHsPmbX3oqg0BTgsa6wIbaoGXcYyKTGU/85CQ9lY/gZUZoceTXRjRaNFA==",
+                            PhoneNumberConfirmed = false,
+                            SecurityStamp = "cd9d8280-7457-4ac6-8fc6-3f5b94a0cb84",
+                            TwoFactorEnabled = false,
+                            UserName = "admin@admin.com"
+                        },
+                        new
+                        {
+                            Id = "3e495ce3-b6c3-42df-b17d-9d664fd4a948",
+                            AccessFailedCount = 0,
+                            ConcurrencyStamp = "f8a15de2-deac-4382-a4f4-30ece9e65b2d",
+                            Email = "manager@manager.com",
+                            EmailConfirmed = true,
+                            LockoutEnabled = false,
+                            NormalizedUserName = "MANAGER@MANAGER.COM",
+                            PasswordHash = "AQAAAAEAACcQAAAAEMqpmoFs5MlJsE8I33efXQecqBPxiMC9xM30w51DnszxhEgry8C+tPQpx6rc1CXkog==",
+                            PhoneNumberConfirmed = false,
+                            SecurityStamp = "641dc9c3-d4a7-4a78-b9cc-5adec9081b25",
+                            TwoFactorEnabled = false,
+                            UserName = "manager@manager.com"
+                        },
+                        new
+                        {
+                            Id = "92659287-e6cd-47b7-ab8e-f6461e2a4824",
+                            AccessFailedCount = 0,
+                            ConcurrencyStamp = "163f989e-68e7-47ea-93d5-d0c440615fa7",
+                            Email = "studentfirst@mail.com",
+                            EmailConfirmed = true,
+                            LockoutEnabled = false,
+                            NormalizedUserName = "STUDENTFIRST@MAIL.COM",
+                            PasswordHash = "AQAAAAEAACcQAAAAEEK08/oJUgIgGbiqqHBqa1NdRq+mq4HPT/68YpD3KCzDXTg71KYrFCCvxRGOOd0yCg==",
+                            PhoneNumberConfirmed = false,
+                            SecurityStamp = "4447dd63-7721-4f9b-b5aa-8f65b1bf6da6",
+                            TwoFactorEnabled = false,
+                            UserName = "studentfirst@mail.com"
+                        },
+                        new
+                        {
+                            Id = "f50662f8-e597-4da1-91e5-147401352687",
+                            AccessFailedCount = 0,
+                            ConcurrencyStamp = "716e2015-44ed-4816-b248-58fb44cbcaee",
+                            Email = "studentsecond@mail.com",
+                            EmailConfirmed = true,
+                            LockoutEnabled = false,
+                            NormalizedUserName = "STUDENTSECOND@MAIL.COM",
+                            PasswordHash = "AQAAAAEAACcQAAAAEEz+LLj4Vr21ZfLdZgArQIIp6iVh0K2LcJ+fDgP1rRBEbemev3DXZZAEnj7/dOwYww==",
+                            PhoneNumberConfirmed = false,
+                            SecurityStamp = "064a041e-a808-489f-9fc5-da15d71e4080",
+                            TwoFactorEnabled = false,
+                            UserName = "studentsecond@mail.com"
+                        },
+                        new
+                        {
+                            Id = "f75d5d50-eb31-41db-a856-9eb9b3ce04df",
+                            AccessFailedCount = 0,
+                            ConcurrencyStamp = "5b3f3987-accd-4c6f-920a-f98828428f48",
+                            Email = "studentthird@mail.com",
+                            EmailConfirmed = true,
+                            LockoutEnabled = false,
+                            NormalizedUserName = "STUDENTTHIRD@MAIL.COM",
+                            PasswordHash = "AQAAAAEAACcQAAAAEBUPWUd8bvPvV9fnHaOBM6JlMd4YBHgA3C1PGZ+/Kxe2t3Ar47dffEDFNVFbRT1nNQ==",
+                            PhoneNumberConfirmed = false,
+                            SecurityStamp = "8791a778-ddaa-4945-8eed-18298d97cca5",
+                            TwoFactorEnabled = false,
+                            UserName = "studentthird@mail.com"
+                        },
+                        new
+                        {
+                            Id = "dfe55b49-e24f-4eca-af56-7fba99e6ff7c",
+                            AccessFailedCount = 0,
+                            ConcurrencyStamp = "6d911354-41c1-490e-a767-738498eb6502",
+                            Email = "teacherfirst@mail.com",
+                            EmailConfirmed = true,
+                            LockoutEnabled = false,
+                            NormalizedUserName = "TEACHERFIRST@MAIL.COM",
+                            PasswordHash = "AQAAAAEAACcQAAAAEEfly1OvDf3lSpBYC0PxyKxcDYoLcLkNl6WecCg6vqRASJgbepAHIaPkTlS3d4tAOg==",
+                            PhoneNumberConfirmed = false,
+                            SecurityStamp = "5687c673-6982-43e9-9e56-f21d20192326",
+                            TwoFactorEnabled = false,
+                            UserName = "teacherfirst@mail.com"
+                        },
+                        new
+                        {
+                            Id = "a703ccc6-6d55-4842-abef-e4346f03b64e",
+                            AccessFailedCount = 0,
+                            ConcurrencyStamp = "9705292a-b1db-469f-af5e-2348eb4e138b",
+                            Email = "teachersecond@mail.com",
+                            EmailConfirmed = true,
+                            LockoutEnabled = false,
+                            NormalizedUserName = "TEACHERSECOND@MAIL.COM",
+                            PasswordHash = "AQAAAAEAACcQAAAAEHiGJ/ZEWsS4l+3hvMRS3qyzvy+iGpS3ia3k2q/JlSy/0qKOengtVmRao2cCWx1g1A==",
+                            PhoneNumberConfirmed = false,
+                            SecurityStamp = "5c5a5cdb-bc68-472a-9e4a-8fdc0ac67944",
+                            TwoFactorEnabled = false,
+                            UserName = "teachersecond@mail.com"
+                        });
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<string>", b =>
@@ -540,6 +691,43 @@ namespace IdentityNLayer.DAL.EF.Migrations
                     b.HasIndex("RoleId");
 
                     b.ToTable("AspNetUserRoles");
+
+                    b.HasData(
+                        new
+                        {
+                            UserId = "d5a30392-28d4-479d-ae75-a69b8da97a40",
+                            RoleId = "f2b1c587-d7bd-47e5-85a9-f2d175ac6051"
+                        },
+                        new
+                        {
+                            UserId = "3e495ce3-b6c3-42df-b17d-9d664fd4a948",
+                            RoleId = "b38d5417-0aa2-413a-8604-49ac98c3ab37"
+                        },
+                        new
+                        {
+                            UserId = "92659287-e6cd-47b7-ab8e-f6461e2a4824",
+                            RoleId = "0f7353b9-c3fd-45a6-b129-549c2415c361"
+                        },
+                        new
+                        {
+                            UserId = "f50662f8-e597-4da1-91e5-147401352687",
+                            RoleId = "0f7353b9-c3fd-45a6-b129-549c2415c361"
+                        },
+                        new
+                        {
+                            UserId = "f75d5d50-eb31-41db-a856-9eb9b3ce04df",
+                            RoleId = "0f7353b9-c3fd-45a6-b129-549c2415c361"
+                        },
+                        new
+                        {
+                            UserId = "dfe55b49-e24f-4eca-af56-7fba99e6ff7c",
+                            RoleId = "00559986-a345-4592-95f2-0e23f87b6346"
+                        },
+                        new
+                        {
+                            UserId = "a703ccc6-6d55-4842-abef-e4346f03b64e",
+                            RoleId = "00559986-a345-4592-95f2-0e23f87b6346"
+                        });
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<string>", b =>
@@ -580,15 +768,13 @@ namespace IdentityNLayer.DAL.EF.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("IdentityNLayer.Core.Entities.Student", "Student")
-                        .WithMany("Enrollments")
-                        .HasForeignKey("StudentID")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityUser", "User")
+                        .WithMany()
+                        .HasForeignKey("UserID");
 
                     b.Navigation("Group");
 
-                    b.Navigation("Student");
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("IdentityNLayer.Core.Entities.Group", b =>
@@ -610,6 +796,15 @@ namespace IdentityNLayer.DAL.EF.Migrations
                     b.Navigation("Teacher");
                 });
 
+            modelBuilder.Entity("IdentityNLayer.Core.Entities.Student", b =>
+                {
+                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityUser", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId");
+
+                    b.Navigation("User");
+                });
+
             modelBuilder.Entity("IdentityNLayer.Core.Entities.StudentToGroupAction", b =>
                 {
                     b.HasOne("IdentityNLayer.Core.Entities.Group", "Group")
@@ -627,6 +822,15 @@ namespace IdentityNLayer.DAL.EF.Migrations
                     b.Navigation("Group");
 
                     b.Navigation("Student");
+                });
+
+            modelBuilder.Entity("IdentityNLayer.Core.Entities.Teacher", b =>
+                {
+                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityUser", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId");
+
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("IdentityNLayer.Core.Entities.Topic", b =>
@@ -690,11 +894,6 @@ namespace IdentityNLayer.DAL.EF.Migrations
                 });
 
             modelBuilder.Entity("IdentityNLayer.Core.Entities.Group", b =>
-                {
-                    b.Navigation("Enrollments");
-                });
-
-            modelBuilder.Entity("IdentityNLayer.Core.Entities.Student", b =>
                 {
                     b.Navigation("Enrollments");
                 });

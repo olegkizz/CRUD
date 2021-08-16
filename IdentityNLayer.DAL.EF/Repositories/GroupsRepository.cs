@@ -35,7 +35,7 @@ namespace IdentityNLayer.DAL.EF.Repositories
 
         public void Create(Group item)
         {
-            throw new NotImplementedException();
+            _context.Groups.Add(item);
         }
 
         public void Update(Group item)

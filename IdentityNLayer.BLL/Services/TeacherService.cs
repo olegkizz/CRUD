@@ -23,7 +23,7 @@ namespace IdentityNLayer.BLL.Services
             return Db.Teachers.Get(id);
         }
 
-        public void Create(Teacher entity)
+        public int Create(Teacher entity)
         {
             throw new NotImplementedException();
         }

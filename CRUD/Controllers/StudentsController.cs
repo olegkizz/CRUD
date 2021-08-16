@@ -8,6 +8,8 @@ using IdentityNLayer.Core.Entities;
 using System.Collections.Generic;
 using System;
 using System.Linq;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Authorization;
 
 namespace IdentityNLayer.Controllers
 {
@@ -16,71 +18,104 @@ namespace IdentityNLayer.Controllers
         private readonly IMapper _mapper;
         private readonly IStudentService _studentService;
         private readonly IGroupService _groupService;
-        private readonly IStudentToGroupActionService _studentToGroupActionsService;
+        private readonly IEnrollmentService _enrollmentService;
 
+        private readonly RoleManager<IdentityRole> _roleManager;
+        private readonly UserManager<IdentityUser> _userManager;
         public StudentsController(IStudentService studentService, 
             IGroupService groupService, 
             IMapper mapper,
-            IStudentToGroupActionService studentToGroupActionsService)
+            IStudentToGroupActionService studentToGroupActionsService,
+            RoleManager<IdentityRole> roleManager, 
+            UserManager<IdentityUser> userManager,
+            IEnrollmentService enrollmentService)
         {
             _studentService = studentService;
             _groupService = groupService;
             _mapper = mapper;
-            _studentToGroupActionsService = studentToGroupActionsService;
+            _enrollmentService = enrollmentService;
+            _roleManager = roleManager;
+            _userManager = userManager;
         }
 
         // GET: Students
+        [Authorize("Admin, Manager")]
+
         public async Task<IActionResult> Index()
         {
+            ViewBag.studentService = _studentService;
             return View(_mapper.Map<IEnumerable<StudentModel>>(_studentService.GetAll()));
         }
 
         // GET: Students/Create
+        [Authorize("Admin, Manager")]
+
         public IActionResult Create()
         {
             ViewBag.StudentTypes = _studentService.GetStudentTypes();
-          
-            return View(new StudentModel(_groupService.GetAll()));
+
+            StudentModel student = new StudentModel();
+            student.CreateAssignGroups(_groupService.GetAll());
+
+            return View(student);
         }
 
         // POST: Contacts/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
+        [Authorize("Admin, Manager")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("FirstName, LastName, BirthDate, Email, Phone, Type, AssignGroups")] StudentModel student, int[] selectedGroups)
+        public async Task<IActionResult> Create([Bind("FirstName, LastName, BirthDate, Email," +
+            "Type, AssignGroups, User")] StudentModel student)
         {
-            if (ModelState.IsValid)
-            {
-                _studentService.Create(_mapper.Map<Student>(student));
 
-                foreach (AssignGroupModel assignGroup in student.AssignGroups)
+            if (ModelState.IsValid && (await _userManager.FindByIdAsync(student.User.Id)) == null)
+            {
+                List<string> errors = new();
+
+                IdentityResult chkUser = await _userManager.CreateAsync(student.User, student.User.PasswordHash);
+                if (chkUser.Succeeded)
                 {
-                    if(assignGroup.Assigned)
-                        _studentService.Enrol(student.Id, assignGroup.GroupID);
-                    /*_studentToGroupActionsService.Apply(student.Id, groupId);*/
-                   /* student.Enrollments.Add(new Enrollment()
+                    IdentityResult result = await _userManager.AddToRoleAsync(student.User, UserRoles.Student.ToString());
+                    int newStudentId = _studentService.Create(_mapper.Map<Student>(student));
+
+                    foreach (AssignGroupModel assignGroup in student.AssignGroups)
                     {
-                        StudentID = student.Id,
-                        GroupID = groupId,
-                        DateEnrol = DateTime.Now
-                    });*/
+                        if (assignGroup.Assigned)
+                            _enrollmentService.Enrol(student.User.Id, assignGroup.GroupID, UserRoles.Student);
+                    }
+                    return RedirectToAction(nameof(Index));
                 }
-                return RedirectToAction(nameof(Index));
+                ViewBag.Errors = chkUser.Errors.ToList();
+                return View(student.CreateAssignGroups(_groupService.GetAll()));
             }
-            return View();
+            else
+            {
+                throw new DbUpdateConcurrencyException();
+            }
         }
 
         // GET: Contacts/Edit/5
+        [Authorize("Admin, Manager")]
+
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
             {
                 return NotFound();
             }
-
+          
             StudentModel student = _mapper.Map<StudentModel>(_studentService.GetById((int)id));
-            PopulateAssignedGroupData(student);
+
+            student.CreateAssignGroups(_groupService.GetAll());
+            List<int> studentGroupIds = _studentService.GetStudentGroups((int)id).Select(st => st.Id).ToList();
+            foreach (AssignGroupModel ag in student.AssignGroups)
+            {
+                if (studentGroupIds.Contains(ag.GroupID))
+                    ag.Assigned = true;
+            }
+
             ViewBag.StudentTypes = _studentService.GetStudentTypes();
             
             if (student == null)
@@ -90,30 +125,16 @@ namespace IdentityNLayer.Controllers
 
             return View(student);
         }
-        private void PopulateAssignedGroupData(StudentModel student)
-        {
-            List<GroupModel> allGroups = _mapper.Map<List<GroupModel>>(_groupService.GetAll());
-            List<Group> studentGroups = _studentService.GetStudentGroups(student.Id);
-            List<int> studentGroupIds = (List<int>)(from gr in studentGroups
-                        select gr.Id);
-            var viewModel = new List<AssignGroupModel>();
-            foreach (var group in allGroups)
-            {
-                   viewModel.Add(new AssignGroupModel
-                    {
-                        GroupID = group.Id,
-                        Number = group.Number,
-                        Assigned = studentGroupIds.Contains(group.Id)
-                   });
-            }
-            ViewBag.Groups = viewModel;
-        }
+      
         // POST: Contacts/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id, Name, Email, BirthDate, Type")] StudentModel student)
+        [Authorize("Admin, Manager")]
+
+        public async Task<IActionResult> Edit(int id, [Bind("Id, FirstName, LastName, BirthDate, User, " +
+            "PhoneNumber, Type, AssignGroups, UserId")] StudentModel student)
         {
             if (id != student.Id)
             {
@@ -125,6 +146,13 @@ namespace IdentityNLayer.Controllers
                 try
                 {
                     _studentService.Update(_mapper.Map<Student>(student));
+
+                    foreach (AssignGroupModel assignGroup in student.AssignGroups)
+                    {
+                        if (assignGroup.Assigned)
+                            _enrollmentService.Enrol(student.UserId, assignGroup.GroupID, UserRoles.Student);
+                        else _enrollmentService.UnEnrol(student.UserId, assignGroup.GroupID);
+                    }
                 }
                 catch (DbUpdateConcurrencyException)
                 {
@@ -132,7 +160,7 @@ namespace IdentityNLayer.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            return View();
+            return View(student);
         }
 
         // GET: Contacts/Delete/5

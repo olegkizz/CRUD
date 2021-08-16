@@ -1,13 +1,13 @@
 ﻿@model IEnumerable<IdentityNLayer.Models.StudentModel>
-
+@using IdentityNLayer.Core.Entities
 @{
     ViewData["Title"] = "Index";
 }
 
-<h1>Index</h1>
+<h1>Students</h1>
 
 <p>
-    <a asp-action="Create">Create New</a>
+    <a asp-action="Create" asp-route-id="-1">Create New</a>
 </p>
 <table class="table">
     <thead>
@@ -27,10 +27,10 @@
                 <a asp-controller="Students" asp-action="Edit" asp-route-id="@item.Id">@item.FirstName @item.LastName</a>
             </td>   
             <td>
-                @if(item.Enrollments!= null) foreach (var en in item.Enrollments)
-                {
-                    <a asp-controller="Groups" asp-action="Edit" asp-route-id="@en.GroupID">@en?.Group.Number</a>
-                }
+                @if (ViewBag.studentService.GetStudentGroups(item.Id) != null) foreach (var en in ViewBag.studentService.GetStudentGroups(item.Id))
+                    {
+                       <a asp-controller="Groups" asp-action="Edit" asp-route-id="@en.Id">@en.Number</a>
+                    }
             </td>
         </tr>
 }

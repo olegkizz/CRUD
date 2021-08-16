@@ -1,4 +1,5 @@
 ﻿using IdentityNLayer.Validation;
+using Microsoft.AspNetCore.Identity;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -14,10 +15,13 @@ namespace IdentityNLayer.Models
         public string FirstName { get; set; }
         [Required]
         public string LastName { get; set; }
-        [BirthDate(18, ErrorMessage = "Should be greater than 18")]
+        /*[BirthDate(18, ErrorMessage = "Should be greater than 18")]*/
         public DateTime? BirthDate { get; set; }
-        [EmailAddress]
-        public string Email { get; set; }
-        public string? Phone { get; set; }
+        public string UserId { get; set; }
+        public IdentityUser User { get; set; }
+        
+        /*[Compare("User.PasswordHash", ErrorMessage = "Confirm password doesn't match, Type again !")]
+        [DataType(DataType.Password)]
+        public string ConfirmPassword { get; set; }*/
     }
 }

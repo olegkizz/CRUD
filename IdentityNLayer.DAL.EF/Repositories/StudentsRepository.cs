@@ -4,6 +4,7 @@ using System.Linq;
 using IdentityNLayer.DAL.EF.Context;
 using IdentityNLayer.Core.Entities;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Identity;
 
 namespace IdentityNLayer.DAL.EF.Repositories
 {
@@ -18,15 +19,13 @@ namespace IdentityNLayer.DAL.EF.Repositories
         public IEnumerable<Student> GetAll()
         {
             return _context.Students
-                .Include(s => s.Enrollments)
-                .ThenInclude(s => s.Group)
                 .ToList();
         }
 
         public Student Get(int id)
         {
             return _context.Students
-                .Include(s => s.Enrollments)
+                .Include(s => s.User)
                 .Where(s => s.Id == id)
                 .First();
         }
@@ -44,6 +43,21 @@ namespace IdentityNLayer.DAL.EF.Repositories
         public void Update(Student item)
         {
             _context.Entry(item).State = EntityState.Modified;
+            _context.Students.Update(item);
+            if (item.User != null)
+            {
+                IdentityUser user = _context.Users.Single(us => us.Id == item.UserId);
+            
+                user.Email = item.User.Email;
+                user.NormalizedEmail = item.User.Email.ToUpper();
+                user.PhoneNumber = item.User.PhoneNumber;
+  /*              _context.Entry(item.User).Property("Email").IsModified = true;
+                _context.Entry(item.User).Property("NormalizedEmail").IsModified = true;
+                _context.Entry(item.User).Property("PhoneNumber").IsModified = true;*/
+                /*_context.Attach(user);*/
+                /* item.User.NormalizedEmail = item.User.Email.ToUpper();*/
+                _context.Users.Update(user);
+            }
         }
 
         public void Delete(int id)

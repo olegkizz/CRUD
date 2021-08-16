@@ -15,6 +15,6 @@ namespace IdentityNLayer.Core.Entities
         public int TopicId { get; set; }
         public Topic? Topic { get; set; }
         public DateTime StartDate { get; set; }
-        public DateTime Created { get; set; }
+        public DateTime Updated { get; set; }
     }
 }

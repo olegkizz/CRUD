@@ -17,6 +17,8 @@ using IdentityNLayer.Core.Entities;
 using IdentityNLayer.DAL.Interfaces;
 using IdentityNLayer.BLL.Interfaces;
 using IdentityNLayer.BLL.Mapper;
+using Microsoft.OpenApi.Models;
+using System;
 
 namespace IdentityNLayer
 {
@@ -91,6 +93,8 @@ namespace IdentityNLayer
                 GroupService>();
             services.AddScoped<ITeacherService,
                 TeacherService>();
+            services.AddScoped<IEnrollmentService,
+              EnrollmentService>();
             services.AddScoped<IStudentToGroupActionService,
               StudentToGroupActionService>();
         }

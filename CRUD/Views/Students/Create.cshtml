@@ -11,7 +11,12 @@
 <div class="row">
     <div class="col-md-4">
         <form asp-action="Create">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="text-danger">
+                @if(ViewBag.Errors != null) foreach(string error in ViewBag.Errors)
+                    {
+                    <li style="color: red;">error</li>
+                }
+            </div>
             <div class="form-group">
                 <label asp-for="FirstName" class="control-label"></label>
                 <input asp-for="FirstName" class="form-control" />
@@ -23,38 +28,53 @@
                 <span asp-validation-for="LastName" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="Email" class="control-label"></label>
-                <input asp-for="Email" class="form-control" />
-                <span asp-validation-for="Email" class="text-danger"></span>
+                <label asp-for="User.Email" class="control-label"></label>
+                <input asp-for="User.Email" class="form-control" />
+                <span asp-validation-for="User.Email" class="text-danger"></span>
             </div>
+            <div class="form-group">
+                <label asp-for="User.UserName" class="control-label"></label>
+                <input asp-for="User.UserName" class="form-control" />
+                <span asp-validation-for="User.UserName" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <lable class="control-label">Password</lable>
+                <input asp-for="User.PasswordHash" class="form-control" />
+                <span asp-validation-for="User.PasswordHash" class="text-danger"></span>
+            </div>
+       @*     <div class="form-group">
+                <label asp-for="ConfirmPassword" class="control-label"></label>
+                <input asp-for="ConfirmPassword" class="form-control" />
+                <span asp-validation-for="ConfirmPassword" class="text-danger"></span>
+            </div>*@
             <div class="form-group">
                 <label asp-for="BirthDate" class="control-label"></label>
                 <input asp-for="BirthDate" type="date" class="form-control" />
                 <span asp-validation-for="BirthDate" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="Phone" class="control-label"></label>
-                <input asp-for="Phone" class="form-control" />
-                <span asp-validation-for="Phone" class="text-danger"></span>
+                <label asp-for="User.PhoneNumber" class="control-label"></label>
+                <input asp-for="User.PhoneNumber" class="form-control" />
+                <span asp-validation-for="User.PhoneNumber" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="Type" class="control-label"></label>
                 <select asp-for="Type" class="form-control">
-                    @if(ViewBag.StudentTypes != null) foreach (var st in ViewBag.StudentTypes)
+                    @foreach (var st in Model.StudentTypes)
                         {
-                        <option value="@st">@st</option>
-                    }
+                            <option value="@st">@st</option>
+                        }
                 </select>
                 <span asp-validation-for="Type" class="text-danger"></span>
             </div>
             <div class="form-group">
-                    <label asp-for="AssignGroups" class="control-label"></label>
-                    @for (int i = 0; i < Model.AssignGroups.Count(); ++i)
-                    {
-                        <input type="hidden" asp-for="@Model.AssignGroups[i].GroupID" />
-                        @Html.CheckBoxFor(m => m.AssignGroups[i].Assigned)
-                        @Model.AssignGroups[i].Number
-                    }
+                <label asp-for="AssignGroups" class="control-label"></label>
+                @for (int i = 0; i < Model.AssignGroups.Count(); ++i)
+                {
+                    <input type="hidden" asp-for="@Model.AssignGroups[i].GroupID" />
+                    @Html.CheckBoxFor(m => m.AssignGroups[i].Assigned)
+                    @Model.AssignGroups[i].Number
+                }
             </div>
             <div class="form-group">
                 <input type="submit" value="Create" class="btn btn-primary" />

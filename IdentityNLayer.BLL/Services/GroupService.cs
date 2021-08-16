@@ -22,7 +22,7 @@ namespace IdentityNLayer.BLL.Services
             return Db.Groups.Get(id);
         }
 
-        public void Create(Group entity)
+        public int Create(Group entity)
         {
             throw new NotImplementedException();
         }
