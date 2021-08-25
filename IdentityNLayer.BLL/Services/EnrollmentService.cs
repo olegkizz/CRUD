@@ -18,20 +18,22 @@ namespace IdentityNLayer.BLL.Services
             Db = db;
 
         }
-        public void Enrol(string userId, int groupdId, UserRoles role, bool confirmed = true)
+        public void Enrol(string userId, int groupId, UserRoles role, bool confirmed = true)
         {
+            Group group = Db.Groups.Find(gr => gr.Id == groupId).FirstOrDefault();
             Enrollment enrollment =
-               ((List<Enrollment>)Db.Enrollments.Find(en => en.UserID == userId && en.GroupID == groupdId)).FirstOrDefault();
-            if (enrollment?.State == ActionsStudentGroup.Aborted)
+              Db.Enrollments.Find(en => en.UserID == userId && en.EntityID == (group != null ? group.CourseId : groupId)).FirstOrDefault();
+            if (enrollment?.State == ActionsStudentGroup.Aborted || enrollment?.State == ActionsStudentGroup.Requested)
             {
                 enrollment.State = ActionsStudentGroup.Applied;
+                enrollment.EntityID = groupId;
                 Db.Enrollments.Update(enrollment);
             }
             else if (enrollment == null)
                 Db.Enrollments.Create(new Enrollment
                 {
                     UserID = userId,
-                    GroupID = groupdId,
+                    EntityID = groupId,
                     Role = role,
                     State = confirmed ? ActionsStudentGroup.Applied : ActionsStudentGroup.Requested,
                     Updated = DateTime.Now
@@ -42,13 +44,17 @@ namespace IdentityNLayer.BLL.Services
         public void UnEnrol(string userId, int groupdId)
         {
             Enrollment enrollment =
-             ((List<Enrollment>)Db.Enrollments.Find(en => en.UserID == userId && en.GroupID == groupdId)).FirstOrDefault();
+             ((List<Enrollment>)Db.Enrollments.Find(en => en.UserID == userId && en.EntityID == groupdId)).FirstOrDefault();
             if (enrollment != null)
             {
                 enrollment.State = ActionsStudentGroup.Aborted;
                 Db.Enrollments.Update(enrollment);
             }
             Db.Save();
+        }
+        public IEnumerable<Enrollment> Get(string userId)
+        {
+            return Db.Enrollments.Find(en => en.UserID == userId);
         }
     }
 }

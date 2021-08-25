@@ -22,11 +22,11 @@ namespace IdentityNLayer.Controllers
 
         private readonly RoleManager<IdentityRole> _roleManager;
         private readonly UserManager<IdentityUser> _userManager;
-        public StudentsController(IStudentService studentService, 
-            IGroupService groupService, 
+        public StudentsController(IStudentService studentService,
+            IGroupService groupService,
             IMapper mapper,
             IStudentToGroupActionService studentToGroupActionsService,
-            RoleManager<IdentityRole> roleManager, 
+            RoleManager<IdentityRole> roleManager,
             UserManager<IdentityUser> userManager,
             IEnrollmentService enrollmentService)
         {
@@ -39,16 +39,32 @@ namespace IdentityNLayer.Controllers
         }
 
         // GET: Students
-        [Authorize("Admin, Manager")]
+        [Authorize(Roles = "Admin, Manager")]
 
         public async Task<IActionResult> Index()
         {
             ViewBag.studentService = _studentService;
             return View(_mapper.Map<IEnumerable<StudentModel>>(_studentService.GetAll()));
         }
+        [HttpGet]
+        public IActionResult SendRequest()
+        {
+            return View();
+        }
+        [HttpPost]
+        public IActionResult SendRequest(int course, string request)
+        {
+            if (request == "Yes")
+            {
+                _enrollmentService.Enrol(_userManager.GetUserId(User), course, UserRoles.Student, false);
+            }
+
+            return Redirect("/Courses/Index");
+        }
 
         // GET: Students/Create
-        [Authorize("Admin, Manager")]
+        [Authorize(Roles = "Admin, Manager")]
+
 
         public IActionResult Create()
         {
@@ -64,7 +80,7 @@ namespace IdentityNLayer.Controllers
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
-        [Authorize("Admin, Manager")]
+        [Authorize(Roles = "Admin, Manager")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("FirstName, LastName, BirthDate, Email," +
             "Type, AssignGroups, User")] StudentModel student)

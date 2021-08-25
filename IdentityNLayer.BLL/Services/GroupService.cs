@@ -24,7 +24,9 @@ namespace IdentityNLayer.BLL.Services
 
         public int Create(Group entity)
         {
-            throw new NotImplementedException();
+            Db.Groups.Create(entity);
+            Db.Save();
+            return entity.Id;
         }
 
         public void Update(Group entity)

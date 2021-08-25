@@ -20,7 +20,6 @@ namespace IdentityNLayer.DAL.EF.Repositories
         public IEnumerable<Enrollment> GetAll()
         {
             return _context.Enrollments
-               .Include(s => s.Group)
                .Include(s => s.User)
                .ToList();
         }
@@ -28,7 +27,6 @@ namespace IdentityNLayer.DAL.EF.Repositories
         public Enrollment Get(int id)
         {
             return _context.Enrollments
-                .Include(s => s.Group)
                 .Include(s => s.User)
                 .Where(s => s.Id == id)
                 .First();
@@ -37,7 +35,7 @@ namespace IdentityNLayer.DAL.EF.Repositories
         public IEnumerable<Enrollment> Find(Func<Enrollment, bool> predicate)
         {
             return _context.Enrollments
-                .Include(s => s.Group)
+                .Include(en => en.User)
                 .Where(predicate)
                 .ToList();
         }

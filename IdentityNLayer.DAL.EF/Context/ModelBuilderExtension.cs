@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using IdentityNLayer.Core.Entities;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.DependencyInjection;
 
 namespace IdentityNLayer.DAL.EF.Context
 {
@@ -65,6 +64,7 @@ namespace IdentityNLayer.DAL.EF.Context
                         EmailConfirmed = true,
                         Email = "studentthird@mail.com"
                     },
+                 
                 new IdentityUser
                     {
                         UserName = "teacherfirst@mail.com",
@@ -79,6 +79,20 @@ namespace IdentityNLayer.DAL.EF.Context
                         EmailConfirmed = true,
                         Email = "teachersecond@mail.com"
                     },
+                 new IdentityUser
+                   {
+                       UserName = "studentfourth@mail.com",
+                       NormalizedUserName = "studentfourth@mail.com".ToUpper(),
+                       EmailConfirmed = true,
+                       Email = "studentfourth@mail.com"
+                   },
+                     new IdentityUser
+                   {
+                       UserName = "studentfifth@mail.com",
+                       NormalizedUserName = "studentfifth@mail.com".ToUpper(),
+                       EmailConfirmed = true,
+                       Email = "studentfifth@mail.com"
+                  },
             };           
             foreach(IdentityUser user in users)
             {
@@ -160,31 +174,31 @@ namespace IdentityNLayer.DAL.EF.Context
                     {
                         course1, course2
                     });
-                Group firstGroup = new Group
+      /*      Group firstGroup = new Group
+            {
+                Id = 1,
+                Number = "Nemiga-1",
+                Status = GroupStatus.Started,
+                TeacherId = teacher1.Id,
+                StartDate = new DateTime(2021, 9, 21),
+                CourseId = course1.Id
+            };
+            Group secondGroup = new Group
+            {
+                Id = 2,
+                Number = "Nemiga-2",
+                Status = GroupStatus.Pending,
+                TeacherId = teacher2.Id,
+                StartDate = new DateTime(2021, 10, 21),
+                CourseId = course2.Id
+            };
+            modelBuilder.Entity<Group>().HasData(
+                new Group[]
                 {
-                    Id = 1,
-                    Number = "Nemiga-1",
-                    Status = GroupStatus.Started,
-                    TeacherId = teacher1.Id,
-                    StartDate = new DateTime(2021, 9, 21),
-                    CourseId = course1.Id
-                };
-                Group secondGroup = new Group
-                {
-                    Id = 2,
-                    Number = "Nemiga-2",
-                    Status = GroupStatus.Pending,
-                    TeacherId = teacher2.Id,
-                    StartDate = new DateTime(2021, 10, 21),
-                    CourseId = course2.Id
-                };
-                modelBuilder.Entity<Group>().HasData(
-                    new Group[]
-                    {
                     firstGroup, secondGroup
-                    }
-                );
-                Student studentFirst = new Student
+                }
+            );*/
+            Student studentFirst = new Student
                 {
                     Id = 1,
                     FirstName = "Oleg",
@@ -211,14 +225,32 @@ namespace IdentityNLayer.DAL.EF.Context
                     BirthDate = new DateTime(2005, 04, 12),
                     Type = StudentType.Mix
                 };
-                modelBuilder.Entity<Student>().HasData(
+                Student studentFourth = new Student
+                {
+                    Id = 4,
+                    FirstName = "Mikola",
+                    LastName = "Cool",
+                    UserId = users[7].Id,
+                    BirthDate = new DateTime(2005, 04, 12),
+                    Type = StudentType.Online
+                };
+                Student studentFifth = new Student
+                {
+                    Id = 5,
+                    FirstName = "Vovka",
+                    LastName = "Sabur",
+                    UserId = users[8].Id,
+                    BirthDate = new DateTime(2005, 04, 12),
+                    Type = StudentType.Mix
+                };
+            modelBuilder.Entity<Student>().HasData(
                      new Student[]
                      {
-                        studentFirst, studentSecond, studentThird
+                        studentFirst, studentSecond, studentThird, studentFourth, studentFifth
                      }
                 );
                 modelBuilder.Entity<Enrollment>().Property(en => en.Updated).HasDefaultValueSql("getdate()");
-                modelBuilder.Entity<Enrollment>().HasData(
+                /*modelBuilder.Entity<Enrollment>().HasData(
                     new Enrollment[]
                     {
                         new Enrollment {
@@ -246,7 +278,7 @@ namespace IdentityNLayer.DAL.EF.Context
                             UserID = users[4].Id,
                             GroupID = secondGroup.Id,
                          }
-                });
+                });*/
         }
     }
 }

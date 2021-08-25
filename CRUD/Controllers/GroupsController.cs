@@ -7,24 +7,35 @@ using AutoMapper;
 using IdentityNLayer.Models;
 using IdentityNLayer.Core.Entities;
 using Microsoft.EntityFrameworkCore;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace IdentityNLayer.Controllers
 {
     public class GroupsController : Controller
     {
         private readonly IGroupService _groupService;
+        private readonly IEnrollmentService _enrollmentService;
+        private readonly ICourseService _courseService;
+        private readonly ITeacherService _teacherService;
         private readonly IMapper _mapper;
 
-        public GroupsController(IGroupService groupService, IMapper mapper)
+        public GroupsController(IGroupService groupService, IMapper mapper, 
+            IEnrollmentService enrollmentService,
+            ICourseService courseService,
+            ITeacherService teacherService)
         {
             _groupService = groupService;
             _mapper = mapper;
+            _enrollmentService = enrollmentService;
+            _courseService = courseService;
+            _teacherService = teacherService;
         }
 
         // GET: Contacts
         public async Task<IActionResult> Index()
         {
-            return View(_mapper.Map<GroupModel>(_groupService.GetAll()));
+            return View(_mapper.Map<IEnumerable<GroupModel>>(_groupService.GetAll()));
         }
 
         // GET: Contacts/Details/5
@@ -46,9 +57,16 @@ namespace IdentityNLayer.Controllers
         }
 
         // GET: Contacts/Create
-        public IActionResult Create()
+        public IActionResult Create(int courseId)
         {
-            return View();
+            GroupModel group = new ();
+            group.SetStudentRequests(_courseService.GetStudentRequests((int)courseId));
+            foreach(Enrollment en in _courseService.GetTeacherRequests((int)courseId))
+            {
+                group.TeacherRequests.Add(_teacherService.GetTeacherByUserId(en.UserID));
+            }
+            group.CourseId = courseId;
+            return View(group);
         }
 
         // POST: Contacts/Create
@@ -56,12 +74,16 @@ namespace IdentityNLayer.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Number,Status,TeacherId")] GroupModel group)
+        public async Task<IActionResult> Create([Bind("Id,Number,Status,Seats,StudentRequests,CourseId")] GroupModel group)
         {
             if (ModelState.IsValid)
             {
-                _groupService.Create(_mapper.Map<Group>(group));
+                int groupId = _groupService.Create(_mapper.Map<Group>(group));
 
+                foreach(StudentRequestsModel studentRequest in group.StudentRequests)
+                {
+                    _enrollmentService.Enrol(studentRequest.UserId, groupId, UserRoles.Student);
+                }
                 return RedirectToAction(nameof(Index));
             }
             return View();

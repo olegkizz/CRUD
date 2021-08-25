@@ -33,17 +33,17 @@ namespace IdentityNLayer.DAL.EF.Repositories
 
         public Course Get(int id)
         {
-            throw new NotImplementedException();
+            return _context.Courses.Where(crs => crs.Id == id).First();
         }
 
         public IEnumerable<Course> GetAll()
         {
-            throw new NotImplementedException();
+            return _context.Courses;
         }
 
         public void Update(Course item)
         {
-            throw new NotImplementedException();
+            _context.Courses.Update(item);
         }
     }
 }

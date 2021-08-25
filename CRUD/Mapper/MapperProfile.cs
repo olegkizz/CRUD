@@ -14,6 +14,8 @@ namespace IdentityNLayer.BLL.Mapper
                 .ReverseMap();
             CreateMap<Group, GroupModel>()
                 .ReverseMap();
+            CreateMap<Course, CourseModel>()
+                .ReverseMap();
         }
     }
 }

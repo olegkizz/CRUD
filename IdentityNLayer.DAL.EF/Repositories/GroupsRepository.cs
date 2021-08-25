@@ -30,7 +30,7 @@ namespace IdentityNLayer.DAL.EF.Repositories
 
         public IEnumerable<Group> Find(Func<Group, bool> predicate)
         {
-            throw new NotImplementedException();
+            return _context.Groups.Where(predicate).ToList();
         }
 
         public void Create(Group item)

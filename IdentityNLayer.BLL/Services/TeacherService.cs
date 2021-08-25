@@ -37,5 +37,12 @@ namespace IdentityNLayer.BLL.Services
         {
             throw new NotImplementedException();
         }
+
+        public Teacher GetTeacherByUserId(string userId)
+        {
+            foreach(Teacher tc in Db.Teachers.Find(tc => tc.UserId == userId))
+                return tc;
+            return null;
+        }
     }
 }

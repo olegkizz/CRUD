@@ -78,7 +78,9 @@ namespace IdentityNLayer
             services.AddTransient<IRepository<Enrollment>,
                 EnrollmentsRepository>();
             services.AddTransient<IRepository<Course>,
-               CoursesRepository>();
+                CoursesRepository>();
+            services.AddTransient<IRepository<Topic>,
+                TopicsRepository>();
             var mapperConfig = new MapperConfiguration(mc =>
             {
                 mc.AddProfile(new MappingProfile());
@@ -95,6 +97,8 @@ namespace IdentityNLayer
                 TeacherService>();
             services.AddScoped<IEnrollmentService,
               EnrollmentService>();
+            services.AddScoped<ICourseService,
+              CourseService>();
             services.AddScoped<IStudentToGroupActionService,
               StudentToGroupActionService>();
         }

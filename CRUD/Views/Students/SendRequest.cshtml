@@ -1,0 +1,8 @@
+﻿@{
+    Dictionary<string, string> prms = new Dictionary<string, string> { { "course", Context.Request.Query["course"].ToString()?.ToString() } };
+}
+<div>Do you really want send request in this course?</div>
+<form asp-all-route-data="prms" asp-action="SendRequest" method="post">
+    <input type="submit" name="request" value="Yes" />
+    <input type="submit" name="request" value="No" />
+</form>

@@ -83,7 +83,7 @@ namespace IdentityNLayer.BLL.Services
             foreach (Enrollment en in Db.Enrollments.Find(en => en.UserID == Db.Students.Get(studentId).UserId))
             {
                 if(en.State != ActionsStudentGroup.Aborted)
-                    groups.Add(en.Group);
+                    groups.Add(Db.Groups.Get(en.EntityID));
             }
             return groups;
         }

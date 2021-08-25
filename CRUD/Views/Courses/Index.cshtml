@@ -1,0 +1,71 @@
+﻿@model IEnumerable<CourseModel>
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h1>Index</h1>
+
+<p>
+    <a asp-action="Create">Create New</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Title)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Description)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.StartDate)
+            </th>
+            <th>
+                Requests
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @if (ViewBag.User.IsInRole("Admin"))
+                    {
+                        <a asp-action="Edit" asp-route-id="@item.Id">
+                            Html.DisplayFor(modelItem => item.Title)
+                        </a>
+                    }
+                    else
+                    {
+                        @Html.DisplayFor(modelItem => item.Title);
+                    }
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Description)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.StartDate)
+                </td>
+                <td>
+                    @if (ViewBag.User.IsInRole("Admin"))
+                    {
+                        ViewBag.courseService.GetStudentRequests((int)item.Id);
+                    }
+                    else
+                    {
+
+                        Dictionary<string, string> courseId = new Dictionary<string, string> { { "course", item.Id.ToString() } };
+
+                        <a asp-controller="Students" asp-all-route-data="courseId"
+                           asp-action="SendRequest">Send Request as Student</a> <span> || </span>
+                        <a asp-controller="Teachers" asp-all-route-data="courseId"
+                           asp-action="SendRequest">Send Request as Teacher</a>
+                    }
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

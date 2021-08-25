@@ -1,0 +1,77 @@
+﻿@model IdentityNLayer.Models.CourseModel
+
+@{
+    ViewData["Title"] = "Edit";
+}
+
+<h1>Edit</h1>
+
+<h4>Course</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Edit">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" asp-for="Id" />
+            <div class="form-group">
+                <label asp-for="Title" class="control-label"></label>
+                <input asp-for="Title" class="form-control" />
+                <span asp-validation-for="Title" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Description" class="control-label"></label>
+                <input asp-for="Description" class="form-control" />
+                <span asp-validation-for="Description" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Program" class="control-label"></label>
+                <input asp-for="Program" class="form-control" />
+                <span asp-validation-for="Program" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Topic.Title" class="control-label"></label>
+                @Html.DropDownListFor(model => model.TopicId, new SelectList(ViewBag.Topics, "Id", "Title"))
+                <span asp-validation-for="Topic.Title" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="StartDate" class="control-label"></label>
+                <input asp-for="StartDate" class="form-control" />
+                <span asp-validation-for="StartDate" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label class="control-label">StudentRequests</label>
+                <span class="text-danger">@ViewBag.StudentRequests</span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Save" class="btn btn-primary" />
+            </div>
+            <div class="form-group">
+                @{ Dictionary<string, string> prms = new Dictionary<string, string>() { { "courseId", Model.Id.ToString()} }; }
+                <a asp-controller="Groups" asp-action="Create" asp-all-route-data="prms" class="btn btn-primary">Create Groups</a>
+            </div>
+        </form>
+        <form asp-controller="Groups" asp-action="Create">
+            @*<div class="form-group">
+                <label asp-for="StudentRequests" class="control-label"></label>
+                @if (Model.StudentRequests != null) for (int i = 0; i < Model.StudentRequests.Count(); ++i)
+                    {
+                        <input type="hidden" asp-for="@Model.StudentRequests.ToList()[i].UserId" />
+                        <input type="hidden" asp-for="@Model.StudentRequests.ToList()[i].UserName" />
+                        @Html.CheckBoxFor(m => m.StudentRequests.ToList()[i].Applied)
+                        @Html.DisplayFor(m => m.StudentRequests.ToList()[i].UserName)
+                    }
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Create Groups" class="btn btn-primary" />
+            </div>*@
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

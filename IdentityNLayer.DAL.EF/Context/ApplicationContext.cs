@@ -28,6 +28,7 @@ namespace IdentityNLayer.DAL.EF.Context
         public DbSet<StudentToGroupAction> StudentToGroupActions { get; set; }
         public DbSet<Enrollment> Enrollments { get; set; }
         public DbSet<Course> Courses { get; set; }
+        public DbSet<Topic> Topics { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
