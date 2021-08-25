@@ -1,7 +1,14 @@
+using IdentityNLayer.BLL.Services;
+using IdentityNLayer.Core.Entities;
+using IdentityNLayer.DAL;
+using IdentityNLayer.DAL.EF.Context;
+using IdentityNLayer.DAL.EF.Repositories;
+using IdentityNLayer.DAL.Interfaces;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.SpaServices.AngularCli;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -26,6 +33,25 @@ namespace IdentityNLayer.Client
             {
                 configuration.RootPath = "ClientApp/dist";
             });
+            services.AddDbContext<ApplicationContext>(options =>
+               options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
+            services.AddTransient<IRepository<Student>,
+                StudentsRepository>();
+            services.AddTransient<IRepository<Group>,
+                GroupsRepository>();
+            services.AddTransient<IRepository<Teacher>,
+                TeachersRepository>();
+            services.AddTransient<IRepository<StudentToGroupAction>,
+                StudentToGroupActionsRepository>();
+            services.AddTransient<IRepository<Enrollment>,
+                EnrollmentsRepository>();
+            services.AddTransient<IRepository<Course>,
+                CoursesRepository>();
+            services.AddTransient<IRepository<Topic>,
+                TopicsRepository>();
+            services.AddScoped<IRepository<Course>, CoursesRepository>();
+            services.AddScoped<IUnitOfWork, EFUnitOfWork>();
+            services.AddScoped<ICourseService, CourseService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
