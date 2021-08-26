@@ -57,5 +57,15 @@ namespace IdentityNLayer.BLL.Services
         {
             return Db.Topics.GetAll();
         }
+
+        public bool HasRequest(int courseId, string userId, UserRoles role)
+        {
+            return Db.Enrollments.Find(en => en.EntityID == courseId && en.UserID == userId && en.Role == role).Any();
+        }
+
+        public IEnumerable<Group> GetAvailableGroups(int courseId)
+        {
+            return Db.Groups.Find(gr => gr.CourseId == courseId);
+        }
     }
 }

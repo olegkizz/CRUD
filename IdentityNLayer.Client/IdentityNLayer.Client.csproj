@@ -23,6 +23,12 @@
     <None Include="$(SpaRoot)**" Exclude="$(SpaRoot)node_modules\**" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\CRUD\IdentityNLayer.csproj" />
+    <ProjectReference Include="..\IdentityNLayer.BLL\IdentityNLayer.BLL.csproj" />
+    <ProjectReference Include="..\IdentityNLayer.Core\IdentityNLayer.Core.csproj" />
+  </ItemGroup>
+
   <Target Name="DebugEnsureNodeEnv" BeforeTargets="Build" Condition=" '$(Configuration)' == 'Debug' And !Exists('$(SpaRoot)node_modules') ">
     <!-- Ensure Node.js is installed -->
     <Exec Command="node --version" ContinueOnError="true">

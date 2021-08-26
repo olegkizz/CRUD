@@ -9,15 +9,14 @@ namespace IdentityNLayer.Models
     public class StudentModel : PersonModel
     {
         public string Type { get; set; }
-        [BindProperty]
-        public List<AssignGroupModel> AssignGroups { get; set; }
+     /*   public List<AssignGroupModel> AssignGroups { get; set; }*/
         public string[] StudentTypes { get; set; }
         public List<string> Errors { get; set; }
         public StudentModel() 
         {
             StudentTypes = Enum.GetNames(typeof(StudentType));
         }
-        public StudentModel CreateAssignGroups(IEnumerable<Group> groups = null)
+/*        public StudentModel CreateAssignGroups(IEnumerable<Group> groups = null)
         {
             List<AssignGroupModel> assignGroups = new List<AssignGroupModel>();
             if (groups != null)
@@ -32,6 +31,6 @@ namespace IdentityNLayer.Models
                 }
             AssignGroups = assignGroups;
             return this;
-        }
+        }*/
     }
 }

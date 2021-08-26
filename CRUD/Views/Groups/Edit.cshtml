@@ -1,5 +1,5 @@
 ﻿@model IdentityNLayer.Models.GroupModel
-
+@inject IdentityNLayer.BLL.Interfaces.ICourseService courseService
 
 @{
     ViewData["Title"] = "Edit";
@@ -25,9 +25,14 @@
                 <span asp-validation-for="Status" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="TeacherId" class="control-label"></label>
-                <select asp-for="TeacherId" class="form-control" asp-items="ViewBag.TeacherId"></select>
-                <span asp-validation-for="TeacherId" class="text-danger"></span>
+                <label asp-for="StudentRequests" class="control-label"></label>
+                @for (int i = 0; i < courseService.GetStudentRequests(Convert.ToInt32(Model.CourseId)).Count(); ++i)
+                {
+                    <input type="hidden" asp-for="@Model.StudentRequests[i].UserId" />
+                    <input type="hidden" asp-for="@Model.StudentRequests[i].UserName" />
+                    @Html.CheckBoxFor(m => m.StudentRequests[i].Applied)
+                    @Model.StudentRequests[i].UserName
+                }
             </div>
             <div class="form-group">
                 <input type="submit" value="Save" class="btn btn-primary" />

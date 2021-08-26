@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using IdentityNLayer.BLL.Interfaces;
 using IdentityNLayer.Core.Entities;
@@ -86,6 +87,11 @@ namespace IdentityNLayer.BLL.Services
                     groups.Add(Db.Groups.Get(en.EntityID));
             }
             return groups;
+        }
+
+        public bool HasAccount(string userId)
+        {
+            return Db.Students.Find(st => st.UserId == userId).Any();
         }
     }
 }

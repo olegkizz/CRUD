@@ -19,6 +19,7 @@ using IdentityNLayer.BLL.Interfaces;
 using IdentityNLayer.BLL.Mapper;
 using Microsoft.OpenApi.Models;
 using System;
+using IdentityNLayer.Middleware;
 
 namespace IdentityNLayer
 {
@@ -116,13 +117,15 @@ namespace IdentityNLayer
                 // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
                 app.UseHsts();
             }
-            app.UseHttpsRedirection();
-            app.UseStaticFiles();
 
+            app.UseHttpsRedirection();
+
+            app.UseStaticFiles();
             app.UseRouting();
 
             app.UseAuthentication();
             app.UseAuthorization();
+            app.UseMiddleware<StudentAccountMiddleware>();
 
             app.UseEndpoints(endpoints =>
             {

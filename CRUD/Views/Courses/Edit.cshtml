@@ -1,4 +1,5 @@
 ﻿@model IdentityNLayer.Models.CourseModel
+@inject IdentityNLayer.BLL.Interfaces.ICourseService courseService
 
 @{
     ViewData["Title"] = "Edit";
@@ -30,7 +31,7 @@
             </div>
             <div class="form-group">
                 <label asp-for="Topic.Title" class="control-label"></label>
-                @Html.DropDownListFor(model => model.TopicId, new SelectList(ViewBag.Topics, "Id", "Title"))
+                @Html.DropDownListFor(model => model.TopicId, new SelectList(courseService.GetAvailableTopics(), "Id", "Title"))
                 <span asp-validation-for="Topic.Title" class="text-danger"></span>
             </div>
             <div class="form-group">
@@ -40,30 +41,29 @@
             </div>
             <div class="form-group">
                 <label class="control-label">StudentRequests</label>
-                <span class="text-danger">@ViewBag.StudentRequests</span>
+                <span class="text-danger">@courseService.GetStudentRequests(Model.Id).Count()</span>
             </div>
             <div class="form-group">
                 <input type="submit" value="Save" class="btn btn-primary" />
             </div>
             <div class="form-group">
-                @{ Dictionary<string, string> prms = new Dictionary<string, string>() { { "courseId", Model.Id.ToString()} }; }
-                <a asp-controller="Groups" asp-action="Create" asp-all-route-data="prms" class="btn btn-primary">Create Groups</a>
+                @{ Dictionary<string, string> courseId = new Dictionary<string, string>() { { "courseId", Model.Id.ToString() } }; }
+                <a asp-controller="Groups" asp-action="Create" asp-all-route-data="courseId" class="btn btn-primary">Create Groups</a>
             </div>
-        </form>
-        <form asp-controller="Groups" asp-action="Create">
-            @*<div class="form-group">
-                <label asp-for="StudentRequests" class="control-label"></label>
-                @if (Model.StudentRequests != null) for (int i = 0; i < Model.StudentRequests.Count(); ++i)
-                    {
-                        <input type="hidden" asp-for="@Model.StudentRequests.ToList()[i].UserId" />
-                        <input type="hidden" asp-for="@Model.StudentRequests.ToList()[i].UserName" />
-                        @Html.CheckBoxFor(m => m.StudentRequests.ToList()[i].Applied)
-                        @Html.DisplayFor(m => m.StudentRequests.ToList()[i].UserName)
-                    }
+            <div class="form-group" style="color: red">@courseService.GetStudentRequests(Model.Id).Count()</div>
+            <div class="form-group">
+                <input type="submit" value="Save" class="btn btn-primary" />
             </div>
             <div class="form-group">
-                <input type="submit" value="Create Groups" class="btn btn-primary" />
-            </div>*@
+                <button asp-controller="Group" asp-action="Create" class="btn btn-primary">Create Groups</button>
+            </div>
+            <div class="form-group">
+                @Html.DropDownListFor(model => model.AvailableGroupId, new SelectList(courseService.GetAvailableGroups(Model.Id), "Id", "Title"))
+            </div>
+            <div class="form-group">
+                @{ Dictionary<string, string> groupId = new Dictionary<string, string>() { { "groupId", Model.AvailableGroupId.ToString() } }; }
+                <button asp-controller="Group" asp-action="Edit" asp-all-route-data="groupId" class="btn btn-primary">Adding to Selected Groups</button>
+            </div>
         </form>
     </div>
 </div>

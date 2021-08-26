@@ -12,7 +12,9 @@ namespace IdentityNLayer.DAL.EF.Context
         {
             var userManager = modelBuilder.Entity<IdentityUser>();
             var roleManager = modelBuilder.Entity<IdentityRole>();
-            string[] roles = { "Admin", "Manager", "Student", "Teacher" };
+            string[] roles = { "Admin", "Manager",
+                "Student", "Teacher"
+            };
             /*    RoleManager<IdentityRole> roleManager = new ();
                 UserManager<IdentityUser> userManager = new ();*/
             List<IdentityRole> rolesIdentity = new();
@@ -43,7 +45,7 @@ namespace IdentityNLayer.DAL.EF.Context
                         EmailConfirmed = true,
                         Email = "manager@manager.com"
                     },
-                new IdentityUser
+               /* new IdentityUser
                     {
                         UserName = "studentfirst@mail.com",
                         NormalizedUserName = "studentfirst@mail.com".ToUpper(),
@@ -92,7 +94,7 @@ namespace IdentityNLayer.DAL.EF.Context
                        NormalizedUserName = "studentfifth@mail.com".ToUpper(),
                        EmailConfirmed = true,
                        Email = "studentfifth@mail.com"
-                  },
+                  },*/
             };           
             foreach(IdentityUser user in users)
             {
@@ -111,7 +113,7 @@ namespace IdentityNLayer.DAL.EF.Context
                 }
             }
            
-                Teacher teacher1 = new Teacher
+               /* Teacher teacher1 = new Teacher
                 {
                     Id = 1,
                     FirstName = "Teach",
@@ -135,7 +137,7 @@ namespace IdentityNLayer.DAL.EF.Context
                    {
                     teacher1, teacher2
                    }
-               );
+               );*/
                 Topic topic1 = new Topic()
                 {
                     Id = 1,
@@ -198,7 +200,7 @@ namespace IdentityNLayer.DAL.EF.Context
                     firstGroup, secondGroup
                 }
             );*/
-            Student studentFirst = new Student
+       /*     Student studentFirst = new Student
                 {
                     Id = 1,
                     FirstName = "Oleg",
@@ -248,7 +250,7 @@ namespace IdentityNLayer.DAL.EF.Context
                      {
                         studentFirst, studentSecond, studentThird, studentFourth, studentFifth
                      }
-                );
+                );*/
                 modelBuilder.Entity<Enrollment>().Property(en => en.Updated).HasDefaultValueSql("getdate()");
                 /*modelBuilder.Entity<Enrollment>().HasData(
                     new Enrollment[]
