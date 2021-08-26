@@ -1,7 +1,8 @@
-﻿@{
-    Dictionary<string, string> prms = new Dictionary<string, string> { { "course", Context.Request.Query["course"].ToString()?.ToString() } };
+﻿@inject IdentityNLayer.BLL.Interfaces.ICourseService courseService
+@{
+    Dictionary<string, string> prms = new Dictionary<string, string> { { "courseId", Context.Request.Query["courseId"].ToString() } };
 }
-<div>Do you really want send request in this course?</div>
+<div>Do you really want send request in @courseService.GetById(Convert.ToInt32(prms.Values.First())).Title course?</div>
 <form asp-all-route-data="prms" asp-action="SendRequest" method="post">
     <input type="submit" name="request" value="Yes" />
     <input type="submit" name="request" value="No" />

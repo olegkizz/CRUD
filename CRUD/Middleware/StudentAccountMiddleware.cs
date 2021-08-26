@@ -1,0 +1,36 @@
+﻿using IdentityNLayer.BLL.Interfaces;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Security.Claims;
+using System.Threading.Tasks;
+
+namespace IdentityNLayer.Middleware
+{
+    public class StudentAccountMiddleware
+    {
+        private RequestDelegate _next;
+   
+
+        public StudentAccountMiddleware(RequestDelegate next)
+        {
+            _next = next;
+        }
+        public async Task InvokeAsync(HttpContext context, IStudentService studentService, UserManager<IdentityUser> userManager)
+        { 
+            var courseId = context.Request.Query["courseId"];
+            if (context.Request.Path == "/Students/SendRequest" && context.Request.Method.ToLower() == "post")
+            {
+                if (!studentService.HasAccount(userManager.GetUserAsync(context.User).Result.Id))
+                    context.Response.Redirect("/Students/Create?courseId="+courseId);
+                else await _next.Invoke(context);
+            }
+            else
+            {
+                await _next.Invoke(context);
+            }
+        }
+    }
+}

@@ -60,11 +60,6 @@ namespace IdentityNLayer.Controllers
         public IActionResult Create(int courseId)
         {
             GroupModel group = new ();
-            group.SetStudentRequests(_courseService.GetStudentRequests((int)courseId));
-            foreach(Enrollment en in _courseService.GetTeacherRequests((int)courseId))
-            {
-                group.TeacherRequests.Add(_teacherService.GetTeacherByUserId(en.UserID));
-            }
             group.CourseId = courseId;
             return View(group);
         }

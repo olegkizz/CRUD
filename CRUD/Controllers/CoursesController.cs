@@ -40,9 +40,6 @@ namespace IdentityNLayer.Controllers
         // GET: Courses
         public async Task<IActionResult> Index()
         {
-            ViewBag.courseService = _courseService;
-            ViewBag.User = User;
-            ViewBag.courseService = _courseService;
             return View(_mapper.Map<IEnumerable<CourseModel>>(_courseService.GetAll()));
         }
 
@@ -84,9 +81,6 @@ namespace IdentityNLayer.Controllers
             {
                 return NotFound();
             }
-            ViewBag.Topics = _courseService.GetAvailableTopics();
-            ViewBag.StudentRequests = _courseService.GetStudentRequests((int)id).Count();
-            course.SetStudentRequests(_courseService.GetStudentRequests((int)id));
             return View(course);
         }
 
@@ -121,8 +115,8 @@ namespace IdentityNLayer.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            ViewBag.Topics = _courseService.GetAvailableTopics();
-            ViewBag.Requests = _courseService.GetStudentRequests(id);
+     /*       ViewBag.Topics = _courseService.GetAvailableTopics();
+            ViewBag.Requests = _courseService.GetStudentRequests(id);*/
             return View(course);
         }
 

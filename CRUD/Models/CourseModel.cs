@@ -6,7 +6,8 @@ namespace IdentityNLayer.Models
     public class CourseModel : Course
     {
         public List<StudentRequestsModel> StudentRequests;
-        public void SetStudentRequests(IEnumerable<Enrollment> requests)
+        public int AvailableGroupId;
+   /*     public void SetStudentRequests(IEnumerable<Enrollment> requests)
         {
             List<StudentRequestsModel> studentRequests = new();
             foreach (Enrollment request in requests)
@@ -20,6 +21,6 @@ namespace IdentityNLayer.Models
                     });
             }
             StudentRequests = studentRequests;
-        }
+        }*/
     }
 }

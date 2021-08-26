@@ -25,7 +25,7 @@ namespace IdentityNLayer.BLL.Services
               Db.Enrollments.Find(en => en.UserID == userId && en.EntityID == (group != null ? group.CourseId : groupId)).FirstOrDefault();
             if (enrollment?.State == ActionsStudentGroup.Aborted || enrollment?.State == ActionsStudentGroup.Requested)
             {
-                enrollment.State = ActionsStudentGroup.Applied;
+                enrollment.State = confirmed ? ActionsStudentGroup.Applied : ActionsStudentGroup.Requested;
                 enrollment.EntityID = groupId;
                 Db.Enrollments.Update(enrollment);
             }

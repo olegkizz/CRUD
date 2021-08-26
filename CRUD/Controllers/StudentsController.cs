@@ -19,21 +19,23 @@ namespace IdentityNLayer.Controllers
         private readonly IStudentService _studentService;
         private readonly IGroupService _groupService;
         private readonly IEnrollmentService _enrollmentService;
+        private readonly ICourseService _courseService;
 
         private readonly RoleManager<IdentityRole> _roleManager;
         private readonly UserManager<IdentityUser> _userManager;
         public StudentsController(IStudentService studentService,
             IGroupService groupService,
             IMapper mapper,
-            IStudentToGroupActionService studentToGroupActionsService,
             RoleManager<IdentityRole> roleManager,
             UserManager<IdentityUser> userManager,
-            IEnrollmentService enrollmentService)
+            IEnrollmentService enrollmentService,
+            ICourseService courseService)
         {
             _studentService = studentService;
             _groupService = groupService;
             _mapper = mapper;
             _enrollmentService = enrollmentService;
+            _courseService = courseService;
             _roleManager = roleManager;
             _userManager = userManager;
         }
@@ -43,35 +45,30 @@ namespace IdentityNLayer.Controllers
 
         public async Task<IActionResult> Index()
         {
-            ViewBag.studentService = _studentService;
             return View(_mapper.Map<IEnumerable<StudentModel>>(_studentService.GetAll()));
         }
         [HttpGet]
-        public IActionResult SendRequest()
+        public IActionResult SendRequest(int courseId)
         {
             return View();
         }
         [HttpPost]
-        public IActionResult SendRequest(int course, string request)
+        public IActionResult SendRequest(int courseId, string request)
         {
             if (request == "Yes")
             {
-                _enrollmentService.Enrol(_userManager.GetUserId(User), course, UserRoles.Student, false);
+                _enrollmentService.Enrol(_userManager.GetUserId(User), courseId, UserRoles.Student, false);
             }
 
             return Redirect("/Courses/Index");
         }
 
         // GET: Students/Create
-        [Authorize(Roles = "Admin, Manager")]
-
+        [HttpGet]
 
         public IActionResult Create()
         {
-            ViewBag.StudentTypes = _studentService.GetStudentTypes();
-
             StudentModel student = new StudentModel();
-            student.CreateAssignGroups(_groupService.GetAll());
 
             return View(student);
         }
@@ -80,41 +77,35 @@ namespace IdentityNLayer.Controllers
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
-        [Authorize(Roles = "Admin, Manager")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("FirstName, LastName, BirthDate, Email," +
-            "Type, AssignGroups, User")] StudentModel student)
+            "Type, User")] StudentModel student, int? courseId)
         {
 
             if (ModelState.IsValid && (await _userManager.FindByIdAsync(student.User.Id)) == null)
             {
-                List<string> errors = new();
-
-                IdentityResult chkUser = await _userManager.CreateAsync(student.User, student.User.PasswordHash);
+                var user = await _userManager.GetUserAsync(User);
+                user.PhoneNumber = student.User.PhoneNumber;
+                user.UserName = student.User.UserName;
+                IdentityResult chkUser = await _userManager.UpdateAsync(user);
                 if (chkUser.Succeeded)
                 {
-                    IdentityResult result = await _userManager.AddToRoleAsync(student.User, UserRoles.Student.ToString());
+                    IdentityResult result = await _userManager.AddToRoleAsync(user, UserRoles.Student.ToString());
+                    student.User = user;
                     int newStudentId = _studentService.Create(_mapper.Map<Student>(student));
-
-                    foreach (AssignGroupModel assignGroup in student.AssignGroups)
-                    {
-                        if (assignGroup.Assigned)
-                            _enrollmentService.Enrol(student.User.Id, assignGroup.GroupID, UserRoles.Student);
-                    }
+                    if(courseId != 0)
+                        return RedirectToAction("SendRequest", new { courseId });
                     return RedirectToAction(nameof(Index));
                 }
-                ViewBag.Errors = chkUser.Errors.ToList();
-                return View(student.CreateAssignGroups(_groupService.GetAll()));
+                return View();
             }
             else
             {
                 throw new DbUpdateConcurrencyException();
             }
         }
-
+       
         // GET: Contacts/Edit/5
-        [Authorize("Admin, Manager")]
-
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -123,16 +114,15 @@ namespace IdentityNLayer.Controllers
             }
           
             StudentModel student = _mapper.Map<StudentModel>(_studentService.GetById((int)id));
-
-            student.CreateAssignGroups(_groupService.GetAll());
+            
+            /*student.CreateAssignGroups(_groupService.GetAll());
             List<int> studentGroupIds = _studentService.GetStudentGroups((int)id).Select(st => st.Id).ToList();
             foreach (AssignGroupModel ag in student.AssignGroups)
             {
                 if (studentGroupIds.Contains(ag.GroupID))
                     ag.Assigned = true;
-            }
+            }*/
 
-            ViewBag.StudentTypes = _studentService.GetStudentTypes();
             
             if (student == null)
             {
@@ -147,8 +137,6 @@ namespace IdentityNLayer.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        [Authorize("Admin, Manager")]
-
         public async Task<IActionResult> Edit(int id, [Bind("Id, FirstName, LastName, BirthDate, User, " +
             "PhoneNumber, Type, AssignGroups, UserId")] StudentModel student)
         {
@@ -163,12 +151,12 @@ namespace IdentityNLayer.Controllers
                 {
                     _studentService.Update(_mapper.Map<Student>(student));
 
-                    foreach (AssignGroupModel assignGroup in student.AssignGroups)
+                   /* foreach (AssignGroupModel assignGroup in student.AssignGroups)
                     {
                         if (assignGroup.Assigned)
                             _enrollmentService.Enrol(student.UserId, assignGroup.GroupID, UserRoles.Student);
                         else _enrollmentService.UnEnrol(student.UserId, assignGroup.GroupID);
-                    }
+                    }*/
                 }
                 catch (DbUpdateConcurrencyException)
                 {

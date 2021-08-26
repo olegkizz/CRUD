@@ -2,9 +2,14 @@
 using IdentityNLayer.Core.Entities;
 using System.Collections.Generic;
 
-public interface ICourseService : IBaseService<Course>
+namespace IdentityNLayer.BLL.Interfaces
 {
-    public IEnumerable<Enrollment> GetStudentRequests(int id);
-    public IEnumerable<Enrollment> GetTeacherRequests(int id);
-    public IEnumerable<Topic> GetAvailableTopics();
+    public interface ICourseService : IBaseService<Course>
+    {
+        public IEnumerable<Enrollment> GetStudentRequests(int id);
+        public IEnumerable<Enrollment> GetTeacherRequests(int id);
+        public IEnumerable<Topic> GetAvailableTopics();
+        public IEnumerable<Group> GetAvailableGroups(int courseId);
+        public bool HasRequest(int courseId, string userId, UserRoles role);
+    }
 }
