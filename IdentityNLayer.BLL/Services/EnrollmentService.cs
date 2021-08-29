@@ -44,7 +44,7 @@ namespace IdentityNLayer.BLL.Services
         public void UnEnrol(string userId, int groupdId)
         {
             Enrollment enrollment =
-             ((List<Enrollment>)Db.Enrollments.Find(en => en.UserID == userId && en.EntityID == groupdId)).FirstOrDefault();
+             Db.Enrollments.Find(en => en.UserID == userId && en.EntityID == groupdId).FirstOrDefault();
             if (enrollment != null)
             {
                 enrollment.State = ActionsStudentGroup.Aborted;

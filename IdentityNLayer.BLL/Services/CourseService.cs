@@ -65,7 +65,7 @@ namespace IdentityNLayer.BLL.Services
 
         public IEnumerable<Group> GetAvailableGroups(int courseId)
         {
-            return Db.Groups.Find(gr => gr.CourseId == courseId);
+            return Db.Groups.Find(gr => gr.CourseId == courseId && gr.Status == GroupStatus.Pending);
         }
     }
 }

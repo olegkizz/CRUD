@@ -31,7 +31,8 @@ namespace IdentityNLayer.BLL.Services
 
         public void Update(Group entity)
         {
-            throw new NotImplementedException();
+            Db.Groups.Update(entity);
+            Db.Save();
         }
 
         public void Delete(int id)

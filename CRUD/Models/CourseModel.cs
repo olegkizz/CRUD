@@ -6,7 +6,7 @@ namespace IdentityNLayer.Models
     public class CourseModel : Course
     {
         public List<StudentRequestsModel> StudentRequests;
-        public int AvailableGroupId;
+        public int? AvailableGroupId { get; set; }
    /*     public void SetStudentRequests(IEnumerable<Enrollment> requests)
         {
             List<StudentRequestsModel> studentRequests = new();

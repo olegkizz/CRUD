@@ -1,15 +1,14 @@
 ﻿using IdentityNLayer.Core.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
-using System;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.Extensions.Configuration;
 
 namespace IdentityNLayer.DAL.EF.Context
 {
     public class ApplicationContext : IdentityDbContext<IdentityUser>
     {
-/*        private readonly UserManager<IdentityUser> _userManager;
-        private readonly RoleManager<IdentityRole> _roleManager;*/
+
         public ApplicationContext()
         {
 
@@ -18,9 +17,6 @@ namespace IdentityNLayer.DAL.EF.Context
             : base(options)
         {
             Database.EnsureCreated();
-     /*       _userManager = userManager;
-            _roleManager = roleManager;*/
-
         }
         public DbSet<Student> Students { get; set; }
         public DbSet<Group> Groups { get; set; }
