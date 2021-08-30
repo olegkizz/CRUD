@@ -1,3 +1,4 @@
+using IdentityNLayer.BLL.Interfaces;
 using IdentityNLayer.BLL.Services;
 using IdentityNLayer.Core.Entities;
 using IdentityNLayer.DAL;
@@ -6,7 +7,6 @@ using IdentityNLayer.DAL.EF.Repositories;
 using IdentityNLayer.DAL.Interfaces;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.SpaServices.AngularCli;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;

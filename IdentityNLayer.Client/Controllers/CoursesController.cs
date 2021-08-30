@@ -1,4 +1,5 @@
-﻿using IdentityNLayer.Core.Entities;
+﻿using IdentityNLayer.BLL.Interfaces;
+using IdentityNLayer.Core.Entities;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using System;
