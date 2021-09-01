@@ -6,5 +6,7 @@ namespace IdentityNLayer.BLL.Interfaces
     public interface ITeacherService : IBaseService<Teacher>
     {
         Teacher GetTeacherByUserId(string userId);
+        public bool HasAccount(string userId);
+
     }
 }

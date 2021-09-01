@@ -40,7 +40,8 @@ namespace IdentityNLayer.DAL.EF.Repositories
 
         public void Update(Group item)
         {
-            throw new NotImplementedException();
+            _context.Entry(item).State = EntityState.Modified;
+            _context.Groups.Update(item);
         }
 
         public void Delete(int id)

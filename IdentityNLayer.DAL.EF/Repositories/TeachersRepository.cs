@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using IdentityNLayer.DAL.EF.Context;
 using IdentityNLayer.Core.Entities;
+using System.Data.Entity;
 
 namespace IdentityNLayer.DAL.EF.Repositories
 {
@@ -21,12 +22,15 @@ namespace IdentityNLayer.DAL.EF.Repositories
 
         public Teacher Get(int id)
         {
-            throw new NotImplementedException();
+            return _context.Teachers
+                .Include(s => s.User)
+                .Where(s => s.Id == id)
+                .First();
         }
 
         public IEnumerable<Teacher> Find(Func<Teacher, bool> predicate)
         {
-            throw new NotImplementedException();
+            return _context.Teachers.Where(predicate).ToList();
         }
 
         public void Create(Teacher item)

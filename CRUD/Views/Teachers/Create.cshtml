@@ -13,6 +13,7 @@
     <div class="col-md-4">
         <form asp-action="Create">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" name="courseId" value="@Context.Request.Query["courseId"].ToString()" />
             <div class="form-group">
                 <label asp-for="FirstName" class="control-label"></label>
                 <input asp-for="FirstName" class="form-control" />
@@ -24,19 +25,9 @@
                 <span asp-validation-for="LastName" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="User.Email" class="control-label"></label>
-                <input asp-for="User.Email" class="form-control" />
-                <span asp-validation-for="User.Email" class="text-danger"></span>
-            </div>
-            <div class="form-group">
                 <label asp-for="BirthDate" class="control-label"></label>
                 <input asp-for="BirthDate" type="date" class="form-control" />
                 <span asp-validation-for="BirthDate" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="User.PhoneNumber" class="control-label"></label>
-                <input asp-for="User.PhoneNumber" class="form-control" />
-                <span asp-validation-for="User.PhoneNumber" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="Bio" class="control-label"></label>
@@ -49,7 +40,10 @@
                 <span asp-validation-for="LinkToProfile" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <input type="submit" value="Create" class="btn btn-primary" />
+                @{string action = "Create"; }
+                @if (Context.Request.Query["courseId"].ToString() != null)
+                    action = "Create And Send Request";
+                <input type="submit" value="@action" class="btn btn-primary" />
             </div>
         </form>
     </div>

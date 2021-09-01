@@ -2,7 +2,7 @@
 using IdentityNLayer.Core.Entities;
 using IdentityNLayer.Models;
 
-namespace IdentityNLayer.BLL.Mapper
+namespace IdentityNLayer.Mapper
 {
     public class MappingProfile : Profile
     {

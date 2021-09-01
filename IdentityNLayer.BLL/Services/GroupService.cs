@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using IdentityNLayer.BLL.Interfaces;
 using IdentityNLayer.Core.Entities;
 using IdentityNLayer.DAL.Interfaces;
+using System.Linq;
 
 namespace IdentityNLayer.BLL.Services
 {
@@ -38,6 +39,11 @@ namespace IdentityNLayer.BLL.Services
         public void Delete(int id)
         {
             throw new NotImplementedException();
+        }
+
+        public Teacher GetTeacher(int groupId)
+        {
+            return Db.Groups.Find(gr => gr.Id == groupId ).FirstOrDefault()?.Teacher;
         }
     }
 }

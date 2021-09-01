@@ -19,6 +19,13 @@ namespace IdentityNLayer.Models
         public DateTime? BirthDate { get; set; }
         public string UserId { get; set; }
         public IdentityUser User { get; set; }
+        public string Name
+        {
+            get
+            {
+                return FirstName + " " + LastName;
+            }
+        }
 
         /*[Compare("User.PasswordHash", ErrorMessage = "Confirm password doesn't match, Type again !")]
         [DataType(DataType.Password)]

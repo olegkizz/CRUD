@@ -5,6 +5,7 @@ using AutoMapper;
 using IdentityNLayer.Models;
 using IdentityNLayer.Core.Entities;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Identity;
 
 namespace IdentityNLayer.Controllers
 {
@@ -12,16 +13,40 @@ namespace IdentityNLayer.Controllers
     {
         private readonly ITeacherService _teacherService;
         private readonly IMapper _mapper;
-        public TeachersController(ITeacherService teacherService, IMapper mapper)
+        UserManager<IdentityUser> _userManager;
+        private readonly IEnrollmentService _enrollmentService;
+
+        public TeachersController(ITeacherService teacherService,
+            IMapper mapper,
+            UserManager<IdentityUser> userManager,
+            IEnrollmentService enrollmentService)
         {
             _teacherService = teacherService;
             _mapper = mapper;
+            _userManager = userManager;
+            _enrollmentService = enrollmentService;
+
+
         }
 
         // GET: Teachers
         public async Task<IActionResult> Index()
         {
             return View(_mapper.Map<TeacherModel>(_teacherService.GetAll()));
+        }
+        public IActionResult SendRequest(int courseId)
+        {
+            return View();
+        }
+        [HttpPost]
+        public IActionResult SendRequest(int courseId, string request)
+        {
+            if (request == "Yes")
+            {
+                _enrollmentService.Enrol(_userManager.GetUserId(User), courseId, UserRoles.Teacher, false);
+            }
+
+            return Redirect("/Courses/Index");
         }
 
         // GET: Contacts/Details/5
@@ -53,15 +78,23 @@ namespace IdentityNLayer.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Name,Email,LinkToProfile,Bio")] TeacherModel teacher)
+        public async Task<IActionResult> Create([Bind("Id,FirstName,LastName,Email,LinkToProfile,Bio,BirthDate")] TeacherModel teacher, int courseId)
         {
-            /*      if (ModelState.IsValid)
-                  {
-                      _context.Add(contact);
-                      await _context.SaveChangesAsync();
-                      return RedirectToAction(nameof(Index));
-                  }*/
-            return View();
+            if (ModelState.IsValid)
+            {
+                var user = await _userManager.GetUserAsync(User);
+
+                IdentityResult result = await _userManager.AddToRoleAsync(user, UserRoles.Teacher.ToString());
+                teacher.User = user;
+                int newTeacherId = _teacherService.Create(_mapper.Map<Teacher>(teacher));
+                if (courseId != 0)
+                    return RedirectToAction("SendRequest", new { courseId });
+                return RedirectToAction(nameof(Index));
+            }
+            else
+            {
+                throw new DbUpdateConcurrencyException();
+            }
         }
 
         // GET: Contacts/Edit/5

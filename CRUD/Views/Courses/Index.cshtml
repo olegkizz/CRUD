@@ -65,21 +65,21 @@
                         Dictionary<string, string> courseId = new Dictionary<string, string> { { "courseId", item.Id.ToString() } };
                         @if (!courseService.HasRequest(item.Id, userManager.GetUserAsync(Context.User).Result.Id, UserRoles.Student))
                         {
-                            <a asp-controller="Students" asp-all-route-data="courseId"
-                               asp-action="SendRequest">Student Request</a>
+                            @if (!courseService.HasRequest(item.Id, userManager.GetUserAsync(Context.User).Result.Id, UserRoles.Teacher))
+                            {
+                                <a asp-controller="Teachers" asp-all-route-data="courseId"
+                                   asp-action="SendRequest">Teacher Request</a>
+                                <a asp-controller="Students" asp-all-route-data="courseId"
+                                   asp-action="SendRequest">Student Request</a>
+                            }
+                            else
+                            {
+                                <span>Teacher Request Has Been Sent</span>
+                            }
                         }
                         else
                         {
-                            <span>Student Request Has Been Sent ||</span>
-                        }
-                        @if (!courseService.HasRequest(item.Id, userManager.GetUserAsync(Context.User).Result.Id, UserRoles.Teacher))
-                        {
-                            <a asp-controller="Teachers" asp-all-route-data="courseId"
-                               asp-action="SendRequest">Teacher Request</a>
-                        }
-                        else
-                        {
-                            <span>Teacher Request Has Been Sent</span>
+                            <span>Student Request Has Been Sent</span>
                         }
                     }
                 </td>

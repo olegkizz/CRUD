@@ -6,8 +6,6 @@ using IdentityNLayer.BLL.Interfaces;
 using AutoMapper;
 using IdentityNLayer.Core.Entities;
 using System.Collections.Generic;
-using System;
-using System.Linq;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Authorization;
 
@@ -81,8 +79,7 @@ namespace IdentityNLayer.Controllers
         public async Task<IActionResult> Create([Bind("FirstName, LastName, BirthDate, Email," +
             "Type, User")] StudentModel student, int? courseId)
         {
-
-            if (ModelState.IsValid && (await _userManager.FindByIdAsync(student.User.Id)) == null)
+            if (ModelState.IsValid)
             {
                 var user = await _userManager.GetUserAsync(User);
                 user.PhoneNumber = student.User.PhoneNumber;

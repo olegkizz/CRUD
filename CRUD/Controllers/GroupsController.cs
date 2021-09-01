@@ -9,6 +9,7 @@ using IdentityNLayer.Core.Entities;
 using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
 using System.Linq;
+using Microsoft.AspNetCore.Authorization;
 
 namespace IdentityNLayer.Controllers
 {
@@ -20,7 +21,7 @@ namespace IdentityNLayer.Controllers
         private readonly ITeacherService _teacherService;
         private readonly IMapper _mapper;
 
-        public GroupsController(IGroupService groupService, IMapper mapper, 
+        public GroupsController(IGroupService groupService, IMapper mapper,
             IEnrollmentService enrollmentService,
             ICourseService courseService,
             ITeacherService teacherService)
@@ -56,32 +57,35 @@ namespace IdentityNLayer.Controllers
             return View();
         }
 
-        // GET: Contacts/Create
+        // GET: Groups/Create
+        [Authorize(Roles = "Admin, Manager")]
+
         public IActionResult Create(int courseId)
         {
-            GroupModel group = new ();
+            GroupModel group = new();
             group.CourseId = courseId;
             group.SetStudentRequests(_courseService.GetStudentRequests(courseId));
             return View(group);
         }
 
-        // POST: Contacts/Create
+        // POST: Groups/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Admin, Manager")]
         public async Task<IActionResult> Create([Bind("Id,Number,Status,StudentRequests,CourseId,TeacherId")] GroupModel group)
         {
             if (ModelState.IsValid)
             {
                 int groupId = _groupService.Create(_mapper.Map<Group>(group));
 
-                foreach(StudentRequestsModel studentRequest in group.StudentRequests)
+                foreach (StudentRequestsModel studentRequest in group.StudentRequests)
                 {
-                    if(studentRequest.Applied)
+                    if (studentRequest.Applied)
                         _enrollmentService.Enrol(studentRequest.UserId, groupId, UserRoles.Student);
                 }
-                if(group.TeacherId != null)
+                if (group.TeacherId != null)
                     _enrollmentService.Enrol(_teacherService.GetById((int)group.TeacherId).UserId, groupId, UserRoles.Teacher);
                 return RedirectToAction(nameof(Index));
             }
@@ -111,7 +115,7 @@ namespace IdentityNLayer.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Number,StudentRequests,Status,TeacherId")] GroupModel group)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,Number,StudentRequests,Status,TeacherId,CourseId")] GroupModel group)
         {
             if (id != group.Id)
             {
@@ -125,10 +129,29 @@ namespace IdentityNLayer.Controllers
                     _groupService.Update(_mapper.Map<Group>(group));
                     foreach (StudentRequestsModel studentRequest in group.StudentRequests)
                     {
-                        if(studentRequest.Applied)
+                        if (studentRequest.Applied)
                             _enrollmentService.Enrol(studentRequest.UserId, group.Id, UserRoles.Student);
                         else _enrollmentService.UnEnrol(studentRequest.UserId, group.Id);
                     }
+                    if (group.TeacherId != null)
+                    {
+                        int? currentTeacherId = _groupService.GetTeacher(group.Id)?.Id;
+                        string newUserTeachersId = _teacherService.GetById((int)group.TeacherId).UserId;
+                        string currentUserTeachersId = null;
+                        if (currentTeacherId != null)
+                           currentUserTeachersId = _teacherService.GetById((int)currentTeacherId).UserId;
+
+                        if (currentTeacherId != null)
+                        {
+                            if(currentTeacherId != group.TeacherId)
+                            {
+                                if(currentUserTeachersId != null)
+                                    _enrollmentService.UnEnrol(currentUserTeachersId, group.Id);
+                                _enrollmentService.Enrol(newUserTeachersId, group.Id, UserRoles.Teacher);
+                            }
+                        }
+                    }
+                    return RedirectToAction(nameof(Index));
                 }
                 catch (DbUpdateConcurrencyException)
                 {
@@ -141,7 +164,6 @@ namespace IdentityNLayer.Controllers
                         throw;
                     }
                 }
-                return RedirectToAction(nameof(Index));
             }
             return View();
         }

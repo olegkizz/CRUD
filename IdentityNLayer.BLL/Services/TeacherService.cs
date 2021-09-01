@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using IdentityNLayer.BLL.Interfaces;
 using IdentityNLayer.Core.Entities;
 using IdentityNLayer.DAL.Interfaces;
+using System.Linq;
 
 namespace IdentityNLayer.BLL.Services
 {
@@ -25,7 +26,9 @@ namespace IdentityNLayer.BLL.Services
 
         public int Create(Teacher entity)
         {
-            throw new NotImplementedException();
+            Db.Teachers.Create(entity);
+            Db.Save();
+            return entity.Id;
         }
 
         public void Update(Teacher entity)
@@ -43,6 +46,10 @@ namespace IdentityNLayer.BLL.Services
             foreach(Teacher tc in Db.Teachers.Find(tc => tc.UserId == userId))
                 return tc;
             return null;
+        }
+        public bool HasAccount(string userId)
+        {
+            return Db.Teachers.Find(tc => tc.UserId == userId).Any();
         }
     }
 }

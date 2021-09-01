@@ -16,9 +16,7 @@ using IdentityNLayer.DAL.EF.Repositories;
 using IdentityNLayer.Core.Entities;
 using IdentityNLayer.DAL.Interfaces;
 using IdentityNLayer.BLL.Interfaces;
-using IdentityNLayer.BLL.Mapper;
-using Microsoft.OpenApi.Models;
-using System;
+using IdentityNLayer.Mapper;
 using IdentityNLayer.Middleware;
 
 namespace IdentityNLayer
@@ -125,7 +123,7 @@ namespace IdentityNLayer
 
             app.UseAuthentication();
             app.UseAuthorization();
-            app.UseMiddleware<StudentAccountMiddleware>();
+            app.UseMiddleware<CreatingAccountMiddleware>();
 
             app.UseEndpoints(endpoints =>
             {

@@ -17,7 +17,6 @@ namespace IdentityNLayer.Models
         public DateTime? StartDate { get; set; }
 
         public List<StudentRequestsModel> StudentRequests { get; set; }
-        public List<Teacher> TeacherRequests { get; set; }
         public void SetStudentRequests(IEnumerable<Enrollment> requests)
         {
             List<StudentRequestsModel> studentRequests = new();
