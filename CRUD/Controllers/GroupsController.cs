@@ -42,7 +42,10 @@ namespace IdentityNLayer.Controllers
         public async Task<IActionResult> Index()
         {
             if(User.IsInRole("Admin") || User.IsInRole("Manager"))
-                return View(_mapper.Map<IEnumerable<GroupModel>>(_groupService.GetAll()));
+            {
+                IEnumerable<Group> groups = await _groupService.GetAllAsync();
+                return View(_mapper.Map<IEnumerable<GroupModel>>(groups));
+            }
             return View(_mapper.Map<IEnumerable<GroupModel>>(_groupService.GetGroupsByUserId(_userManager.GetUserId(User))));
         }
 
@@ -53,7 +56,8 @@ namespace IdentityNLayer.Controllers
             {
                 return NotFound();
             }
-            return View();
+
+            return View(_groupService.GetByIdAsync((int)id));
         }
 
         // GET: Groups/Create

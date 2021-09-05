@@ -2,8 +2,8 @@
 using IdentityNLayer.DAL.EF.Context;
 using System;
 using System.Collections.Generic;
+using System.Data.Entity;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace IdentityNLayer.DAL.EF.Repositories
@@ -49,6 +49,16 @@ namespace IdentityNLayer.DAL.EF.Repositories
         public IEnumerable<Course> GetAll()
         {
             return _context.Courses;
+        }
+
+        public async Task<IEnumerable<Course>> GetAllAsync()
+        {
+            return await _context.Courses.ToListAsync();
+        }
+
+        public Task<Course> GetAsync(int id)
+        {
+            throw new NotImplementedException();
         }
 
         public void Update(Course item)

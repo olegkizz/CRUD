@@ -51,6 +51,16 @@ namespace IdentityNLayer.DAL.EF.Repositories
             return _context.Topics;
         }
 
+        public Task<IEnumerable<Topic>> GetAllAsync()
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<Topic> GetAsync(int id)
+        {
+            throw new NotImplementedException();
+        }
+
         public void Update(Topic item)
         {
             throw new NotImplementedException();

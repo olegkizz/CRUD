@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace IdentityNLayer.DAL.EF.Repositories
 {
@@ -55,6 +56,16 @@ namespace IdentityNLayer.DAL.EF.Repositories
         }
 
         public void CreateAsync(StudentToGroupAction item)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<IEnumerable<StudentToGroupAction>> GetAllAsync()
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<StudentToGroupAction> GetAsync(int id)
         {
             throw new NotImplementedException();
         }
