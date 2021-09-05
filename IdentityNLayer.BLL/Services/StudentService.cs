@@ -111,5 +111,15 @@ namespace IdentityNLayer.BLL.Services
         {
             throw new NotImplementedException();
         }
+
+        public Task<Student> GetByIdAsync(int id)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<IEnumerable<Student>> GetAllAsync()
+        {
+            throw new NotImplementedException();
+        }
     }
 }

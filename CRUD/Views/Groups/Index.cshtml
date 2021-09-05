@@ -38,7 +38,7 @@
                     @Html.DisplayFor(modelItem => item.Status)
                 </td>
                 <td>
-                    <a href="@item.Teacher?.LinkToProfile">@item.Teacher?.FirstName + " " + @item.Teacher?.LastName</a>
+                    <a href="@item.Teacher?.LinkToProfile">@item.Teacher?.FirstName @item.Teacher?.LastName</a>
                 </td>
                 <td>
                     @if (User.IsInRole("Admin") || User.IsInRole("Manager"))

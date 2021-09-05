@@ -93,5 +93,15 @@ namespace IdentityNLayer.BLL.Services
             Db.Save();
             return entity.Id;
         }
+
+        public Task<Course> GetByIdAsync(int id)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<IEnumerable<Course>> GetAllAsync()
+        {
+            return Db.Courses.GetAllAsync();
+        }
     }
 }

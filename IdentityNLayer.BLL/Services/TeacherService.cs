@@ -4,6 +4,7 @@ using IdentityNLayer.BLL.Interfaces;
 using IdentityNLayer.Core.Entities;
 using IdentityNLayer.DAL.Interfaces;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace IdentityNLayer.BLL.Services
 {
@@ -63,6 +64,16 @@ namespace IdentityNLayer.BLL.Services
         }
 
         public int CreateAsync(Teacher entity)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<Teacher> GetByIdAsync(int id)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<IEnumerable<Teacher>> GetAllAsync()
         {
             throw new NotImplementedException();
         }

@@ -70,5 +70,15 @@ namespace IdentityNLayer.DAL.EF.Repositories
         {
             throw new NotImplementedException();
         }
+
+        public Task<Enrollment> GetAsync(int id)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<IEnumerable<Enrollment>> GetAllAsync()
+        {
+            throw new NotImplementedException();
+        }
     }
 }

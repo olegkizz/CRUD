@@ -5,6 +5,7 @@ using IdentityNLayer.DAL.EF.Context;
 using IdentityNLayer.Core.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Identity;
+using System.Threading.Tasks;
 
 namespace IdentityNLayer.DAL.EF.Repositories
 {
@@ -73,6 +74,16 @@ namespace IdentityNLayer.DAL.EF.Repositories
         }
 
         public void CreateAsync(Student item)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<Student> GetAsync(int id)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<IEnumerable<Student>> GetAllAsync()
         {
             throw new NotImplementedException();
         }

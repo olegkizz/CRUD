@@ -4,6 +4,7 @@ using IdentityNLayer.BLL.Interfaces;
 using IdentityNLayer.Core.Entities;
 using IdentityNLayer.DAL.Interfaces;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace IdentityNLayer.BLL.Services
 {
@@ -122,6 +123,21 @@ namespace IdentityNLayer.BLL.Services
         public int CreateAsync(Group entity)
         {
             throw new NotImplementedException();
+        }
+
+        public string GetAsync(int id)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<Group> GetByIdAsync(int id)
+        {
+            return Db.Groups.GetAsync(id);
+        }
+
+        public Task<IEnumerable<Group>> GetAllAsync()
+        {
+            return Db.Groups.GetAllAsync();
         }
     }
 }
