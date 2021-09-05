@@ -48,5 +48,15 @@ namespace IdentityNLayer.DAL.EF.Repositories
             if (studentaction != null)
                 _context.StudentToGroupActions.Remove(studentaction);
         }
+
+        public IEnumerable<StudentToGroupAction> FindAsync(Func<StudentToGroupAction, bool> predicate)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void CreateAsync(StudentToGroupAction item)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

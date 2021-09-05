@@ -47,5 +47,15 @@ namespace IdentityNLayer.DAL.EF.Repositories
         {
             throw new NotImplementedException();
         }
+
+        public IEnumerable<Teacher> FindAsync(Func<Teacher, bool> predicate)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void CreateAsync(Teacher item)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

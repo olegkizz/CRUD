@@ -56,14 +56,6 @@ namespace IdentityNLayer.Controllers
             {
                 return NotFound();
             }
-            /*
-                        var contact = await _context.Contact
-                            .FirstOrDefaultAsync(m => m.ContactId == id);
-                        if (contact == null)
-                        {
-                            return NotFound();
-                        }
-            */
             return View();
         }
 
@@ -97,7 +89,7 @@ namespace IdentityNLayer.Controllers
             }
         }
 
-        // GET: Contacts/Edit/5
+        // GET: Teachers/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -118,7 +110,7 @@ namespace IdentityNLayer.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Name,Email,LinkToProfile,Bio")] TeacherModel teacher)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,FirstName,LastName,LinkToProfile,Bio")] TeacherModel teacher)
         {
             if (id != teacher.Id)
             {

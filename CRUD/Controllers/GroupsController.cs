@@ -10,6 +10,7 @@ using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
 using System.Linq;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 
 namespace IdentityNLayer.Controllers
 {
@@ -20,40 +21,38 @@ namespace IdentityNLayer.Controllers
         private readonly ICourseService _courseService;
         private readonly ITeacherService _teacherService;
         private readonly IMapper _mapper;
+        private readonly UserManager<IdentityUser> _userManager;
+
 
         public GroupsController(IGroupService groupService, IMapper mapper,
             IEnrollmentService enrollmentService,
             ICourseService courseService,
-            ITeacherService teacherService)
+            ITeacherService teacherService,
+            UserManager<IdentityUser> userManager)
         {
             _groupService = groupService;
             _mapper = mapper;
             _enrollmentService = enrollmentService;
             _courseService = courseService;
             _teacherService = teacherService;
+            _userManager = userManager;
         }
 
-        // GET: Contacts
+        // GET: Groups
         public async Task<IActionResult> Index()
         {
-            return View(_mapper.Map<IEnumerable<GroupModel>>(_groupService.GetAll()));
+            if(User.IsInRole("Admin") || User.IsInRole("Manager"))
+                return View(_mapper.Map<IEnumerable<GroupModel>>(_groupService.GetAll()));
+            return View(_mapper.Map<IEnumerable<GroupModel>>(_groupService.GetGroupsByUserId(_userManager.GetUserId(User))));
         }
 
-        // GET: Contacts/Details/5
+        // GET: Groups/Details/5
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
             {
                 return NotFound();
             }
-            /*
-                        var contact = await _context.Contact
-                            .FirstOrDefaultAsync(m => m.ContactId == id);
-                        if (contact == null)
-                        {
-                            return NotFound();
-                        }
-            */
             return View();
         }
 
@@ -64,7 +63,6 @@ namespace IdentityNLayer.Controllers
         {
             GroupModel group = new();
             group.CourseId = courseId;
-            group.SetStudentRequests(_courseService.GetStudentRequests(courseId));
             return View(group);
         }
 
@@ -93,6 +91,7 @@ namespace IdentityNLayer.Controllers
         }
 
         // GET: Groups/Edit/5
+        [Authorize(Roles = "Admin, Manager")]
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -101,7 +100,7 @@ namespace IdentityNLayer.Controllers
             }
 
             GroupModel group = _mapper.Map<GroupModel>(_groupService.GetById((int)id));
-            group.SetStudentRequests(_courseService.GetStudentRequests(group.CourseId));
+            group.SetStudents(_mapper.Map<IEnumerable<StudentModel>>(_groupService.GetStudents(group.Id)), _groupService);
 
             if (group == null)
             {
@@ -115,6 +114,7 @@ namespace IdentityNLayer.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Admin, Manager")]
         public async Task<IActionResult> Edit(int id, [Bind("Id,Number,StudentRequests,Status,TeacherId,CourseId")] GroupModel group)
         {
             if (id != group.Id)
@@ -126,8 +126,11 @@ namespace IdentityNLayer.Controllers
             {
                 try
                 {
+                    Teacher currentTeacher = _groupService.GetCurrentTeacher(group.Id);
+
                     _groupService.Update(_mapper.Map<Group>(group));
-                    foreach (StudentRequestsModel studentRequest in group.StudentRequests)
+
+                    if (group.StudentRequests != null) foreach (StudentRequestsModel studentRequest in group.StudentRequests)
                     {
                         if (studentRequest.Applied)
                             _enrollmentService.Enrol(studentRequest.UserId, group.Id, UserRoles.Student);
@@ -135,22 +138,19 @@ namespace IdentityNLayer.Controllers
                     }
                     if (group.TeacherId != null)
                     {
-                        int? currentTeacherId = _groupService.GetTeacher(group.Id)?.Id;
-                        string newUserTeachersId = _teacherService.GetById((int)group.TeacherId).UserId;
-                        string currentUserTeachersId = null;
-                        if (currentTeacherId != null)
-                           currentUserTeachersId = _teacherService.GetById((int)currentTeacherId).UserId;
-
-                        if (currentTeacherId != null)
+                        Teacher newTeacher = _teacherService.GetById((int)group.TeacherId);
+                        
+                        if (currentTeacher != null)
                         {
-                            if(currentTeacherId != group.TeacherId)
+                            if(currentTeacher.Id != group.TeacherId)
                             {
-                                if(currentUserTeachersId != null)
-                                    _enrollmentService.UnEnrol(currentUserTeachersId, group.Id);
-                                _enrollmentService.Enrol(newUserTeachersId, group.Id, UserRoles.Teacher);
+                                _enrollmentService.UnEnrol(currentTeacher.UserId, group.Id);
+                                _enrollmentService.Enrol(newTeacher.UserId, group.Id, UserRoles.Teacher);
                             }
                         }
-                    }
+                    } else if(currentTeacher != null)
+                        _enrollmentService.UnEnrol(currentTeacher.UserId, group.Id);
+
                     return RedirectToAction(nameof(Index));
                 }
                 catch (DbUpdateConcurrencyException)

@@ -31,19 +31,22 @@
 
             <div class="form-group">
                 <label class="control-label">TeacherRequests</label>
-                @{
-
-                    SelectList list = new(mapper.Map<IEnumerable<TeacherModel>>(courseService.GetTeacherRequests(Convert.ToInt32(Model.CourseId))), "Id", "Name");
-                    if (groupService.GetTeacher(Model.Id) != null)
-                        list = new(mapper.Map<IEnumerable<TeacherModel>>(courseService.GetTeacherRequests(Convert.ToInt32(Model.CourseId))), 
-                            "Id", "Name", groupService.GetTeacher(Model.Id).Id);
+                @if (groupService.GetTeachers(Model.Id) != null)
+                {
+                    SelectList list = new(mapper.Map<IEnumerable<TeacherModel>>(groupService.GetTeachers(Convert.ToInt32(Model.CourseId))), "Id", "Name");
+                    if (groupService.GetCurrentTeacher(Model.Id) != null)
+                        list = new(mapper.Map<IEnumerable<TeacherModel>>(groupService.GetTeachers(Convert.ToInt32(Model.CourseId))),
+                            "Id", "Name", groupService.GetCurrentTeacher(Model.Id).Id);
+                    @Html.DropDownListFor(model => model.TeacherId, list, "Teacher is not selected...");
                 }
-                @if (courseService.GetTeacherRequests(Model.Id) != null)
-                    @Html.DropDownListFor(model => model.TeacherId, list);
+                else
+                {
+                    <span>No Teacher Requests</span>
+                }
             </div>
             <div class="form-group">
                 <label asp-for="StudentRequests" class="control-label"></label>
-                @for (int i = 0; i < courseService.GetStudentRequests(Convert.ToInt32(Model.CourseId)).Count(); ++i)
+                @for (int i = 0; i < groupService.GetStudents(Convert.ToInt32(Model.CourseId)).Count(); ++i)
                 {
                     <input type="hidden" asp-for="@Model.StudentRequests[i].UserId" />
                     <input type="hidden" asp-for="@Model.StudentRequests[i].UserName" />

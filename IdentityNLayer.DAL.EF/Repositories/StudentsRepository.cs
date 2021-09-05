@@ -66,5 +66,15 @@ namespace IdentityNLayer.DAL.EF.Repositories
             if (student != null)
                 _context.Students.Remove(student);
         }
+
+        public IEnumerable<Student> FindAsync(Func<Student, bool> predicate)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void CreateAsync(Student item)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

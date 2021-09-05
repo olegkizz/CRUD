@@ -1,6 +1,6 @@
 ﻿namespace IdentityNLayer.Core.Entities
 {
-    public enum ActionsStudentGroup
+    public enum UserGroupStates
     {
         Requested,
         Declined,

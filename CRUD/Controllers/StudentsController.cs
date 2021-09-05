@@ -82,26 +82,21 @@ namespace IdentityNLayer.Controllers
             if (ModelState.IsValid)
             {
                 var user = await _userManager.GetUserAsync(User);
-                user.PhoneNumber = student.User.PhoneNumber;
-                user.UserName = student.User.UserName;
-                IdentityResult chkUser = await _userManager.UpdateAsync(user);
-                if (chkUser.Succeeded)
-                {
-                    IdentityResult result = await _userManager.AddToRoleAsync(user, UserRoles.Student.ToString());
-                    student.User = user;
-                    int newStudentId = _studentService.Create(_mapper.Map<Student>(student));
-                    if(courseId != 0)
-                        return RedirectToAction("SendRequest", new { courseId });
-                    return RedirectToAction(nameof(Index));
-                }
-                return View();
+
+
+                IdentityResult result = await _userManager.AddToRoleAsync(user, UserRoles.Student.ToString());
+                student.User = user;
+                int newStudentId = _studentService.Create(_mapper.Map<Student>(student));
+                if (courseId != 0)
+                    return RedirectToAction("SendRequest", new { courseId });
+                return RedirectToAction(nameof(Index));
             }
             else
             {
                 throw new DbUpdateConcurrencyException();
             }
         }
-       
+
         // GET: Contacts/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
@@ -109,18 +104,10 @@ namespace IdentityNLayer.Controllers
             {
                 return NotFound();
             }
-          
-            StudentModel student = _mapper.Map<StudentModel>(_studentService.GetById((int)id));
-            
-            /*student.CreateAssignGroups(_groupService.GetAll());
-            List<int> studentGroupIds = _studentService.GetStudentGroups((int)id).Select(st => st.Id).ToList();
-            foreach (AssignGroupModel ag in student.AssignGroups)
-            {
-                if (studentGroupIds.Contains(ag.GroupID))
-                    ag.Assigned = true;
-            }*/
 
-            
+            StudentModel student = _mapper.Map<StudentModel>(_studentService.GetById((int)id));
+
+
             if (student == null)
             {
                 return NotFound();
@@ -128,14 +115,14 @@ namespace IdentityNLayer.Controllers
 
             return View(student);
         }
-      
+
         // POST: Contacts/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("Id, FirstName, LastName, BirthDate, User, " +
-            "PhoneNumber, Type, AssignGroups, UserId")] StudentModel student)
+            "PhoneNumber, Type, UserId")] StudentModel student)
         {
             if (id != student.Id)
             {
@@ -147,13 +134,6 @@ namespace IdentityNLayer.Controllers
                 try
                 {
                     _studentService.Update(_mapper.Map<Student>(student));
-
-                   /* foreach (AssignGroupModel assignGroup in student.AssignGroups)
-                    {
-                        if (assignGroup.Assigned)
-                            _enrollmentService.Enrol(student.UserId, assignGroup.GroupID, UserRoles.Student);
-                        else _enrollmentService.UnEnrol(student.UserId, assignGroup.GroupID);
-                    }*/
                 }
                 catch (DbUpdateConcurrencyException)
                 {
@@ -187,7 +167,7 @@ namespace IdentityNLayer.Controllers
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             _studentService.Delete((int)id);
-               
+
             return RedirectToAction(nameof(Index));
         }
     }

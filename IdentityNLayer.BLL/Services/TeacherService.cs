@@ -41,15 +41,30 @@ namespace IdentityNLayer.BLL.Services
             throw new NotImplementedException();
         }
 
-        public Teacher GetTeacherByUserId(string userId)
-        {
-            foreach(Teacher tc in Db.Teachers.Find(tc => tc.UserId == userId))
-                return tc;
-            return null;
-        }
         public bool HasAccount(string userId)
         {
             return Db.Teachers.Find(tc => tc.UserId == userId).Any();
+        }
+
+        public Teacher GetByUserId(string userId)
+        {
+            return Db.Teachers.Find(tc => tc.UserId == userId).FirstOrDefault();
+        }
+
+        public IEnumerable<Group> GetTeacherGroups(int teacherId)
+        {
+            List<Group> groups = new();
+            foreach (Enrollment en in Db.Enrollments.Find(en => en.UserID == Db.Teachers.Get(teacherId).UserId))
+            {
+                if (en.State != UserGroupStates.Aborted && en.State != UserGroupStates.Requested)
+                    groups.Add(Db.Groups.Get(en.EntityID));
+            }
+            return groups;
+        }
+
+        public int CreateAsync(Teacher entity)
+        {
+            throw new NotImplementedException();
         }
     }
 }

@@ -21,12 +21,22 @@ namespace IdentityNLayer.DAL.EF.Repositories
             throw new NotImplementedException();
         }
 
+        public void CreateAsync(Topic item)
+        {
+            throw new NotImplementedException();
+        }
+
         public void Delete(int id)
         {
             throw new NotImplementedException();
         }
 
         public IEnumerable<Topic> Find(Func<Topic, bool> predicate)
+        {
+            throw new NotImplementedException();
+        }
+
+        public IEnumerable<Topic> FindAsync(Func<Topic, bool> predicate)
         {
             throw new NotImplementedException();
         }

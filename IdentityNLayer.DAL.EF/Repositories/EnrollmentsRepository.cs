@@ -57,5 +57,18 @@ namespace IdentityNLayer.DAL.EF.Repositories
             if (enrol != null)
                 _context.Enrollments.Remove(enrol);
         }
+
+        public IEnumerable<Enrollment> FindAsync(Func<Enrollment, bool> predicate)
+        {
+            return _context.Enrollments
+                .Include(en => en.User)
+                .Where(predicate)
+                .ToList();
+        }
+
+        public void CreateAsync(Enrollment item)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

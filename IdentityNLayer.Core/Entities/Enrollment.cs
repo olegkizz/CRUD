@@ -14,7 +14,7 @@ namespace IdentityNLayer.Core.Entities
         public int EntityID { get; set; }
         public string UserID { get; set; }
         public virtual IdentityUser User { get; set; }
-        public ActionsStudentGroup State{ get; set; }
+        public UserGroupStates State{ get; set; }
         public UserRoles Role{ get; set; }
     }
 }

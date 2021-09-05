@@ -21,12 +21,22 @@ namespace IdentityNLayer.DAL.EF.Repositories
             _context.Courses.Add(item);
         }
 
+        public async void CreateAsync(Course item)
+        {
+            await _context.Courses.AddAsync(item);
+        }
+
         public void Delete(int id)
         {
             throw new NotImplementedException();
         }
 
         public IEnumerable<Course> Find(Func<Course, bool> predicate)
+        {
+            throw new NotImplementedException();
+        }
+
+        public IEnumerable<Course> FindAsync(Func<Course, bool> predicate)
         {
             throw new NotImplementedException();
         }

@@ -46,7 +46,7 @@ namespace IdentityNLayer.BLL.Services
             {
                 StudentId = studentId,
                 GroupId = GroupId,
-                Action = ActionsStudentGroup.Applied,
+                Action = UserGroupStates.Applied,
                 Date = DateTime.Now
             });
         }
@@ -75,7 +75,7 @@ namespace IdentityNLayer.BLL.Services
             {
                 StudentId = studentId,
                 GroupId = GroupId,
-                Action = ActionsStudentGroup.Requested,
+                Action = UserGroupStates.Requested,
                 Date = DateTime.Now
             });
         }

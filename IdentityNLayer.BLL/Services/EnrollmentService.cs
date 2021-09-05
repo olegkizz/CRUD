@@ -22,10 +22,11 @@ namespace IdentityNLayer.BLL.Services
         {
             Group group = Db.Groups.Find(gr => gr.Id == groupId).FirstOrDefault();
             Enrollment enrollment =
-              Db.Enrollments.Find(en => en.UserID == userId && en.EntityID == (group != null ? group.CourseId : groupId)).FirstOrDefault();
-            if (enrollment?.State == ActionsStudentGroup.Aborted || enrollment?.State == ActionsStudentGroup.Requested)
+              Db.Enrollments.Find(en => en.UserID == userId && en.EntityID == (group != null ? group.CourseId : groupId) 
+              && en.Role == role).FirstOrDefault();
+            if (enrollment?.State == UserGroupStates.Aborted || enrollment?.State == UserGroupStates.Requested)
             {
-                enrollment.State = confirmed ? ActionsStudentGroup.Applied : ActionsStudentGroup.Requested;
+                enrollment.State = confirmed ? UserGroupStates.Applied : UserGroupStates.Requested;
                 enrollment.EntityID = groupId;
                 Db.Enrollments.Update(enrollment);
             }
@@ -35,7 +36,7 @@ namespace IdentityNLayer.BLL.Services
                     UserID = userId,
                     EntityID = groupId,
                     Role = role,
-                    State = confirmed ? ActionsStudentGroup.Applied : ActionsStudentGroup.Requested,
+                    State = confirmed ? UserGroupStates.Applied : UserGroupStates.Requested,
                     Updated = DateTime.Now
                 });
             Db.Save();
@@ -47,7 +48,7 @@ namespace IdentityNLayer.BLL.Services
              Db.Enrollments.Find(en => en.UserID == userId && en.EntityID == groupdId).FirstOrDefault();
             if (enrollment != null)
             {
-                enrollment.State = ActionsStudentGroup.Aborted;
+                enrollment.State = UserGroupStates.Aborted;
                 Db.Enrollments.Update(enrollment);
             }
             Db.Save();

@@ -44,16 +44,15 @@ namespace IdentityNLayer.BLL.Services
             Db.Courses.Update(entity);
             Db.Save();
         }
-
         public IEnumerable<Enrollment> GetStudentRequests(int id)
         {
-            return Db.Enrollments.Find(en => en.EntityID == id && en.State == ActionsStudentGroup.Requested && en.Role == UserRoles.Student);
+            return Db.Enrollments.Find(en => en.EntityID == id && en.State == UserGroupStates.Requested && en.Role == UserRoles.Student);
         }
         public IEnumerable<Teacher> GetTeacherRequests(int id)
         {
             List<Teacher> teachers = new();
-            foreach(Enrollment en 
-                in Db.Enrollments.Find(en => en.EntityID == id && en.State == ActionsStudentGroup.Requested && en.Role == UserRoles.Teacher))
+            foreach (Enrollment en
+                in Db.Enrollments.Find(en => en.EntityID == id && en.State == UserGroupStates.Requested && en.Role == UserRoles.Teacher))
             {
                 Teacher teacher = Db.Teachers.Find(tc => tc.UserId == en.UserID).FirstOrDefault();
                 if (teacher != null)
@@ -68,12 +67,31 @@ namespace IdentityNLayer.BLL.Services
 
         public bool HasRequest(int courseId, string userId, UserRoles role)
         {
-            return Db.Enrollments.Find(en => en.EntityID == courseId && en.UserID == userId && en.Role == role).Any();
+            return Db.Enrollments.Find(en => en.EntityID == courseId 
+            && en.UserID == userId 
+            && en.Role == role 
+            && en.State == UserGroupStates.Requested)
+                .Any();
         }
 
-        public IEnumerable<Group> GetAvailableGroups(int courseId)
+        public IEnumerable<Group> GetGroups(int courseId, GroupStatus? status = null)
         {
-            return Db.Groups.Find(gr => gr.CourseId == courseId && gr.Status == GroupStatus.Pending);
+            List<Group> groups = new();
+            if (status != null)
+                groups = Db.Groups.Find(gr => gr.CourseId == courseId && gr.Status == status).ToList();
+            else
+            {
+                foreach(GroupStatus statusTemp in Enum.GetValues<GroupStatus>())
+                    groups.Concat(GetGroups(courseId, statusTemp));
+            }
+            return groups;
+        }
+
+        public int CreateAsync(Course entity)
+        {
+            Db.Courses.CreateAsync(entity);
+            Db.Save();
+            return entity.Id;
         }
     }
 }

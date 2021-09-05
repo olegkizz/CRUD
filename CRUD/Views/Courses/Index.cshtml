@@ -2,9 +2,11 @@
 @using IdentityNLayer.Core.Entities
 @using Microsoft.AspNetCore.Identity
 @inject IdentityNLayer.BLL.Interfaces.ICourseService courseService
+@inject IdentityNLayer.BLL.Interfaces.IGroupService groupService
+@inject IdentityNLayer.BLL.Interfaces.IStudentService studentService
 @inject UserManager<IdentityUser> userManager
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "Courses";
 }
 
 <h1>Index</h1>
@@ -58,7 +60,7 @@
                 <td>
                     @if (Context.User.IsInRole("Admin"))
                     {
-                        courseService.GetStudentRequests((int)item.Id);
+                     groupService.GetStudents(item.Id, UserGroupStates.Requested);
                     }
                     else
                     {
@@ -74,12 +76,38 @@
                             }
                             else
                             {
-                                <span>Teacher Request Has Been Sent</span>
+                                Group yourGroup = null;
+                                foreach (Group gr in courseService.GetGroups(item.Id, GroupStatus.Pending))
+                                {
+                                        if (groupService.GetCurrentTeacher(gr.Id)?.UserId == userManager.GetUserId(User))
+                                            yourGroup = gr;
+                                }
+                                if (yourGroup != null)
+                                {
+                                    <span>You are already in the <a>@yourGroup.Number</a>group like a Teacher</span>
+                                }
+                                else
+                                {
+                                    <span>Teacher Request Has Been Sent</span>
+                                }
                             }
                         }
                         else
                         {
-                            <span>Student Request Has Been Sent</span>
+                            Group yourGroup = null;
+                            foreach (Student st in groupService.GetStudents(item.Id, UserGroupStates.Applied))
+                            {
+                                if (st.UserId == userManager.GetUserId(User))
+                                    yourGroup = studentService.GetGroupByCourseId(st.Id, item.Id);
+                            }
+                            if (yourGroup != null)
+                            {
+                                <span>You are already in the <a>@yourGroup.Number</a>group like a Student</span>
+                            }
+                            else
+                            {
+                                <span>Student Request Has Been Sent</span>
+                            }
                         }
                     }
                 </td>

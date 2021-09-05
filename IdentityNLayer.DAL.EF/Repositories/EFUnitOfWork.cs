@@ -51,13 +51,13 @@ namespace IdentityNLayer.DAL.EF.Repositories
 
         public virtual void Dispose(bool disposing)
         {
-            if (!this.disposed)
+            if (!disposed)
             {
                 if (disposing)
                 {
                     _context.Dispose();
                 }
-                this.disposed = true;
+                disposed = true;
             }
         }
 

@@ -83,7 +83,7 @@ namespace IdentityNLayer.BLL.Services
             List<Group> groups = new();
             foreach (Enrollment en in Db.Enrollments.Find(en => en.UserID == Db.Students.Get(studentId).UserId))
             {
-                if(en.State != ActionsStudentGroup.Aborted)
+                if(en.State != UserGroupStates.Aborted && en.State != UserGroupStates.Requested)
                     groups.Add(Db.Groups.Get(en.EntityID));
             }
             return groups;
@@ -92,6 +92,24 @@ namespace IdentityNLayer.BLL.Services
         public bool HasAccount(string userId)
         {
             return Db.Students.Find(st => st.UserId == userId).Any();
+        }
+
+        public Student GetByUserId(string userId)
+        {
+            return Db.Students.Find(st => st.UserId == userId).FirstOrDefault();
+        }
+
+        public Group GetGroupByCourseId(int studentId, int courseId)
+        {
+            foreach (Group gr in GetStudentGroups(studentId))
+                if (gr.CourseId == courseId)
+                    return gr;
+            return null;
+        }
+
+        public int CreateAsync(Student entity)
+        {
+            throw new NotImplementedException();
         }
     }
 }

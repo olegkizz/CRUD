@@ -7,6 +7,7 @@ namespace IdentityNLayer.BLL.Interfaces
         IEnumerable<T> GetAll();
         T GetById(int id);
         int Create(T entity);
+        int CreateAsync(T entity);
         void Update(T entity);
         void Delete(int id);
     }

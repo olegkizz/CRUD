@@ -41,9 +41,87 @@ namespace IdentityNLayer.BLL.Services
             throw new NotImplementedException();
         }
 
-        public Teacher GetTeacher(int groupId)
+        public Teacher GetCurrentTeacher(int groupId)
         {
-            return Db.Groups.Find(gr => gr.Id == groupId ).FirstOrDefault()?.Teacher;
+            return Db.Groups.Find(gr => gr.Id == groupId).FirstOrDefault()?.Teacher;
+        }
+
+        public IEnumerable<Group> GetGroupsByUserId(string userId)
+        {
+            List<Group> groups = new();
+            foreach (Enrollment en in Db.Enrollments.Find(en => en.UserID == userId))
+            {
+                if (en.State != UserGroupStates.Requested && en.State != UserGroupStates.Aborted)
+                    groups.Add(Db.Groups.Get(en.EntityID));
+            }
+            return groups;
+        }
+
+        public IEnumerable<Student> GetStudents(int? groupId, UserGroupStates? state = null)
+        {
+            if (groupId == null)
+                return new List<Student>();
+
+            List<Student> students = new ();
+            switch (state)
+            {
+                case UserGroupStates.Applied:
+                    foreach (Enrollment en in Db.Enrollments.Find(en => en.EntityID == groupId && en.State == state && en.Role == UserRoles.Student))
+                    {
+                        students.Add(Db.Students.Find(st => st.UserId == en.UserID).FirstOrDefault());
+                    }
+                    return students;
+                case UserGroupStates.Requested:
+                    foreach (Enrollment en in Db.Enrollments.Find(en => en.EntityID == Db.Groups.Find(gr => gr.Id == groupId).FirstOrDefault()?.CourseId 
+                    && en.State == state && en.Role == UserRoles.Student))
+                    {
+                        students.Add(Db.Students.Find(st => st.UserId == en.UserID).FirstOrDefault());
+                    }
+                    return students;
+                default:
+                    return GetStudents(groupId, UserGroupStates.Applied).Concat(GetStudents(groupId, UserGroupStates.Requested));
+            }
+        }
+
+        public IEnumerable<Teacher> GetTeachers(int? groupId, UserGroupStates? state = null)
+        {
+            if (groupId == null)
+                return new List<Teacher>();
+            
+            List<Teacher> teachers = new();
+            switch (state)
+            {
+                case UserGroupStates.Applied:
+                    foreach (Enrollment en in Db.Enrollments.Find(en => en.EntityID == groupId && en.State == state && en.Role == UserRoles.Teacher))
+                    {
+                        teachers.Add(Db.Teachers.Find(tc => tc.UserId == en.UserID).FirstOrDefault());
+                    }
+                    return teachers;
+                case UserGroupStates.Requested:
+                    foreach (Enrollment en in Db.Enrollments.Find(en => en.EntityID == Db.Groups.Find(gr => gr.Id == groupId).FirstOrDefault()?.CourseId
+                    && en.State == state && en.Role == UserRoles.Teacher))
+                    {
+                        teachers.Add(Db.Teachers.Find(tc => tc.UserId == en.UserID).FirstOrDefault());
+                    }
+                    return teachers;
+                default:
+                    return GetTeachers(groupId, UserGroupStates.Applied).Concat(GetTeachers(groupId, UserGroupStates.Requested));
+            }
+        }
+
+        public bool HasStudent(int groupId, string userId)
+        {
+            return Db.Enrollments.Find(en => en.UserID == userId 
+            && en.Role == UserRoles.Student 
+            && en.EntityID == groupId
+            && en.State == UserGroupStates.Applied)
+                .FirstOrDefault() != null
+                ? true : false;
+        }
+
+        public int CreateAsync(Group entity)
+        {
+            throw new NotImplementedException();
         }
     }
 }

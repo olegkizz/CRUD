@@ -9,5 +9,7 @@ namespace IdentityNLayer.BLL.Interfaces
         public Array GetStudentTypes();
         public List<Group> GetStudentGroups(int studentId);
         public bool HasAccount(string userId);
+        public Student GetByUserId(string userId);
+        public Group GetGroupByCourseId(int studentId, int courseId);
     }
 }

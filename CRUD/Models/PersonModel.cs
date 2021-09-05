@@ -26,9 +26,5 @@ namespace IdentityNLayer.Models
                 return FirstName + " " + LastName;
             }
         }
-
-        /*[Compare("User.PasswordHash", ErrorMessage = "Confirm password doesn't match, Type again !")]
-        [DataType(DataType.Password)]
-        public string ConfirmPassword { get; set; }*/
     }
 }

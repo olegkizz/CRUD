@@ -45,28 +45,34 @@ namespace IdentityNLayer.Controllers
 
 
         // GET: Courses/Create
-/*        public IActionResult Create()
+        public IActionResult Create()
         {
-            ViewData["TopicId"] = new SelectList(_context.Set<Topic>(), "Id", "Id");
             return View();
-        }*/
+        }
 
         // POST: Courses/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
-     /*   [HttpPost]
-        [ValidateAntiForgeryToken]*/
+        [HttpPost]
+        [ValidateAntiForgeryToken]
  /*       public async Task<IActionResult> Create([Bind("Id,Title,Description,Program,TopicId,StartDate,Updated")] Course course)
         {
             if (ModelState.IsValid)
             {
-                _context.Add(course);
-                await _context.SaveChangesAsync();
+                _courseService.Create(course);
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["TopicId"] = new SelectList(_context.Set<Topic>(), "Id", "Id", course.TopicId);
             return View(course);
-        }*/
+        } */
+        public async Task<IActionResult> CreateAsync([Bind("Id,Title,Description,Program,TopicId,StartDate,Updated")] Course course)
+        {
+            if (ModelState.IsValid)
+            {
+                _courseService.CreateAsync(course);
+                return RedirectToAction(nameof(Index));
+            }
+            return View(course);
+        }
         [Authorize(Roles="Admin, Manager")]
         // GET: Courses/Edit/5
         public async Task<IActionResult> Edit(int? id)

@@ -26,23 +26,40 @@
                 <select asp-for="Status" asp-items="Html.GetEnumSelectList<GroupStatus>()"></select>
                 <span asp-validation-for="Status" class="text-danger"></span>
             </div>
-            @if (groupService.GetTeacher(Model.Id) == null)
+            @if (groupService.GetCurrentTeacher(Model.Id) == null)
             {
                 <div class="form-group">
                     <label class="control-label">TeacherRequests</label>
-                    @if (courseService.GetTeacherRequests(Model.Id) != null)@Html.DropDownListFor(model => model.TeacherId, new SelectList(courseService.GetTeacherRequests(Model.Id), "Id", "Name"));
+                    @if (groupService.GetTeachers(Model.Id, UserGroupStates.Requested) != null)@Html.DropDownListFor(model => model.TeacherId,
+new SelectList(groupService.GetTeachers(Model.Id, UserGroupStates.Requested), "Id", "Name"), "Teacher is not selected...")
+                    else
+                    {
+                        <span>No Teacher Requests</span>
+                    }
                 </div>
             }
-            <div class="form-group">
-                <label asp-for="StudentRequests" class="control-label"></label>
-                @for (int i = 0; i < courseService.GetStudentRequests(Convert.ToInt32(Model.CourseId)).Count(); ++i)
+        <div class="form-group">
+            <label asp-for="StudentRequests" class="control-label"></label>
+            @{
+                var studentRequests = courseService.GetStudentRequests(Convert.ToInt32(Model.CourseId)).ToList();
+                Model.StudentRequests = new();
+
+                for (int i = 0; i < studentRequests.Count(); ++i)
                 {
+                    Model.StudentRequests.Add(new StudentRequestsModel()
+                    {
+                        UserId = studentRequests[i].UserID,
+                        UserName = studentRequests[i].User.UserName,
+                        Applied = true
+                    });
                     <input type="hidden" asp-for="@Model.StudentRequests[i].UserId" />
                     <input type="hidden" asp-for="@Model.StudentRequests[i].UserName" />
                     @Html.CheckBoxFor(m => m.StudentRequests[i].Applied)
                     @Model.StudentRequests[i].UserName
                 }
-            </div>
+            }
+
+        </div>
             <div class="form-group">
                 <input type="submit" value="Create" class="btn btn-primary" />
             </div>

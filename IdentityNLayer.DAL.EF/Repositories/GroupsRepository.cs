@@ -17,20 +17,27 @@ namespace IdentityNLayer.DAL.EF.Repositories
         }
         public IEnumerable<Group> GetAll()
         {
-            return _context.Groups;
+            return _context.Groups
+                .Include(g => g.Enrollments)
+                .Include(g => g.Teacher);
         }
 
         public Group Get(int id)
         {
             return _context.Groups
                 .Include(g => g.Enrollments)
+                .Include(g => g.Teacher)
                 .Where(g => g.Id == id)
                 .First();
         }
 
         public IEnumerable<Group> Find(Func<Group, bool> predicate)
         {
-            return _context.Groups.Where(predicate).ToList();
+            return _context.Groups
+                .Include(gr => gr.Teacher)
+                .Include(gr => gr.Enrollments)
+                .AsNoTracking()
+                .Where(predicate).ToList();
         }
 
         public void Create(Group item)
@@ -45,6 +52,16 @@ namespace IdentityNLayer.DAL.EF.Repositories
         }
 
         public void Delete(int id)
+        {
+            throw new NotImplementedException();
+        }
+
+        public IEnumerable<Group> FindAsync(Func<Group, bool> predicate)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void CreateAsync(Group item)
         {
             throw new NotImplementedException();
         }

@@ -9,7 +9,7 @@ namespace IdentityNLayer.BLL.Interfaces
         public IEnumerable<Enrollment> GetStudentRequests(int id);
         public IEnumerable<Teacher> GetTeacherRequests(int id);
         public IEnumerable<Topic> GetAvailableTopics();
-        public IEnumerable<Group> GetAvailableGroups(int courseId);
+        public IEnumerable<Group> GetGroups(int courseId, GroupStatus? status = null);
         public bool HasRequest(int courseId, string userId, UserRoles role);
     }
 }
