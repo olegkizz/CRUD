@@ -8,12 +8,14 @@ using IdentityNLayer.Core.Entities;
 using System.Collections.Generic;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.Extensions.Logging;
 
 namespace IdentityNLayer.Controllers
 {
     public class StudentsController : Controller
     {
         private readonly IMapper _mapper;
+        private readonly ILogger _logger;
         private readonly IStudentService _studentService;
         private readonly IGroupService _groupService;
         private readonly IEnrollmentService _enrollmentService;
@@ -24,6 +26,7 @@ namespace IdentityNLayer.Controllers
         public StudentsController(IStudentService studentService,
             IGroupService groupService,
             IMapper mapper,
+            ILogger<StudentsController> logger,
             RoleManager<IdentityRole> roleManager,
             UserManager<IdentityUser> userManager,
             IEnrollmentService enrollmentService,
@@ -32,6 +35,7 @@ namespace IdentityNLayer.Controllers
             _studentService = studentService;
             _groupService = groupService;
             _mapper = mapper;
+            _logger = logger;
             _enrollmentService = enrollmentService;
             _courseService = courseService;
             _roleManager = roleManager;
@@ -81,20 +85,32 @@ namespace IdentityNLayer.Controllers
         {
             if (ModelState.IsValid)
             {
-                var user = await _userManager.GetUserAsync(User);
+                try
+                {
+                    var user = await _userManager.GetUserAsync(User);
 
-
-                IdentityResult result = await _userManager.AddToRoleAsync(user, UserRoles.Student.ToString());
-                student.User = user;
-                int newStudentId = _studentService.Create(_mapper.Map<Student>(student));
-                if (courseId != 0)
-                    return RedirectToAction("SendRequest", new { courseId });
-                return RedirectToAction(nameof(Index));
+                    IdentityResult result = await _userManager.AddToRoleAsync(user, UserRoles.Student.ToString());
+                    student.User = user;
+                    int newStudentId = _studentService.Create(_mapper.Map<Student>(student));
+                    if (courseId != 0)
+                        return RedirectToAction("SendRequest", new { courseId });
+                    return RedirectToAction(nameof(Index));
+                }
+                catch (DbUpdateConcurrencyException ex)
+                {
+                    if (_studentService.GetById(student.Id) == null)
+                    {
+                        _logger.LogError("Student with id=" + student.Id + " not found");
+                        return NotFound();
+                    }
+                    else
+                    {
+                        _logger.LogError(ex.Message);
+                        throw;
+                    }
+                }
             }
-            else
-            {
-                throw new DbUpdateConcurrencyException();
-            }
+            return View(student);
         }
 
         // GET: Contacts/Edit/5
@@ -135,9 +151,18 @@ namespace IdentityNLayer.Controllers
                 {
                     _studentService.Update(_mapper.Map<Student>(student));
                 }
-                catch (DbUpdateConcurrencyException)
+                catch (DbUpdateConcurrencyException ex)
                 {
-                    throw new DbUpdateConcurrencyException();
+                    if (_studentService.GetById(student.Id) == null)
+                    {
+                        _logger.LogError("Student with id=" + student.Id + " not found");
+                        return NotFound();
+                    }
+                    else
+                    {
+                        _logger.LogError(ex.Message);
+                        throw;
+                    }
                 }
                 return RedirectToAction(nameof(Index));
             }

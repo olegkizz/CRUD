@@ -11,6 +11,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.Extensions.Logging;
 
 namespace IdentityNLayer.Controllers
 {
@@ -21,6 +22,7 @@ namespace IdentityNLayer.Controllers
         private readonly ICourseService _courseService;
         private readonly ITeacherService _teacherService;
         private readonly IMapper _mapper;
+        private readonly ILogger _logger;
         private readonly UserManager<IdentityUser> _userManager;
 
 
@@ -28,7 +30,8 @@ namespace IdentityNLayer.Controllers
             IEnrollmentService enrollmentService,
             ICourseService courseService,
             ITeacherService teacherService,
-            UserManager<IdentityUser> userManager)
+            UserManager<IdentityUser> userManager,
+            ILogger<CoursesController> logger)
         {
             _groupService = groupService;
             _mapper = mapper;
@@ -36,16 +39,14 @@ namespace IdentityNLayer.Controllers
             _courseService = courseService;
             _teacherService = teacherService;
             _userManager = userManager;
+            _logger = logger;
         }
 
         // GET: Groups
         public async Task<IActionResult> Index()
         {
             if(User.IsInRole("Admin") || User.IsInRole("Manager"))
-            {
-                IEnumerable<Group> groups = await _groupService.GetAllAsync();
-                return View(_mapper.Map<IEnumerable<GroupModel>>(groups));
-            }
+                return View(_mapper.Map<IEnumerable<GroupModel>>(await _groupService.GetAllAsync()));
             return View(_mapper.Map<IEnumerable<GroupModel>>(_groupService.GetGroupsByUserId(_userManager.GetUserId(User))));
         }
 
@@ -157,14 +158,16 @@ namespace IdentityNLayer.Controllers
 
                     return RedirectToAction(nameof(Index));
                 }
-                catch (DbUpdateConcurrencyException)
+                catch (DbUpdateConcurrencyException ex)
                 {
                     if (!GroupExists(group.Id))
                     {
+                        _logger.LogError("Group with id=" +  group.Id + " not found");
                         return NotFound();
                     }
                     else
                     {
+                        _logger.LogError(ex.Message);
                         throw;
                     }
                 }

@@ -6,6 +6,7 @@ using IdentityNLayer.Models;
 using IdentityNLayer.Core.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.Extensions.Logging;
 
 namespace IdentityNLayer.Controllers
 {
@@ -13,20 +14,21 @@ namespace IdentityNLayer.Controllers
     {
         private readonly ITeacherService _teacherService;
         private readonly IMapper _mapper;
+        private readonly ILogger _logger;
         UserManager<IdentityUser> _userManager;
         private readonly IEnrollmentService _enrollmentService;
 
         public TeachersController(ITeacherService teacherService,
             IMapper mapper,
+            ILogger<TeachersController> logger,
             UserManager<IdentityUser> userManager,
             IEnrollmentService enrollmentService)
         {
             _teacherService = teacherService;
             _mapper = mapper;
+            _logger = logger;
             _userManager = userManager;
             _enrollmentService = enrollmentService;
-
-
         }
 
         // GET: Teachers
@@ -74,19 +76,33 @@ namespace IdentityNLayer.Controllers
         {
             if (ModelState.IsValid)
             {
-                var user = await _userManager.GetUserAsync(User);
+                try
+                {
+                    var user = await _userManager.GetUserAsync(User);
 
-                IdentityResult result = await _userManager.AddToRoleAsync(user, UserRoles.Teacher.ToString());
-                teacher.User = user;
-                int newTeacherId = _teacherService.Create(_mapper.Map<Teacher>(teacher));
-                if (courseId != 0)
-                    return RedirectToAction("SendRequest", new { courseId });
-                return RedirectToAction(nameof(Index));
+                    IdentityResult result = await _userManager.AddToRoleAsync(user, UserRoles.Teacher.ToString());
+                    teacher.User = user;
+                    int newTeacherId = _teacherService.Create(_mapper.Map<Teacher>(teacher));
+                    if (courseId != 0)
+                        return RedirectToAction("SendRequest", new { courseId });
+                    return RedirectToAction(nameof(Index));
+                }
+                catch (DbUpdateConcurrencyException ex)
+                {
+                    if (_teacherService.GetById(teacher.Id) == null)
+                    {
+                        _logger.LogError("Teacher with id=" + teacher.Id + " not found");
+                        return NotFound();
+                    }
+                    else
+                    {
+                        _logger.LogError(ex.Message);
+                        throw;
+                    }
+                }
             }
-            else
-            {
-                throw new DbUpdateConcurrencyException();
-            }
+           
+            return View(teacher);
         }
 
         // GET: Teachers/Edit/5
@@ -123,14 +139,16 @@ namespace IdentityNLayer.Controllers
                 {
                     _teacherService.Update(_mapper.Map<Teacher>(teacher));
                 }
-                catch (DbUpdateConcurrencyException)
+                catch (DbUpdateConcurrencyException ex)
                 {
-                    if (!TeacherExists(teacher.Id))
+                    if (_teacherService.GetById(teacher.Id) == null)
                     {
+                        _logger.LogError("Teacher with id=" + teacher.Id + " not found");
                         return NotFound();
                     }
                     else
                     {
+                        _logger.LogError(ex.Message);
                         throw;
                     }
                 }

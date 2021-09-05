@@ -12,6 +12,7 @@ using Microsoft.AspNetCore.Authorization;
 using AutoMapper;
 using IdentityNLayer.Models;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.Extensions.Logging;
 
 namespace IdentityNLayer.Controllers
 {
@@ -20,6 +21,7 @@ namespace IdentityNLayer.Controllers
         private readonly ICourseService _courseService;
         private readonly IStudentService _studentService;
         private readonly IMapper _mapper;
+        private readonly ILogger _logger;
         private readonly UserManager<IdentityUser> _userManager;
         private readonly IEnrollmentService _enrollmentService;
 
@@ -27,12 +29,14 @@ namespace IdentityNLayer.Controllers
             ICourseService courseService, 
             IStudentService studentService, 
             IMapper mapper,
+            ILogger<CoursesController> logger,
             UserManager<IdentityUser> userManager,
             IEnrollmentService enrollmentService)
         {
             _courseService = courseService;
             _studentService = studentService;
             _mapper = mapper;
+            _logger = logger;
             _userManager = userManager;
             _enrollmentService = enrollmentService;
         }
@@ -108,14 +112,16 @@ namespace IdentityNLayer.Controllers
                 {
                     _courseService.Update(_mapper.Map<Course>(course));
                 }
-                catch (DbUpdateConcurrencyException)
+                catch (DbUpdateConcurrencyException ex)
                 {
                     if (!CourseExists(course.Id))
                     {
+                        _logger.LogError("Course with id=" + course.Id + " not found");
                         return NotFound();
                     }
                     else
                     {
+                        _logger.LogError(ex.Message);
                         throw;
                     }
                 }
