@@ -48,7 +48,7 @@
                 <label class="control-label">Your Assign Groups Like Student</label>
                 @foreach (Group gr in studentService.GetStudentGroups(Model.Id))
                 {
-                    Dictionary<string, string> groupdId = new Dictionary<string, string> { { "groupId", gr.Id.ToString() } };
+                    Dictionary<string, string> groupdId = new Dictionary<string, string> { { "id", gr.Id.ToString() } };
                     <span class="form-control"><a asp-controller="Groups" asp-action="Details" asp-all-route-data="groupdId">@gr.Number, </a></span>
                 }
             </div>

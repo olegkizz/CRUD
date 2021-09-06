@@ -71,9 +71,12 @@ namespace IdentityNLayer.DAL.EF.Repositories
             throw new NotImplementedException();
         }
 
-        public Task<Enrollment> GetAsync(int id)
+        public async Task<Enrollment> GetAsync(int id)
         {
-            throw new NotImplementedException();
+            return await _context.Enrollments
+             .Include(s => s.User)
+             .Where(s => s.Id == id)
+             .FirstAsync();
         }
 
         public Task<IEnumerable<Enrollment>> GetAllAsync()

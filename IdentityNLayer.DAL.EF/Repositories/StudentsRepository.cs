@@ -78,14 +78,17 @@ namespace IdentityNLayer.DAL.EF.Repositories
             throw new NotImplementedException();
         }
 
-        public Task<Student> GetAsync(int id)
+        public async Task<Student> GetAsync(int id)
         {
-            throw new NotImplementedException();
+            return await _context.Students
+              .Include(s => s.User)
+              .Where(s => s.Id == id)
+              .FirstOrDefaultAsync();
         }
 
-        public Task<IEnumerable<Student>> GetAllAsync()
+        public async Task<IEnumerable<Student>> GetAllAsync()
         {
-            throw new NotImplementedException();
+            return await _context.Students.ToListAsync();
         }
     }
 }

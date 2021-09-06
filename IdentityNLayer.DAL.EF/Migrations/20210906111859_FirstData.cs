@@ -336,10 +336,10 @@ namespace IdentityNLayer.DAL.EF.Migrations
                 columns: new[] { "Id", "ConcurrencyStamp", "Name", "NormalizedName" },
                 values: new object[,]
                 {
-                    { "d5f2002a-b57e-4ef0-9ed5-b88e588a55bd", "0e4c82ff-cfab-4ed1-b700-42567991920d", "Admin", "ADMIN" },
-                    { "f5ba04f2-6685-41ef-819b-ee205c7c3a25", "d24b3109-91b6-45fb-8f7a-4df58dbd657b", "Manager", "MANAGER" },
-                    { "49819127-1e95-4cc5-8688-f7ee658ef0cf", "975778e2-cee0-4c34-bca6-38e035911c3d", "Student", "STUDENT" },
-                    { "bac2d1b3-44f2-443f-bd0e-c2f0ca76e73a", "ad383410-1276-45a2-91c8-9feb6bde40b0", "Teacher", "TEACHER" }
+                    { "6cb42317-9c78-494c-9a28-02296db5fb13", "aedf2443-28a1-4014-876e-359d799bc814", "Admin", "ADMIN" },
+                    { "05de06f4-7be7-4a08-a02c-c63e0e608ff0", "cab46e21-2bcc-4e1f-80b4-166bbb4ec2a2", "Manager", "MANAGER" },
+                    { "36069a26-36d0-4747-8ca1-d4bd902cfc01", "240f7d5a-437e-4b25-891f-1d7fe574ef4d", "Student", "STUDENT" },
+                    { "b12acf73-d06d-49ec-ae96-13d306280746", "9bd1cfa5-65ed-4a87-a05f-95da9bbf2f9f", "Teacher", "TEACHER" }
                 });
 
             migrationBuilder.InsertData(
@@ -347,8 +347,8 @@ namespace IdentityNLayer.DAL.EF.Migrations
                 columns: new[] { "Id", "AccessFailedCount", "ConcurrencyStamp", "Email", "EmailConfirmed", "LockoutEnabled", "LockoutEnd", "NormalizedEmail", "NormalizedUserName", "PasswordHash", "PhoneNumber", "PhoneNumberConfirmed", "SecurityStamp", "TwoFactorEnabled", "UserName" },
                 values: new object[,]
                 {
-                    { "b0142785-ef50-41ec-971b-97ce800b38f2", 0, "3c946514-05cb-4c23-8a28-2cb57eaf2e99", "admin@admin.com", true, false, null, null, "ADMIN@ADMIN.COM", "AQAAAAEAACcQAAAAENxgsICDn9EfdKvOhU6AWnaBBIALFh1lOoh7TFA/kFxuPzryxOkyfpdErwQQdd05fg==", null, false, "9fc3792c-7f75-4b65-b477-7b2c0a87d41e", false, "admin@admin.com" },
-                    { "dfa65f86-7377-433c-a68f-5338777a025b", 0, "452a882d-b3e1-4061-a02b-50dbc99b2f18", "manager@manager.com", true, false, null, null, "MANAGER@MANAGER.COM", "AQAAAAEAACcQAAAAEPlHWzREzCJ/TuuslIGc/bHuUjsdWXcKl/HthFMN5WsSDHG/LLq4dI14rrzTs0Epfg==", null, false, "fb7d90f2-205d-43e8-b14e-e9a02a4477c5", false, "manager@manager.com" }
+                    { "412ffa9e-bac2-4cd8-83cd-1a8c87179e45", 0, "2210c48b-c944-49b8-a993-fd4fce0fef03", "admin@admin.com", true, false, null, null, "ADMIN@ADMIN.COM", "AQAAAAEAACcQAAAAEGyvemeypgF3vr0TmlcSxoFNrmbj227kbYdNkF05iEOrYw4+EBapHJpqLeRVk0LXoQ==", null, false, "a75fd7ae-4719-43a1-9121-528f19b89fb1", false, "admin@admin.com" },
+                    { "99c71b96-7f57-41d8-89f4-3fa0e20d22b6", 0, "03314772-3fb1-4686-ad53-61895e022172", "manager@manager.com", true, false, null, null, "MANAGER@MANAGER.COM", "AQAAAAEAACcQAAAAEJ2IADiGmTYXPqYP+1x6iFjcU4grSYv2Jny3oU2/VXdhYVFgro68d2MxdZKDjmTMuQ==", null, false, "650de1fa-1058-46a7-96cb-22ba5942d6bf", false, "manager@manager.com" }
                 });
 
             migrationBuilder.InsertData(
@@ -365,8 +365,8 @@ namespace IdentityNLayer.DAL.EF.Migrations
                 columns: new[] { "RoleId", "UserId" },
                 values: new object[,]
                 {
-                    { "d5f2002a-b57e-4ef0-9ed5-b88e588a55bd", "b0142785-ef50-41ec-971b-97ce800b38f2" },
-                    { "f5ba04f2-6685-41ef-819b-ee205c7c3a25", "dfa65f86-7377-433c-a68f-5338777a025b" }
+                    { "6cb42317-9c78-494c-9a28-02296db5fb13", "412ffa9e-bac2-4cd8-83cd-1a8c87179e45" },
+                    { "05de06f4-7be7-4a08-a02c-c63e0e608ff0", "99c71b96-7f57-41d8-89f4-3fa0e20d22b6" }
                 });
 
             migrationBuilder.InsertData(

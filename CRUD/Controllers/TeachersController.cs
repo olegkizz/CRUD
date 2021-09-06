@@ -34,7 +34,7 @@ namespace IdentityNLayer.Controllers
         // GET: Teachers
         public async Task<IActionResult> Index()
         {
-            return View(_mapper.Map<TeacherModel>(_teacherService.GetAll()));
+            return View(_mapper.Map<TeacherModel>(await _teacherService.GetAllAsync()));
         }
         public IActionResult SendRequest(int courseId)
         {
@@ -108,6 +108,10 @@ namespace IdentityNLayer.Controllers
         // GET: Teachers/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
+            if ((await _teacherService.GetByIdAsync((int)id)).UserId != _userManager.GetUserId(User)
+                && !User.IsInRole("Admin") && !User.IsInRole("Manager"))
+                return LocalRedirect("Edit/" + id);
+
             if (id == null)
             {
                 return NotFound();
@@ -128,6 +132,10 @@ namespace IdentityNLayer.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("Id,FirstName,LastName,LinkToProfile,Bio")] TeacherModel teacher)
         {
+            if ((await _teacherService.GetByIdAsync(id)).UserId != _userManager.GetUserId(User)
+                && !User.IsInRole("Admin") && !User.IsInRole("Manager"))
+                return BadRequest();
+
             if (id != teacher.Id)
             {
                 return NotFound();

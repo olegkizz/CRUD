@@ -4,8 +4,7 @@ using IdentityNLayer.DAL.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+
 
 namespace IdentityNLayer.BLL.Services
 {
@@ -16,7 +15,6 @@ namespace IdentityNLayer.BLL.Services
         public EnrollmentService(IUnitOfWork db)
         {
             Db = db;
-
         }
         public void Enrol(string userId, int groupId, UserRoles role, bool confirmed = true)
         {

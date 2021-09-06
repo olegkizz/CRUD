@@ -296,29 +296,29 @@ namespace IdentityNLayer.DAL.EF.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "d5f2002a-b57e-4ef0-9ed5-b88e588a55bd",
-                            ConcurrencyStamp = "0e4c82ff-cfab-4ed1-b700-42567991920d",
+                            Id = "6cb42317-9c78-494c-9a28-02296db5fb13",
+                            ConcurrencyStamp = "aedf2443-28a1-4014-876e-359d799bc814",
                             Name = "Admin",
                             NormalizedName = "ADMIN"
                         },
                         new
                         {
-                            Id = "f5ba04f2-6685-41ef-819b-ee205c7c3a25",
-                            ConcurrencyStamp = "d24b3109-91b6-45fb-8f7a-4df58dbd657b",
+                            Id = "05de06f4-7be7-4a08-a02c-c63e0e608ff0",
+                            ConcurrencyStamp = "cab46e21-2bcc-4e1f-80b4-166bbb4ec2a2",
                             Name = "Manager",
                             NormalizedName = "MANAGER"
                         },
                         new
                         {
-                            Id = "49819127-1e95-4cc5-8688-f7ee658ef0cf",
-                            ConcurrencyStamp = "975778e2-cee0-4c34-bca6-38e035911c3d",
+                            Id = "36069a26-36d0-4747-8ca1-d4bd902cfc01",
+                            ConcurrencyStamp = "240f7d5a-437e-4b25-891f-1d7fe574ef4d",
                             Name = "Student",
                             NormalizedName = "STUDENT"
                         },
                         new
                         {
-                            Id = "bac2d1b3-44f2-443f-bd0e-c2f0ca76e73a",
-                            ConcurrencyStamp = "ad383410-1276-45a2-91c8-9feb6bde40b0",
+                            Id = "b12acf73-d06d-49ec-ae96-13d306280746",
+                            ConcurrencyStamp = "9bd1cfa5-65ed-4a87-a05f-95da9bbf2f9f",
                             Name = "Teacher",
                             NormalizedName = "TEACHER"
                         });
@@ -415,31 +415,31 @@ namespace IdentityNLayer.DAL.EF.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "b0142785-ef50-41ec-971b-97ce800b38f2",
+                            Id = "412ffa9e-bac2-4cd8-83cd-1a8c87179e45",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "3c946514-05cb-4c23-8a28-2cb57eaf2e99",
+                            ConcurrencyStamp = "2210c48b-c944-49b8-a993-fd4fce0fef03",
                             Email = "admin@admin.com",
                             EmailConfirmed = true,
                             LockoutEnabled = false,
                             NormalizedUserName = "ADMIN@ADMIN.COM",
-                            PasswordHash = "AQAAAAEAACcQAAAAENxgsICDn9EfdKvOhU6AWnaBBIALFh1lOoh7TFA/kFxuPzryxOkyfpdErwQQdd05fg==",
+                            PasswordHash = "AQAAAAEAACcQAAAAEGyvemeypgF3vr0TmlcSxoFNrmbj227kbYdNkF05iEOrYw4+EBapHJpqLeRVk0LXoQ==",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "9fc3792c-7f75-4b65-b477-7b2c0a87d41e",
+                            SecurityStamp = "a75fd7ae-4719-43a1-9121-528f19b89fb1",
                             TwoFactorEnabled = false,
                             UserName = "admin@admin.com"
                         },
                         new
                         {
-                            Id = "dfa65f86-7377-433c-a68f-5338777a025b",
+                            Id = "99c71b96-7f57-41d8-89f4-3fa0e20d22b6",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "452a882d-b3e1-4061-a02b-50dbc99b2f18",
+                            ConcurrencyStamp = "03314772-3fb1-4686-ad53-61895e022172",
                             Email = "manager@manager.com",
                             EmailConfirmed = true,
                             LockoutEnabled = false,
                             NormalizedUserName = "MANAGER@MANAGER.COM",
-                            PasswordHash = "AQAAAAEAACcQAAAAEPlHWzREzCJ/TuuslIGc/bHuUjsdWXcKl/HthFMN5WsSDHG/LLq4dI14rrzTs0Epfg==",
+                            PasswordHash = "AQAAAAEAACcQAAAAEJ2IADiGmTYXPqYP+1x6iFjcU4grSYv2Jny3oU2/VXdhYVFgro68d2MxdZKDjmTMuQ==",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "fb7d90f2-205d-43e8-b14e-e9a02a4477c5",
+                            SecurityStamp = "650de1fa-1058-46a7-96cb-22ba5942d6bf",
                             TwoFactorEnabled = false,
                             UserName = "manager@manager.com"
                         });
@@ -508,13 +508,13 @@ namespace IdentityNLayer.DAL.EF.Migrations
                     b.HasData(
                         new
                         {
-                            UserId = "b0142785-ef50-41ec-971b-97ce800b38f2",
-                            RoleId = "d5f2002a-b57e-4ef0-9ed5-b88e588a55bd"
+                            UserId = "412ffa9e-bac2-4cd8-83cd-1a8c87179e45",
+                            RoleId = "6cb42317-9c78-494c-9a28-02296db5fb13"
                         },
                         new
                         {
-                            UserId = "dfa65f86-7377-433c-a68f-5338777a025b",
-                            RoleId = "f5ba04f2-6685-41ef-819b-ee205c7c3a25"
+                            UserId = "99c71b96-7f57-41d8-89f4-3fa0e20d22b6",
+                            RoleId = "05de06f4-7be7-4a08-a02c-c63e0e608ff0"
                         });
                 });
 

@@ -56,9 +56,9 @@ namespace IdentityNLayer.DAL.EF.Repositories
             return await _context.Courses.ToListAsync();
         }
 
-        public Task<Course> GetAsync(int id)
+        public async Task<Course> GetAsync(int id)
         {
-            throw new NotImplementedException();
+            return await _context.Courses.Where(crs => crs.Id == id).FirstAsync();
         }
 
         public void Update(Course item)

@@ -96,7 +96,8 @@ namespace IdentityNLayer.BLL.Services
 
         public Task<Course> GetByIdAsync(int id)
         {
-            throw new NotImplementedException();
+            return Db.Courses.GetAsync(id);
+
         }
 
         public Task<IEnumerable<Course>> GetAllAsync()

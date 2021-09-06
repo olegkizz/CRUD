@@ -89,7 +89,7 @@ namespace IdentityNLayer.Controllers
                         _enrollmentService.Enrol(studentRequest.UserId, groupId, UserRoles.Student);
                 }
                 if (group.TeacherId != null)
-                    _enrollmentService.Enrol(_teacherService.GetById((int)group.TeacherId).UserId, groupId, UserRoles.Teacher);
+                    _enrollmentService.Enrol((await _teacherService.GetByIdAsync((int)group.TeacherId)).UserId, groupId, UserRoles.Teacher);
                 return RedirectToAction(nameof(Index));
             }
             return View();
@@ -104,7 +104,7 @@ namespace IdentityNLayer.Controllers
                 return NotFound();
             }
 
-            GroupModel group = _mapper.Map<GroupModel>(_groupService.GetById((int)id));
+            GroupModel group = _mapper.Map<GroupModel>(await _groupService.GetByIdAsync((int)id));
             group.SetStudents(_mapper.Map<IEnumerable<StudentModel>>(_groupService.GetStudents(group.Id)), _groupService);
 
             if (group == null)
@@ -183,7 +183,7 @@ namespace IdentityNLayer.Controllers
                 return NotFound();
             }
 
-            GroupModel teacher = _mapper.Map<GroupModel>(_groupService.GetById((int)id));
+            GroupModel teacher = _mapper.Map<GroupModel>(await _groupService.GetByIdAsync((int)id));
             if (teacher == null)
             {
                 return NotFound();

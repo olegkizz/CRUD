@@ -69,7 +69,11 @@ namespace IdentityNLayer.DAL.EF.Repositories
 
         public Task<Group> GetAsync(int id)
         {
-            throw new NotImplementedException();
+            return _context.Groups
+               .Include(g => g.Enrollments)
+               .Include(g => g.Teacher)
+               .Where(g => g.Id == id)
+               .FirstAsync();
         }
 
         public async Task<IEnumerable<Group>> GetAllAsync()

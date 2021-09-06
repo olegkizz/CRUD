@@ -47,7 +47,7 @@ namespace IdentityNLayer.Controllers
 
         public async Task<IActionResult> Index()
         {
-            return View(_mapper.Map<IEnumerable<StudentModel>>(_studentService.GetAll()));
+            return View(_mapper.Map<IEnumerable<StudentModel>>(await _studentService.GetAllAsync()));
         }
         [HttpGet]
         public IActionResult SendRequest(int courseId)
@@ -113,9 +113,13 @@ namespace IdentityNLayer.Controllers
             return View(student);
         }
 
-        // GET: Contacts/Edit/5
+        // GET: Students/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
+            if ((await _studentService.GetByIdAsync((int)id)).UserId != _userManager.GetUserId(User)
+                  && !User.IsInRole("Admin") && !User.IsInRole("Manager"))
+                return LocalRedirect("Edit/" + id);
+
             if (id == null)
             {
                 return NotFound();
@@ -140,6 +144,10 @@ namespace IdentityNLayer.Controllers
         public async Task<IActionResult> Edit(int id, [Bind("Id, FirstName, LastName, BirthDate, User, " +
             "PhoneNumber, Type, UserId")] StudentModel student)
         {
+            if ((await _studentService.GetByIdAsync((int)id)).UserId != _userManager.GetUserId(User)
+                && !User.IsInRole("Admin") && !User.IsInRole("Manager"))
+                return BadRequest();
+
             if (id != student.Id)
             {
                 return NotFound();

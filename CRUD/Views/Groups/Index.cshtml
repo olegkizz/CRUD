@@ -1,16 +1,10 @@
-﻿@model IEnumerable<IdentityNLayer.Models.GroupModel>
+﻿@model IEnumerable<GroupModel>
 
 @{
     ViewData["Title"] = "Groups";
 }
 
 <h1>Index</h1>
-@if (User.IsInRole("Admin") || User.IsInRole("Manager"))
-{
-    <p>
-        <a asp-action="Create">Create New</a>
-    </p>
-}
 
 <table class="table">
     <thead>

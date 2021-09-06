@@ -114,12 +114,12 @@ namespace IdentityNLayer.BLL.Services
 
         public Task<Student> GetByIdAsync(int id)
         {
-            throw new NotImplementedException();
+            return Db.Students.GetAsync(id);
         }
 
         public Task<IEnumerable<Student>> GetAllAsync()
         {
-            throw new NotImplementedException();
+            return Db.Students.GetAllAsync();
         }
     }
 }

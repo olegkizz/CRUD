@@ -9,7 +9,7 @@
     {
         if (User.IsInRole("Student"))
         {
-            Dictionary<string, string> studentId = new Dictionary<string, string> { { "studentId",
+            Dictionary<string, string> studentId = new Dictionary<string, string> { { "id",
                     studentService.GetByUserId(UserManager.GetUserId(User)).Id.ToString()} };
 
             <li class="nav-item">
@@ -19,7 +19,7 @@
         }
         if (User.IsInRole("Teacher"))
         {
-            Dictionary<string, string> teacherId = new Dictionary<string, string> { { "teacherId",
+            Dictionary<string, string> teacherId = new Dictionary<string, string> { { "id",
                     teacherService.GetByUserId(UserManager.GetUserId(User)).Id.ToString()} };
 
             <li class="nav-item">

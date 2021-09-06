@@ -44,7 +44,7 @@ namespace IdentityNLayer.Controllers
         // GET: Courses
         public async Task<IActionResult> Index()
         {
-            return View(_mapper.Map<IEnumerable<CourseModel>>(_courseService.GetAllAsync()));
+            return View(_mapper.Map<IEnumerable<CourseModel>>(await _courseService.GetAllAsync()));
         }
 
 

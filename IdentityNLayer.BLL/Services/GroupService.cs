@@ -125,9 +125,9 @@ namespace IdentityNLayer.BLL.Services
             throw new NotImplementedException();
         }
 
-        public string GetAsync(int id)
+        public Task<Group> GetAsync(int id)
         {
-            throw new NotImplementedException();
+            return Db.Groups.GetAsync(id);
         }
 
         public Task<Group> GetByIdAsync(int id)

@@ -56,7 +56,7 @@ namespace IdentityNLayer.DAL.EF.Repositories
             throw new NotImplementedException();
         }
 
-        public Task<Topic> GetAsync(int id)
+        public async Task<Topic> GetAsync(int id)
         {
             throw new NotImplementedException();
         }
