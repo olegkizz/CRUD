@@ -1,10 +1,11 @@
-﻿using IdentityNLayer.Core.Entities;
-using IdentityNLayer.DAL.EF.Context;
-using System;
+﻿using System;
 using System.Collections.Generic;
-using System.Data.Entity;
+using IdentityNLayer.DAL.EF.Context;
+using IdentityNLayer.Core.Entities;
+using Microsoft.EntityFrameworkCore;
 using System.Linq;
 using System.Threading.Tasks;
+
 
 namespace IdentityNLayer.DAL.EF.Repositories
 {
