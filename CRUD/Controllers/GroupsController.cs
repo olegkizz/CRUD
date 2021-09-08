@@ -58,7 +58,7 @@ namespace IdentityNLayer.Controllers
                 return NotFound();
             }
 
-            return View(_groupService.GetByIdAsync((int)id));
+            return View(_mapper.Map<GroupModel>(await _groupService.GetByIdAsync((int)id)));
         }
 
         // GET: Groups/Create
@@ -82,12 +82,12 @@ namespace IdentityNLayer.Controllers
             if (ModelState.IsValid)
             {
                 int groupId = _groupService.Create(_mapper.Map<Group>(group));
-
-                foreach (StudentRequestsModel studentRequest in group.StudentRequests)
-                {
-                    if (studentRequest.Applied)
-                        _enrollmentService.Enrol(studentRequest.UserId, groupId, UserRoles.Student);
-                }
+                if(group.StudentRequests != null)
+                    foreach (StudentRequestsModel studentRequest in group.StudentRequests)
+                    {
+                        if (studentRequest.Applied)
+                            _enrollmentService.Enrol(studentRequest.UserId, groupId, UserRoles.Student);
+                    }
                 if (group.TeacherId != null)
                     _enrollmentService.Enrol((await _teacherService.GetByIdAsync((int)group.TeacherId)).UserId, groupId, UserRoles.Teacher);
                 return RedirectToAction(nameof(Index));
@@ -152,7 +152,7 @@ namespace IdentityNLayer.Controllers
                                 _enrollmentService.UnEnrol(currentTeacher.UserId, group.Id);
                                 _enrollmentService.Enrol(newTeacher.UserId, group.Id, UserRoles.Teacher);
                             }
-                        }
+                        } else _enrollmentService.Enrol(newTeacher.UserId, group.Id, UserRoles.Teacher);
                     } else if(currentTeacher != null)
                         _enrollmentService.UnEnrol(currentTeacher.UserId, group.Id);
 

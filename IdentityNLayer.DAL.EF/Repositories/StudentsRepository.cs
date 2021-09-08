@@ -34,7 +34,9 @@ namespace IdentityNLayer.DAL.EF.Repositories
 
         public IEnumerable<Student> Find(Func<Student, bool> predicate)
         {
-            return _context.Students.Where(predicate).ToList();
+            return _context.Students
+                .AsNoTracking()
+                .Where(predicate).ToList();
         }
 
         public void Create(Student item)
@@ -46,20 +48,6 @@ namespace IdentityNLayer.DAL.EF.Repositories
         {
             _context.Entry(item).State = EntityState.Modified;
             _context.Students.Update(item);
-            if (item.User != null)
-            {
-                IdentityUser user = _context.Users.Single(us => us.Id == item.UserId);
-            
-                user.Email = item.User.Email;
-                user.NormalizedEmail = item.User.Email.ToUpper();
-                user.PhoneNumber = item.User.PhoneNumber;
-  /*              _context.Entry(item.User).Property("Email").IsModified = true;
-                _context.Entry(item.User).Property("NormalizedEmail").IsModified = true;
-                _context.Entry(item.User).Property("PhoneNumber").IsModified = true;*/
-                /*_context.Attach(user);*/
-                /* item.User.NormalizedEmail = item.User.Email.ToUpper();*/
-                _context.Users.Update(user);
-            }
         }
 
         public void Delete(int id)
@@ -69,9 +57,13 @@ namespace IdentityNLayer.DAL.EF.Repositories
                 _context.Students.Remove(student);
         }
 
-        public IEnumerable<Student> FindAsync(Func<Student, bool> predicate)
+        public async Task<IEnumerable<Student>> FindAsync(Func<Student, bool> predicate)
         {
-            throw new NotImplementedException();
+            return await _context.Students
+                .AsNoTracking()
+                .Where(predicate)
+                .AsQueryable()
+                .ToListAsync();
         }
 
         public void CreateAsync(Student item)
@@ -84,7 +76,9 @@ namespace IdentityNLayer.DAL.EF.Repositories
             return await _context.Students
               .Include(s => s.User)
               .Where(s => s.Id == id)
-              .FirstOrDefaultAsync();
+              .AsNoTracking()
+              .AsQueryable()
+              .SingleOrDefaultAsync();
         }
 
         public async Task<IEnumerable<Student>> GetAllAsync()

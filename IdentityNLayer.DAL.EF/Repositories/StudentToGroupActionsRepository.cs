@@ -50,7 +50,7 @@ namespace IdentityNLayer.DAL.EF.Repositories
                 _context.StudentToGroupActions.Remove(studentaction);
         }
 
-        public IEnumerable<StudentToGroupAction> FindAsync(Func<StudentToGroupAction, bool> predicate)
+        public Task<IEnumerable<StudentToGroupAction>> FindAsync(Func<StudentToGroupAction, bool> predicate)
         {
             throw new NotImplementedException();
         }

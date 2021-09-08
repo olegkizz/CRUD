@@ -54,15 +54,15 @@ namespace IdentityNLayer.BLL.Services
             foreach (Enrollment en
                 in Db.Enrollments.Find(en => en.EntityID == id && en.State == UserGroupStates.Requested && en.Role == UserRoles.Teacher))
             {
-                Teacher teacher = Db.Teachers.Find(tc => tc.UserId == en.UserID).FirstOrDefault();
+                Teacher teacher = Db.Teachers.Find(tc => tc.UserId == en.UserID).SingleOrDefault();
                 if (teacher != null)
                     teachers.Add(teacher);
             }
             return teachers;
         }
-        public IEnumerable<Topic> GetAvailableTopics()
+        public IEnumerable<Topic> GetAvailableTopics(int courseId = 0)
         {
-            return Db.Topics.GetAll();
+            return Db.Topics.Find(c => c.CourseId == courseId);
         }
 
         public bool HasRequest(int courseId, string userId, UserRoles role)

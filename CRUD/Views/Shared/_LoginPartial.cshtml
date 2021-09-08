@@ -7,25 +7,28 @@
 
     @if (SignInManager.IsSignedIn(User))
     {
-        if (User.IsInRole("Student"))
+        if (User != null)
         {
-            Dictionary<string, string> studentId = new Dictionary<string, string> { { "id",
+            if (await UserManager.IsInRoleAsync(await UserManager.GetUserAsync(User), "Student"))
+            {
+                Dictionary<string, string> studentId = new Dictionary<string, string> { { "id",
                     studentService.GetByUserId(UserManager.GetUserId(User)).Id.ToString()} };
 
-            <li class="nav-item">
-                <a class="nav-link text-dark" asp-controller="Students" asp-action="Edit" asp-all-route-data="studentId"
-                   title="Manage">Student Account</a>
-            </li>
-        }
-        if (User.IsInRole("Teacher"))
-        {
-            Dictionary<string, string> teacherId = new Dictionary<string, string> { { "id",
+                <li class="nav-item">
+                    <a class="nav-link text-dark" asp-controller="Students" asp-action="Edit" asp-all-route-data="studentId"
+                       title="Manage">Student Account</a>
+                </li>
+            }
+            if (await UserManager.IsInRoleAsync(await UserManager.GetUserAsync(User), "Teacher"))
+            {
+                Dictionary<string, string> teacherId = new Dictionary<string, string> { { "id",
                     teacherService.GetByUserId(UserManager.GetUserId(User)).Id.ToString()} };
 
-            <li class="nav-item">
-                <a class="nav-link text-dark" asp-controller="Teachers" asp-action="Edit" asp-all-route-data="teacherId"
-                   title="Manage">Teacher Account</a>
-            </li>
+                <li class="nav-item">
+                    <a class="nav-link text-dark" asp-controller="Teachers" asp-action="Edit" asp-all-route-data="teacherId"
+                       title="Manage">Teacher Account</a>
+                </li>
+            }
         }
         <li class="nav-item">
             <a class="nav-link text-dark" asp-area="Identity" asp-page="/Account/Manage/Index" title="Manage">Hello @User.Identity.Name!</a>

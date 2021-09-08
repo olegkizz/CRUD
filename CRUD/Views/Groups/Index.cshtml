@@ -26,7 +26,12 @@
         {
             <tr>
                 <td>
-                    @Html.DisplayFor(modelItem => item.Number)
+                    @{
+                        Dictionary<string, string>
+                        groupdId = new Dictionary<string, string>
+                            { { "id", item.Id.ToString() } };
+                    }
+                    <a asp-controller="Groups" asp-action="Details" asp-all-route-data="@groupdId">@Html.DisplayFor(modelItem => item.Number)</a>
                 </td>
                 <td>
                     @Html.DisplayFor(modelItem => item.Status)

@@ -21,6 +21,7 @@ namespace IdentityNLayer.DAL.EF.Repositories
         {
             return _context.Enrollments
                .Include(s => s.User)
+               .AsNoTracking()
                .ToList();
         }
 
@@ -28,14 +29,16 @@ namespace IdentityNLayer.DAL.EF.Repositories
         {
             return _context.Enrollments
                 .Include(s => s.User)
+                .AsNoTracking()
                 .Where(s => s.Id == id)
-                .First();
+                .Single();
         }
 
         public IEnumerable<Enrollment> Find(Func<Enrollment, bool> predicate)
         {
             return _context.Enrollments
                 .Include(en => en.User)
+                .AsNoTracking()
                 .Where(predicate)
                 .ToList();
         }
@@ -58,12 +61,13 @@ namespace IdentityNLayer.DAL.EF.Repositories
                 _context.Enrollments.Remove(enrol);
         }
 
-        public IEnumerable<Enrollment> FindAsync(Func<Enrollment, bool> predicate)
+        public async Task<IEnumerable<Enrollment>> FindAsync(Func<Enrollment, bool> predicate)
         {
-            return _context.Enrollments
+            return await _context.Enrollments
                 .Include(en => en.User)
                 .Where(predicate)
-                .ToList();
+                .AsQueryable()
+                .ToListAsync();
         }
 
         public void CreateAsync(Enrollment item)
@@ -75,13 +79,17 @@ namespace IdentityNLayer.DAL.EF.Repositories
         {
             return await _context.Enrollments
              .Include(s => s.User)
+             .AsNoTracking()
              .Where(s => s.Id == id)
-             .FirstAsync();
+             .SingleAsync();
         }
 
-        public Task<IEnumerable<Enrollment>> GetAllAsync()
+        public async Task<IEnumerable<Enrollment>> GetAllAsync()
         {
-            throw new NotImplementedException();
+            return await _context.Enrollments
+               .Include(s => s.User)
+               .AsNoTracking()
+               .ToListAsync();
         }
     }
 }

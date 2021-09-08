@@ -30,7 +30,7 @@
                 @Html.DisplayNameFor(model => model.StartDate)
             </th>
             <th>
-                Requests
+                Requests (Students | Teachers)
             </th>
             <th></th>
         </tr>
@@ -60,7 +60,8 @@
                 <td>
                     @if (Context.User.IsInRole("Admin"))
                     {
-                     groupService.GetStudents(item.Id, UserGroupStates.Requested);
+                        <span>@courseService.GetStudentRequests(item.Id).Count()</span>
+                        <span>|</span> <span>@courseService.GetTeacherRequests(item.Id).Count()</span>
                     }
                     else
                     {
@@ -69,45 +70,52 @@
                         {
                             @if (!courseService.HasRequest(item.Id, userManager.GetUserAsync(Context.User).Result.Id, UserRoles.Teacher))
                             {
-                                <a asp-controller="Teachers" asp-all-route-data="courseId"
-                                   asp-action="SendRequest">Teacher Request</a>
-                                <a asp-controller="Students" asp-all-route-data="courseId"
-                                   asp-action="SendRequest">Student Request</a>
-                            }
-                            else
-                            {
                                 Group yourGroup = null;
                                 foreach (Group gr in courseService.GetGroups(item.Id, GroupStatus.Pending))
                                 {
-                                        if (groupService.GetCurrentTeacher(gr.Id)?.UserId == userManager.GetUserId(User))
-                                            yourGroup = gr;
+                                    if (groupService.GetCurrentTeacher(gr.Id)?.UserId == userManager.GetUserId(User))
+                                        yourGroup = gr;
                                 }
                                 if (yourGroup != null)
                                 {
-                                    <span>You are already in the <a>@yourGroup.Number</a>group like a Teacher</span>
+                                    Dictionary<string, string> groupdId = new Dictionary<string, string> { { "id", yourGroup.Id.ToString() } };
+                                    <span>
+                                        You are already in the <a asp-controller="Groups" asp-action="Details" asp-all-route-data="groupdId">@yourGroup.Number</a>
+                                        group like a Teacher
+                                    </span>
                                 }
                                 else
                                 {
-                                    <span>Teacher Request Has Been Sent</span>
+                                    foreach (Student st in groupService.GetStudents(item.Id, UserGroupStates.Applied))
+                                    {
+                                        if (st.UserId == userManager.GetUserId(User))
+                                            yourGroup = studentService.GetGroupByCourseId(st.Id, item.Id);
+                                    }
+                                    if (yourGroup != null)
+                                    {
+                                        Dictionary<string, string> groupdId = new Dictionary<string, string> { { "id", yourGroup.Id.ToString() } };
+                                        <span>
+                                            You are already in the <a asp-controller="Groups" asp-action="Details" asp-all-route-data="groupdId">@yourGroup.Number</a>
+                                            group like a Student
+                                        </span>
+                                    }
+                                    else
+                                    {
+                                        <a asp-controller="Teachers" asp-all-route-data="courseId"
+                                           asp-action="SendRequest">Teacher Request</a>
+                                        <a asp-controller="Students" asp-all-route-data="courseId"
+                                           asp-action="SendRequest">Student Request</a>
+                                    }
                                 }
+                            }
+                            else
+                            {
+                                <span>Teacher Request Has Been Sent</span>
                             }
                         }
                         else
                         {
-                            Group yourGroup = null;
-                            foreach (Student st in groupService.GetStudents(item.Id, UserGroupStates.Applied))
-                            {
-                                if (st.UserId == userManager.GetUserId(User))
-                                    yourGroup = studentService.GetGroupByCourseId(st.Id, item.Id);
-                            }
-                            if (yourGroup != null)
-                            {
-                                <span>You are already in the <a>@yourGroup.Number</a>group like a Student</span>
-                            }
-                            else
-                            {
-                                <span>Student Request Has Been Sent</span>
-                            }
+                            <span>Student Request Has Been Sent</span>
                         }
                     }
                 </td>

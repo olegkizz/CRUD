@@ -13,7 +13,7 @@ namespace IdentityNLayer.DAL
         T Get(int id);
         Task<T> GetAsync(int id);
         IEnumerable<T> Find(Func<T, Boolean> predicate);
-        IEnumerable<T> FindAsync(Func<T, Boolean> predicate);
+        Task<IEnumerable<T>> FindAsync(Func<T, Boolean> predicate);
         void Create(T item);
         void CreateAsync(T item);
         void Update(T item);

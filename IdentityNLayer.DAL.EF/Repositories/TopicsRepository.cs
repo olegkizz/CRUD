@@ -33,10 +33,12 @@ namespace IdentityNLayer.DAL.EF.Repositories
 
         public IEnumerable<Topic> Find(Func<Topic, bool> predicate)
         {
-            throw new NotImplementedException();
+            return _context.Topics
+                    .Where(predicate)
+                    .ToList();
         }
 
-        public IEnumerable<Topic> FindAsync(Func<Topic, bool> predicate)
+        public async Task<IEnumerable<Topic>> FindAsync(Func<Topic, bool> predicate)
         {
             throw new NotImplementedException();
         }
@@ -56,7 +58,7 @@ namespace IdentityNLayer.DAL.EF.Repositories
             throw new NotImplementedException();
         }
 
-        public async Task<Topic> GetAsync(int id)
+        public Task<Topic> GetAsync(int id)
         {
             throw new NotImplementedException();
         }

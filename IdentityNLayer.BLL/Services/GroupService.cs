@@ -69,14 +69,14 @@ namespace IdentityNLayer.BLL.Services
                 case UserGroupStates.Applied:
                     foreach (Enrollment en in Db.Enrollments.Find(en => en.EntityID == groupId && en.State == state && en.Role == UserRoles.Student))
                     {
-                        students.Add(Db.Students.Find(st => st.UserId == en.UserID).FirstOrDefault());
+                        students.Add(Db.Students.Find(st => st.UserId == en.UserID).SingleOrDefault());
                     }
                     return students;
                 case UserGroupStates.Requested:
                     foreach (Enrollment en in Db.Enrollments.Find(en => en.EntityID == Db.Groups.Find(gr => gr.Id == groupId).FirstOrDefault()?.CourseId 
                     && en.State == state && en.Role == UserRoles.Student))
                     {
-                        students.Add(Db.Students.Find(st => st.UserId == en.UserID).FirstOrDefault());
+                        students.Add(Db.Students.Find(st => st.UserId == en.UserID).SingleOrDefault());
                     }
                     return students;
                 default:
@@ -95,14 +95,14 @@ namespace IdentityNLayer.BLL.Services
                 case UserGroupStates.Applied:
                     foreach (Enrollment en in Db.Enrollments.Find(en => en.EntityID == groupId && en.State == state && en.Role == UserRoles.Teacher))
                     {
-                        teachers.Add(Db.Teachers.Find(tc => tc.UserId == en.UserID).FirstOrDefault());
+                        teachers.Add(Db.Teachers.Find(tc => tc.UserId == en.UserID).SingleOrDefault());
                     }
                     return teachers;
                 case UserGroupStates.Requested:
                     foreach (Enrollment en in Db.Enrollments.Find(en => en.EntityID == Db.Groups.Find(gr => gr.Id == groupId).FirstOrDefault()?.CourseId
                     && en.State == state && en.Role == UserRoles.Teacher))
                     {
-                        teachers.Add(Db.Teachers.Find(tc => tc.UserId == en.UserID).FirstOrDefault());
+                        teachers.Add(Db.Teachers.Find(tc => tc.UserId == en.UserID).SingleOrDefault());
                     }
                     return teachers;
                 default:

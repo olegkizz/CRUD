@@ -26,8 +26,9 @@ namespace IdentityNLayer.DAL.EF.Repositories
         {
             return _context.Teachers
                 .Include(s => s.User)
+                .AsNoTracking()
                 .Where(s => s.Id == id)
-                .First();
+                .Single();
         }
 
         public IEnumerable<Teacher> Find(Func<Teacher, bool> predicate)
@@ -42,7 +43,7 @@ namespace IdentityNLayer.DAL.EF.Repositories
 
         public void Update(Teacher item)
         {
-            throw new NotImplementedException();
+            _context.Teachers.Update(item);
         }
 
         public void Delete(int id)
@@ -50,7 +51,7 @@ namespace IdentityNLayer.DAL.EF.Repositories
             throw new NotImplementedException();
         }
 
-        public IEnumerable<Teacher> FindAsync(Func<Teacher, bool> predicate)
+        public Task<IEnumerable<Teacher>> FindAsync(Func<Teacher, bool> predicate)
         {
             throw new NotImplementedException();
         }
@@ -65,7 +66,7 @@ namespace IdentityNLayer.DAL.EF.Repositories
             return await _context.Teachers
                .Include(s => s.User)
                .Where(s => s.Id == id)
-               .FirstAsync();
+               .SingleAsync();
         }
 
         public async Task<IEnumerable<Teacher>> GetAllAsync()

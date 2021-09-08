@@ -37,14 +37,17 @@ namespace IdentityNLayer.DAL.EF.Repositories
             throw new NotImplementedException();
         }
 
-        public IEnumerable<Course> FindAsync(Func<Course, bool> predicate)
+        public Task<IEnumerable<Course>> FindAsync(Func<Course, bool> predicate)
         {
             throw new NotImplementedException();
         }
 
         public Course Get(int id)
         {
-            return _context.Courses.Where(crs => crs.Id == id).First();
+            return _context.Courses
+                .AsNoTracking()
+                .Where(crs => crs.Id == id)
+                .Single();
         }
 
         public IEnumerable<Course> GetAll()
@@ -59,7 +62,10 @@ namespace IdentityNLayer.DAL.EF.Repositories
 
         public async Task<Course> GetAsync(int id)
         {
-            return await _context.Courses.Where(crs => crs.Id == id).FirstAsync();
+            return await _context.Courses
+                .AsNoTracking()
+                .Where(crs => crs.Id == id)
+                .SingleAsync();
         }
 
         public void Update(Course item)

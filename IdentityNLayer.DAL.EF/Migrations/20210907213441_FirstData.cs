@@ -47,24 +47,21 @@ namespace IdentityNLayer.DAL.EF.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Topics",
+                name: "Courses",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Title = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Description = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    ParentId = table.Column<int>(type: "int", nullable: true)
+                    Program = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    TopicId = table.Column<int>(type: "int", nullable: false),
+                    StartDate = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    Updated = table.Column<DateTime>(type: "datetime2", nullable: false, defaultValueSql: "getdate()")
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Topics", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_Topics_Topics_ParentId",
-                        column: x => x.ParentId,
-                        principalTable: "Topics",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
+                    table.PrimaryKey("PK_Courses", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -221,27 +218,31 @@ namespace IdentityNLayer.DAL.EF.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Courses",
+                name: "Topics",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Title = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Description = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Program = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    TopicId = table.Column<int>(type: "int", nullable: false),
-                    StartDate = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    Updated = table.Column<DateTime>(type: "datetime2", nullable: false, defaultValueSql: "getdate()")
+                    CourseId = table.Column<int>(type: "int", nullable: false),
+                    ParentId = table.Column<int>(type: "int", nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Courses", x => x.Id);
+                    table.PrimaryKey("PK_Topics", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Courses_Topics_TopicId",
-                        column: x => x.TopicId,
-                        principalTable: "Topics",
+                        name: "FK_Topics_Courses_CourseId",
+                        column: x => x.CourseId,
+                        principalTable: "Courses",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_Topics_Topics_ParentId",
+                        column: x => x.ParentId,
+                        principalTable: "Topics",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
@@ -336,10 +337,10 @@ namespace IdentityNLayer.DAL.EF.Migrations
                 columns: new[] { "Id", "ConcurrencyStamp", "Name", "NormalizedName" },
                 values: new object[,]
                 {
-                    { "6cb42317-9c78-494c-9a28-02296db5fb13", "aedf2443-28a1-4014-876e-359d799bc814", "Admin", "ADMIN" },
-                    { "05de06f4-7be7-4a08-a02c-c63e0e608ff0", "cab46e21-2bcc-4e1f-80b4-166bbb4ec2a2", "Manager", "MANAGER" },
-                    { "36069a26-36d0-4747-8ca1-d4bd902cfc01", "240f7d5a-437e-4b25-891f-1d7fe574ef4d", "Student", "STUDENT" },
-                    { "b12acf73-d06d-49ec-ae96-13d306280746", "9bd1cfa5-65ed-4a87-a05f-95da9bbf2f9f", "Teacher", "TEACHER" }
+                    { "8c7c8095-2336-43b3-9494-1828cec9924f", "a6bfc6ba-a913-4eec-ba75-c0f93ee517d6", "Admin", "ADMIN" },
+                    { "69ee48cd-e2e2-4632-941b-77744320a070", "a504955e-c44f-439f-81a1-246f70f3b715", "Manager", "MANAGER" },
+                    { "93a14dc9-a206-4b15-98d8-6e52f32616f4", "9de2ea9f-4558-4581-9e1b-e838e72b038e", "Student", "STUDENT" },
+                    { "5f567727-6f15-4e9d-99da-98a00f365f94", "7b8a585f-a9a5-47ef-b77f-f313851bdedb", "Teacher", "TEACHER" }
                 });
 
             migrationBuilder.InsertData(
@@ -347,26 +348,27 @@ namespace IdentityNLayer.DAL.EF.Migrations
                 columns: new[] { "Id", "AccessFailedCount", "ConcurrencyStamp", "Email", "EmailConfirmed", "LockoutEnabled", "LockoutEnd", "NormalizedEmail", "NormalizedUserName", "PasswordHash", "PhoneNumber", "PhoneNumberConfirmed", "SecurityStamp", "TwoFactorEnabled", "UserName" },
                 values: new object[,]
                 {
-                    { "412ffa9e-bac2-4cd8-83cd-1a8c87179e45", 0, "2210c48b-c944-49b8-a993-fd4fce0fef03", "admin@admin.com", true, false, null, null, "ADMIN@ADMIN.COM", "AQAAAAEAACcQAAAAEGyvemeypgF3vr0TmlcSxoFNrmbj227kbYdNkF05iEOrYw4+EBapHJpqLeRVk0LXoQ==", null, false, "a75fd7ae-4719-43a1-9121-528f19b89fb1", false, "admin@admin.com" },
-                    { "99c71b96-7f57-41d8-89f4-3fa0e20d22b6", 0, "03314772-3fb1-4686-ad53-61895e022172", "manager@manager.com", true, false, null, null, "MANAGER@MANAGER.COM", "AQAAAAEAACcQAAAAEJ2IADiGmTYXPqYP+1x6iFjcU4grSYv2Jny3oU2/VXdhYVFgro68d2MxdZKDjmTMuQ==", null, false, "650de1fa-1058-46a7-96cb-22ba5942d6bf", false, "manager@manager.com" }
-                });
-
-            migrationBuilder.InsertData(
-                table: "Topics",
-                columns: new[] { "Id", "Description", "ParentId", "Title" },
-                values: new object[,]
-                {
-                    { 1, "Super MVC", null, ".NET" },
-                    { 2, "Super Spring", null, "Spring" }
-                });
-
-            migrationBuilder.InsertData(
-                table: "AspNetUserRoles",
-                columns: new[] { "RoleId", "UserId" },
-                values: new object[,]
-                {
-                    { "6cb42317-9c78-494c-9a28-02296db5fb13", "412ffa9e-bac2-4cd8-83cd-1a8c87179e45" },
-                    { "05de06f4-7be7-4a08-a02c-c63e0e608ff0", "99c71b96-7f57-41d8-89f4-3fa0e20d22b6" }
+                    { "7b22d19f-eeca-4d21-8d4b-5d14dce78de9", 0, "d30bc011-d1fc-45e9-bd1a-6f48eac72e4b", "guest5@mail.com", true, false, null, null, "guest5@MAIL.COM", "AQAAAAEAACcQAAAAELEjOmkkTnlGLn1zly3zVIQ9/UkzdxSwFDSf7xfwYiKnUVmlbRRXrjjCbKYc6Pcicw==", null, false, "891c83c0-44c1-4238-b94f-9d0b5f89eff2", false, "guest5@mail.com" },
+                    { "38e59ded-44c3-48ad-82f8-86b78308de4c", 0, "9d62d070-b4a4-4507-b3f5-a6798119af93", "guest17@mail.com", true, false, null, null, "guest17@MAIL.COM", "AQAAAAEAACcQAAAAEAxF27nEVwxTYbsHUH0CNrjWeAY15JgpDFRIQRQXVktpG97aTz/GLLz3mXWiPNsDLA==", null, false, "89b96c54-cc23-4e5f-8a52-3eb6918ac375", false, "guest17@mail.com" },
+                    { "48d5174e-f0d0-4087-8e3b-b1028b8f048e", 0, "fa1810b6-480c-470a-8443-9dfa0764443c", "guest16@mail.com", true, false, null, null, "guest16@MAIL.COM", "AQAAAAEAACcQAAAAEEypFDzq3tIL1BszkMgohELo6e/A1mvB9yVOzOHY7vFJGALGJkMplhN7+qhKaPm0ig==", null, false, "9bba04ac-44b4-40a6-be2a-0712f9be2a71", false, "guest16@mail.com" },
+                    { "71ac5a95-210a-4cee-9f1d-7dc828266a02", 0, "ce03f228-c161-4e4b-99d6-841246f92846", "guest15@mail.com", true, false, null, null, "guest15@MAIL.COM", "AQAAAAEAACcQAAAAEJp46RIYq7DASx0cMCVZ597qwSEVCVv7GYUi9+Gbhef2FR5FCP2u+HMTRJ02qwR7/g==", null, false, "1ea1db76-a399-4b29-9a04-2d5686b1be1a", false, "guest15@mail.com" },
+                    { "635fc400-b452-4fc6-9d1b-6417156f09e3", 0, "407c4247-1ebb-4e78-8830-cdffaf7723fd", "guest14@mail.com", true, false, null, null, "guest14@MAIL.COM", "AQAAAAEAACcQAAAAELrWHmYG8jt7Ul0zWmKXknVIQdZ0vlr5hkfXZEa5v6m0yxF1DUkh15agdbZEoqS/qw==", null, false, "81bc2b8c-5a7b-4243-b66d-da7a9b60c6f7", false, "guest14@mail.com" },
+                    { "2a295840-a4ec-43a7-9751-cd18e37e3cc9", 0, "1b23acb0-32eb-478f-af4f-6c2848dfb00c", "guest13@mail.com", true, false, null, null, "guest13@MAIL.COM", "AQAAAAEAACcQAAAAEOzJLIe/xuV7PzuU4Bkmkb6mBsAFNsYD4z1RSIYKaq4dRjVZkMzFN9bv36eX/VdtuA==", null, false, "7d46a2b7-eac7-4fab-8314-fc73d94f5f9e", false, "guest13@mail.com" },
+                    { "66565893-ca7a-4452-9631-a1aeac089013", 0, "1b654e14-cf36-4aad-b5e4-fac0bf474e51", "guest12@mail.com", true, false, null, null, "guest12@MAIL.COM", "AQAAAAEAACcQAAAAEHzMgTRrkOrt/beuklZzcra/D7e9zW81L0A7bdpxt1U5Dl5CB/nLqb5bZSNlmDGVLg==", null, false, "37acbc39-eb6c-4c86-90db-7a50a8361ff8", false, "guest12@mail.com" },
+                    { "d84fc4e1-1292-49b0-8b1e-74cd3a5afc77", 0, "26181ffc-cd83-4d04-b219-65781ef1919e", "guest11@mail.com", true, false, null, null, "guest11@MAIL.COM", "AQAAAAEAACcQAAAAEDokQyjoepqFU23LOKW0ZZfIc9PMiRpjHQZdmGJ0MH5yYakP60yYBgkHfkZFfoXWAw==", null, false, "902dd0f0-9c20-41dc-a857-56e89314d798", false, "guest11@mail.com" },
+                    { "fdfbabd7-92a9-4cf0-949b-04ba5303a25f", 0, "2d1cfd66-c58c-47d1-8447-5caceefc9f6f", "guest10@mail.com", true, false, null, null, "guest10@MAIL.COM", "AQAAAAEAACcQAAAAEDdyMpPJaE2KtGGF7bld1Sq93AD9eZz9KEB+5zcTGUnAv+NAghMvcoK4Fc6Ft64Oew==", null, false, "4543b85b-4ae3-47fd-9e6f-6df15fc0f75b", false, "guest10@mail.com" },
+                    { "7a3e0a03-0b8f-4bef-8d9f-8b4ead73bad6", 0, "e39e9ae1-fcc2-4d98-aece-4d808810ef33", "guest9@mail.com", true, false, null, null, "guest9@MAIL.COM", "AQAAAAEAACcQAAAAEGTj4wn7eENTlMFCMTiQIlW0Ts+kV9CIZUyAaDijqKQQDEkdwUeT+04mUxlLqBE3dQ==", null, false, "b705c9fa-76f8-48c2-a3af-58aefdc34855", false, "guest9@mail.com" },
+                    { "f88c42ed-58cf-4f92-b1b0-6fa4ebaa65a7", 0, "3540ed14-6bc7-4c20-8f57-fe46700f53ac", "guest8@mail.com", true, false, null, null, "guest8@MAIL.COM", "AQAAAAEAACcQAAAAEJUFV5Q/KwzZMQ7LC4HWQrF6SfLj1GaW9aGWBAECSItShj770ziL1xdNdnqsfU8Cow==", null, false, "c8623f8a-6c65-4d56-994f-351a25ef2504", false, "guest8@mail.com" },
+                    { "99770179-1e1a-4484-8bb7-77d7d4b12e76", 0, "d4f1c3f0-b3b3-4c6b-9778-9623250e1d6f", "guest19@mail.com", true, false, null, null, "guest19@MAIL.COM", "AQAAAAEAACcQAAAAEAFVqEqrGu+ZM7JCENbsBNHYsZ7BvI2BQr7YqAXlcdMqElnopA0+vO2AYM6O12iTtA==", null, false, "aa7e59e1-cc11-4f01-bd99-d192590ff3b5", false, "guest19@mail.com" },
+                    { "c04e5168-84b1-4967-a57f-1d7a3265185a", 0, "7632b4a8-5b56-4bbd-9502-0f544df207fd", "guest6@mail.com", true, false, null, null, "guest6@MAIL.COM", "AQAAAAEAACcQAAAAENnUHRNZe8fBH3loJ0b74/2fgk51TO7gGDjaLYmfGfBrC3FaPpjbV4YULnyeoiNnQQ==", null, false, "7e8dbfd2-fbf2-40d0-b525-711a40dc8c35", false, "guest6@mail.com" },
+                    { "87987032-3400-41db-bd2f-7a75a011d4da", 0, "c6e3a4fd-9da6-48cc-90e8-cf04e1037bf5", "guest18@mail.com", true, false, null, null, "guest18@MAIL.COM", "AQAAAAEAACcQAAAAEKi26ABVVdYzf91V6p+YOiWfvzg0rxo6LQD379SvQ5M0p9XyGw1cAa3T0HsHa7n8gA==", null, false, "2d3f1513-e5a7-4954-b837-41e0b675b267", false, "guest18@mail.com" },
+                    { "7c19351b-6c51-46e7-8675-461e77553e85", 0, "8aecf1de-922b-49fc-b623-20679ea32159", "guest4@mail.com", true, false, null, null, "guest4@MAIL.COM", "AQAAAAEAACcQAAAAEB324aZGtgU8tY9G8dHgPTKwQqK5UodYacxf1jFXWt6r8lS5yCfV+9kJ+K20LPJ7bA==", null, false, "16e77c63-4163-400c-8558-5f23e6795903", false, "guest4@mail.com" },
+                    { "c3dafc38-6e05-46a1-8673-b1cbf66bddf1", 0, "563d98a6-0c0c-4672-b4ca-23763aaa8aa7", "guest3@mail.com", true, false, null, null, "guest3@MAIL.COM", "AQAAAAEAACcQAAAAENX5qI2b7EeJQLieeLzNOajMmtUysWS0dRkdbbGG9u2Q0EQGHJVM9Wpq3GMdwXRysA==", null, false, "ad2ede27-05ab-47e8-a0ad-c84508c53bb5", false, "guest3@mail.com" },
+                    { "03c7522d-4fb9-44ca-95a3-5941e872dbe7", 0, "4b556c93-d887-4272-8dac-6263da98501b", "guest2@mail.com", true, false, null, null, "guest2@MAIL.COM", "AQAAAAEAACcQAAAAENjkOBZRxXHDO6C2F0yzzADuaeapuZI0kbHVatSFWcussqR2QkZQgfu1ebfDN15pDg==", null, false, "4643ff9e-cb1b-451e-be2c-1259865960e8", false, "guest2@mail.com" },
+                    { "ac3f39a1-98aa-4db4-92fc-7b4e2bf33a88", 0, "b3ccda03-74a9-45e1-9584-933c2c1c5f6c", "guest1@mail.com", true, false, null, null, "guest1@MAIL.COM", "AQAAAAEAACcQAAAAEKML2avxRsjBMpHQDwDsfHF1fH1PNE3tGLlsLi4kOIy7KGSjnCJ5LQEJyC6cztbTOg==", null, false, "75aa0d40-c7ab-4f30-93d0-bb81d3f1ce8c", false, "guest1@mail.com" },
+                    { "8e1cff68-a820-4bc9-8569-d074545d2f4d", 0, "a82f25b3-1a72-4788-9bc1-37b22ffc7cfb", "manager@manager.com", true, false, null, null, "MANAGER@MANAGER.COM", "AQAAAAEAACcQAAAAEHH6pj7jKPNeUM4gAJzxpiTssbO3frzDQynUGXQzLJSbCF4i13fUW8Co+TDliz5UxQ==", null, false, "13ce17e0-99b7-4a46-bbe2-5659402d40ae", false, "manager@manager.com" },
+                    { "a7504080-eb7c-452c-b703-72f7fc747273", 0, "833ea57a-3bfa-4406-ae3e-f7bcc69d91b8", "admin@admin.com", true, false, null, null, "ADMIN@ADMIN.COM", "AQAAAAEAACcQAAAAEIfJ0yai7QhVQryUH/IxZo/AxrQ61KHyY6MXM3vbQy9c7f3VrPpKeVjXAujYUEoC4g==", null, false, "3ba542ab-c979-45c5-8ba3-0be099869d64", false, "admin@admin.com" },
+                    { "7fac2d51-a858-49a1-9ef7-dd5348b818e1", 0, "2e0dc051-63ae-462b-88d8-57ef4ba20ed1", "guest7@mail.com", true, false, null, null, "guest7@MAIL.COM", "AQAAAAEAACcQAAAAEKkGWC0Y7nM0u1lFKvu726P8GzpmLu/XSOurMHOOq3bopnSwFH/Xm/0hqzKMaNResQ==", null, false, "a2591e74-3543-4e5d-a7a4-7ccfd2460643", false, "guest7@mail.com" }
                 });
 
             migrationBuilder.InsertData(
@@ -374,8 +376,28 @@ namespace IdentityNLayer.DAL.EF.Migrations
                 columns: new[] { "Id", "Description", "Program", "StartDate", "Title", "TopicId" },
                 values: new object[,]
                 {
-                    { 1, "Super MVC", null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), "ASP", 1 },
-                    { 2, "Super Spring", null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), "Java", 2 }
+                    { 3, "Super JavaScript", null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), "JavaScript", 3 },
+                    { 2, "Super Spring", null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), "Java", 2 },
+                    { 1, "Super MVC", null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), "ASP", 1 }
+                });
+
+            migrationBuilder.InsertData(
+                table: "AspNetUserRoles",
+                columns: new[] { "RoleId", "UserId" },
+                values: new object[,]
+                {
+                    { "8c7c8095-2336-43b3-9494-1828cec9924f", "a7504080-eb7c-452c-b703-72f7fc747273" },
+                    { "69ee48cd-e2e2-4632-941b-77744320a070", "8e1cff68-a820-4bc9-8569-d074545d2f4d" }
+                });
+
+            migrationBuilder.InsertData(
+                table: "Topics",
+                columns: new[] { "Id", "CourseId", "Description", "ParentId", "Title" },
+                values: new object[,]
+                {
+                    { 1, 1, "Super MVC", null, ".NET" },
+                    { 2, 2, "Super Spring", null, "Spring" },
+                    { 3, 3, "Super ReactJS", null, "ReactJS" }
                 });
 
             migrationBuilder.CreateIndex(
@@ -418,11 +440,6 @@ namespace IdentityNLayer.DAL.EF.Migrations
                 filter: "[NormalizedUserName] IS NOT NULL");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Courses_TopicId",
-                table: "Courses",
-                column: "TopicId");
-
-            migrationBuilder.CreateIndex(
                 name: "IX_Enrollments_GroupId",
                 table: "Enrollments",
                 column: "GroupId");
@@ -463,6 +480,12 @@ namespace IdentityNLayer.DAL.EF.Migrations
                 column: "UserId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Topics_CourseId",
+                table: "Topics",
+                column: "CourseId",
+                unique: true);
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Topics_ParentId",
                 table: "Topics",
                 column: "ParentId");
@@ -492,6 +515,9 @@ namespace IdentityNLayer.DAL.EF.Migrations
                 name: "StudentToGroupActions");
 
             migrationBuilder.DropTable(
+                name: "Topics");
+
+            migrationBuilder.DropTable(
                 name: "AspNetRoles");
 
             migrationBuilder.DropTable(
@@ -505,9 +531,6 @@ namespace IdentityNLayer.DAL.EF.Migrations
 
             migrationBuilder.DropTable(
                 name: "Teachers");
-
-            migrationBuilder.DropTable(
-                name: "Topics");
 
             migrationBuilder.DropTable(
                 name: "AspNetUsers");

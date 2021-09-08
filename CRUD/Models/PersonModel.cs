@@ -15,7 +15,7 @@ namespace IdentityNLayer.Models
         public string FirstName { get; set; }
         [Required]
         public string LastName { get; set; }
-        /*[BirthDate(18, ErrorMessage = "Should be greater than 18")]*/
+        [BirthDate(16, ErrorMessage = "Should be greater than 16")]
         public DateTime? BirthDate { get; set; }
         public string UserId { get; set; }
         public IdentityUser User { get; set; }

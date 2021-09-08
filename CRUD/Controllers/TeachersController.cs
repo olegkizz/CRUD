@@ -7,6 +7,7 @@ using IdentityNLayer.Core.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Logging;
+using System.Collections.Generic;
 
 namespace IdentityNLayer.Controllers
 {
@@ -34,7 +35,7 @@ namespace IdentityNLayer.Controllers
         // GET: Teachers
         public async Task<IActionResult> Index()
         {
-            return View(_mapper.Map<TeacherModel>(await _teacherService.GetAllAsync()));
+            return View(_mapper.Map<IEnumerable<TeacherModel>>(await _teacherService.GetAllAsync()));
         }
         public IActionResult SendRequest(int courseId)
         {
@@ -72,7 +73,7 @@ namespace IdentityNLayer.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,FirstName,LastName,Email,LinkToProfile,Bio,BirthDate")] TeacherModel teacher, int courseId)
+        public async Task<IActionResult> Create([Bind("Id,FirstName,LastName,LinkToProfile,Bio,BirthDate")] TeacherModel teacher, int? courseId)
         {
             if (ModelState.IsValid)
             {
@@ -83,9 +84,9 @@ namespace IdentityNLayer.Controllers
                     IdentityResult result = await _userManager.AddToRoleAsync(user, UserRoles.Teacher.ToString());
                     teacher.User = user;
                     int newTeacherId = _teacherService.Create(_mapper.Map<Teacher>(teacher));
-                    if (courseId != 0)
+                    if (courseId != null)
                         return RedirectToAction("SendRequest", new { courseId });
-                    return RedirectToAction(nameof(Index));
+                    return RedirectToAction("Index", "Courses");
                 }
                 catch (DbUpdateConcurrencyException ex)
                 {
@@ -101,7 +102,6 @@ namespace IdentityNLayer.Controllers
                     }
                 }
             }
-           
             return View(teacher);
         }
 
@@ -130,7 +130,7 @@ namespace IdentityNLayer.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,FirstName,LastName,LinkToProfile,Bio")] TeacherModel teacher)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,FirstName,LastName,LinkToProfile,Bio,BirthDate")] TeacherModel teacher)
         {
             if ((await _teacherService.GetByIdAsync(id)).UserId != _userManager.GetUserId(User)
                 && !User.IsInRole("Admin") && !User.IsInRole("Manager"))
@@ -160,12 +160,14 @@ namespace IdentityNLayer.Controllers
                         throw;
                     }
                 }
-                return RedirectToAction(nameof(Index));
+                if (User.IsInRole("Admin") && User.IsInRole("Manager"))
+                    return RedirectToAction(nameof(Index));
+                else return Redirect("Courses/Index");
             }
             return View();
         }
 
-        // GET: Contacts/Delete/5
+        // GET: Teachers/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
