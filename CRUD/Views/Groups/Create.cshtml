@@ -49,19 +49,22 @@
                 @{
                     var studentRequests = courseService.GetStudentRequests(Convert.ToInt32(Model.CourseId)).ToList();
                     Model.StudentRequests = new();
-
                     for (int i = 0; i < studentRequests.Count(); ++i)
                     {
                         Model.StudentRequests.Add(new StudentRequestsModel()
                         {
                             UserId = studentRequests[i].UserID,
                             UserName = studentRequests[i].User.UserName,
-                            Applied = true
+                            Applied = false
                         });
                         <input type="hidden" asp-for="@Model.StudentRequests[i].UserId" />
                         <input type="hidden" asp-for="@Model.StudentRequests[i].UserName" />
                         @Html.CheckBoxFor(m => m.StudentRequests[i].Applied)
                         @Model.StudentRequests[i].UserName
+                    }
+                    if (studentRequests.Count() == 0)
+                    {
+                        <span>No Student Requests</span>
                     }
                 }
 

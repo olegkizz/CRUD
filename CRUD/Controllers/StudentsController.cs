@@ -81,7 +81,7 @@ namespace IdentityNLayer.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("FirstName, LastName, BirthDate, Email," +
-            "Type, User")] StudentModel student, int? courseId)
+            "Type")] StudentModel student, int? courseId)
         {
             if (ModelState.IsValid)
             {
@@ -91,10 +91,10 @@ namespace IdentityNLayer.Controllers
 
                     IdentityResult result = await _userManager.AddToRoleAsync(user, UserRoles.Student.ToString());
                     student.User = user;
-                    int newStudentId = _studentService.Create(_mapper.Map<Student>(student));
+                    int newStudentId = _studentService.CreateAsync(_mapper.Map<Student>(student));
                     if (courseId != null)
                         return RedirectToAction("SendRequest", new { courseId });
-                    return RedirectToAction("Index", "Courses");
+                    return Redirect("Courses/Index");
                 }
                 catch (DbUpdateConcurrencyException ex)
                 {
@@ -142,9 +142,9 @@ namespace IdentityNLayer.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("Id, FirstName, LastName, BirthDate," +
-            "PhoneNumber, Type")] StudentModel student)
+            "Type")] StudentModel student)
         {
-            if ((await _studentService.GetByIdAsync((int)id)).UserId != _userManager.GetUserId(User)
+            if ((await _studentService.GetByIdAsync(id)).UserId != _userManager.GetUserId(User)
                 && !User.IsInRole("Admin") && !User.IsInRole("Manager"))
                 return BadRequest();
 
@@ -174,7 +174,7 @@ namespace IdentityNLayer.Controllers
                 }
                 if (User.IsInRole("Admin") && User.IsInRole("Manager"))
                     return RedirectToAction(nameof(Index));
-                else return Redirect("Courses/Index");
+                else return RedirectToAction("Index", "Courses");
             }
             return View(student);
         }

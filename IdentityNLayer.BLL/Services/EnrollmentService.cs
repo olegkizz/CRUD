@@ -29,7 +29,7 @@ namespace IdentityNLayer.BLL.Services
                 Db.Enrollments.Update(enrollment);
             }
             else if (enrollment == null)
-                Db.Enrollments.Create(new Enrollment
+                Db.Enrollments.CreateAsync(new Enrollment
                 {
                     UserID = userId,
                     EntityID = groupId,
@@ -43,17 +43,13 @@ namespace IdentityNLayer.BLL.Services
         public void UnEnrol(string userId, int groupdId)
         {
             Enrollment enrollment =
-             Db.Enrollments.Find(en => en.UserID == userId && en.EntityID == groupdId).FirstOrDefault();
+             Db.Enrollments.Find(en => en.UserID == userId && en.EntityID == groupdId && en.State == UserGroupStates.Applied).FirstOrDefault();
             if (enrollment != null)
             {
                 enrollment.State = UserGroupStates.Aborted;
                 Db.Enrollments.Update(enrollment);
             }
             Db.Save();
-        }
-        public IEnumerable<Enrollment> Get(string userId)
-        {
-            return Db.Enrollments.Find(en => en.UserID == userId);
         }
     }
 }

@@ -17,23 +17,6 @@ namespace IdentityNLayer.DAL.EF.Repositories
         {
             _context = context;
         }
-        public IEnumerable<Enrollment> GetAll()
-        {
-            return _context.Enrollments
-               .Include(s => s.User)
-               .AsNoTracking()
-               .ToList();
-        }
-
-        public Enrollment Get(int id)
-        {
-            return _context.Enrollments
-                .Include(s => s.User)
-                .AsNoTracking()
-                .Where(s => s.Id == id)
-                .Single();
-        }
-
         public IEnumerable<Enrollment> Find(Func<Enrollment, bool> predicate)
         {
             return _context.Enrollments
@@ -41,11 +24,6 @@ namespace IdentityNLayer.DAL.EF.Repositories
                 .AsNoTracking()
                 .Where(predicate)
                 .ToList();
-        }
-
-        public void Create(Enrollment item)
-        {
-            _context.Enrollments.Add(item);
         }
 
         public void Update(Enrollment item)
@@ -70,9 +48,9 @@ namespace IdentityNLayer.DAL.EF.Repositories
                 .ToListAsync();
         }
 
-        public void CreateAsync(Enrollment item)
+        public async void CreateAsync(Enrollment item)
         {
-            throw new NotImplementedException();
+            await _context.Enrollments.AddAsync(item);
         }
 
         public async Task<Enrollment> GetAsync(int id)

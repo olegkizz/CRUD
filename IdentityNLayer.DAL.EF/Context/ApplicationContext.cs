@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
+using System.Collections.Generic;
 
 namespace IdentityNLayer.DAL.EF.Context
 {
@@ -34,7 +35,6 @@ namespace IdentityNLayer.DAL.EF.Context
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
-            modelBuilder.Entity<Course>().HasOne(c => c.Topic).WithOne(t => t.Course).HasForeignKey<Topic>(t => t.CourseId); ;
             modelBuilder.Seed();
         }
     }

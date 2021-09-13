@@ -166,32 +166,43 @@ namespace IdentityNLayer.DAL.EF.Context
                 Title = "ReactJS",
                 Description = "Super ReactJS",
                 CourseId = 3
+            };    
+            Topic topic4 = new Topic()
+            {
+                Id = 4,
+                Title = "AngularJS",
+                Description = "Super AngularJS",
+                CourseId = 3
+            };  
+            Topic topic5 = new Topic()
+            {
+                Id = 5,
+                Title = "NodeJS",
+                Description = "Super NodeJS",
+                CourseId = 3
             };
             modelBuilder.Entity<Topic>().HasData(
              new Topic[]
              {
-                    topic1, topic2, topic3
+                    topic1, topic2, topic3, topic4, topic5
              });
             Course course1 = new Course()
             {
                 Id = 1,
                 Title = "ASP",
                 Description = "Super MVC",
-                TopicId = topic1.Id
             };
             Course course2 = new Course()
             {
                 Id = 2,
                 Title = "Java",
                 Description = "Super Spring",
-                TopicId = topic2.Id
             };
             Course course3 = new Course()
             {
                 Id = 3,
                 Title = "JavaScript",
                 Description = "Super JavaScript",
-                TopicId = topic3.Id
             };
             modelBuilder.Entity<Course>().Property(en => en.Updated).HasDefaultValueSql("getdate()");
 

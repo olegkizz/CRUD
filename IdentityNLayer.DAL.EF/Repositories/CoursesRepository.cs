@@ -17,10 +17,6 @@ namespace IdentityNLayer.DAL.EF.Repositories
         {
             _context = context;
         }
-        public void Create(Course item)
-        {
-            _context.Courses.Add(item);
-        }
 
         public async void CreateAsync(Course item)
         {
@@ -40,19 +36,6 @@ namespace IdentityNLayer.DAL.EF.Repositories
         public Task<IEnumerable<Course>> FindAsync(Func<Course, bool> predicate)
         {
             throw new NotImplementedException();
-        }
-
-        public Course Get(int id)
-        {
-            return _context.Courses
-                .AsNoTracking()
-                .Where(crs => crs.Id == id)
-                .Single();
-        }
-
-        public IEnumerable<Course> GetAll()
-        {
-            return _context.Courses;
         }
 
         public async Task<IEnumerable<Course>> GetAllAsync()

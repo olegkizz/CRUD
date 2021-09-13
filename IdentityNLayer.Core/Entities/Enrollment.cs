@@ -8,8 +8,6 @@ namespace IdentityNLayer.Core.Entities
     public class Enrollment
     {
         public int Id { get; set; }
-        /*[DisplayFormat(NullDisplayText = "No grade")]*/
-        /*public Grade? Grade { get; set; }*/
         public DateTime Updated { get; set; }
         public int EntityID { get; set; }
         public string UserID { get; set; }

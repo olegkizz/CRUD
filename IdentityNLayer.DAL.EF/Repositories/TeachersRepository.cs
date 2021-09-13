@@ -17,33 +17,23 @@ namespace IdentityNLayer.DAL.EF.Repositories
         {
             _context = context;
         }
-        public IEnumerable<Teacher> GetAll()
-        {
-            return _context.Teachers.ToList();
-        }
-
-        public Teacher Get(int id)
-        {
-            return _context.Teachers
-                .Include(s => s.User)
-                .AsNoTracking()
-                .Where(s => s.Id == id)
-                .Single();
-        }
 
         public IEnumerable<Teacher> Find(Func<Teacher, bool> predicate)
         {
-            return _context.Teachers.Where(predicate).ToList();
-        }
-
-        public void Create(Teacher item)
-        {
-            _context.Teachers.Add(item);
+            return _context.Teachers
+                .Where(predicate)
+                .ToList();
         }
 
         public void Update(Teacher item)
         {
-            _context.Teachers.Update(item);
+            _context.Teachers.Attach(item);
+
+            _context.Entry(item).Property(e => e.FirstName).IsModified = true;
+            _context.Entry(item).Property(e => e.LastName).IsModified = true;
+            _context.Entry(item).Property(e => e.BirthDate).IsModified = true;
+            _context.Entry(item).Property(e => e.Bio).IsModified = true;
+            _context.Entry(item).Property(e => e.LinkToProfile).IsModified = true;
         }
 
         public void Delete(int id)
@@ -56,9 +46,9 @@ namespace IdentityNLayer.DAL.EF.Repositories
             throw new NotImplementedException();
         }
 
-        public void CreateAsync(Teacher item)
+        public async void CreateAsync(Teacher item)
         {
-            throw new NotImplementedException();
+            await _context.Teachers.AddAsync(item);
         }
 
         public async Task<Teacher> GetAsync(int id)
@@ -66,12 +56,15 @@ namespace IdentityNLayer.DAL.EF.Repositories
             return await _context.Teachers
                .Include(s => s.User)
                .Where(s => s.Id == id)
+               .AsNoTracking()
                .SingleAsync();
         }
 
         public async Task<IEnumerable<Teacher>> GetAllAsync()
         {
-            return await _context.Teachers.ToListAsync();
+            return await _context.Teachers
+                .AsNoTracking()
+                .ToListAsync();
         }
     }
 }

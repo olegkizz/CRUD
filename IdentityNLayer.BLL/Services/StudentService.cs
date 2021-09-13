@@ -18,20 +18,6 @@ namespace IdentityNLayer.BLL.Services
             Db = db;
            
         }
-        public IEnumerable<Student> GetAll()
-        {
-            return Db.Students.GetAll();
-        }
-        public Student GetById(int id)
-        {
-            return Db.Students.Get(id);
-        }
-        public int Create(Student student)
-        {
-            Db.Students.Create(student);
-            Db.Save();
-            return student.Id;
-        }
  /*       public async Task<int> CreateAsync(Student student)
         {
             IdentityRole identityRole = new IdentityRole();
@@ -78,13 +64,14 @@ namespace IdentityNLayer.BLL.Services
             Db.Students.Delete(id);
             Db.Save();
         }
-        public List<Group> GetStudentGroups(int studentId)
+        public async Task<List<Group>> GetStudentGroupsAsync(int studentId)
         {
             List<Group> groups = new();
-            foreach (Enrollment en in Db.Enrollments.Find(en => en.UserID == Db.Students.Get(studentId).UserId))
+            Student student = await Db.Students.GetAsync(studentId);
+            foreach (Enrollment en in Db.Enrollments.Find(en => en.UserID == student.UserId))
             {
                 if(en.State != UserGroupStates.Aborted && en.State != UserGroupStates.Requested)
-                    groups.Add(Db.Groups.Get(en.EntityID));
+                    groups.Add(await Db.Groups.GetAsync(en.EntityID));
             }
             return groups;
         }
@@ -96,12 +83,12 @@ namespace IdentityNLayer.BLL.Services
 
         public Student GetByUserId(string userId)
         {
-            return Db.Students.Find(st => st.UserId == userId).FirstOrDefault();
+            return Db.Students.Find(st => st.UserId == userId).SingleOrDefault();
         }
 
-        public Group GetGroupByCourseId(int studentId, int courseId)
+        public async Task<Group> GetGroupByCourseIdAsync(int studentId, int courseId)
         {
-            foreach (Group gr in GetStudentGroups(studentId))
+            foreach (Group gr in await GetStudentGroupsAsync(studentId))
                 if (gr.CourseId == courseId)
                     return gr;
             return null;
@@ -109,7 +96,9 @@ namespace IdentityNLayer.BLL.Services
 
         public int CreateAsync(Student entity)
         {
-            throw new NotImplementedException();
+            Db.Students.CreateAsync(entity);
+            Db.Save();
+            return entity.Id;
         }
 
         public Task<Student> GetByIdAsync(int id)

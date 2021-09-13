@@ -15,24 +15,10 @@ namespace IdentityNLayer.DAL.EF.Repositories
         {
             _context = context;
         }
-        public IEnumerable<StudentToGroupAction> GetAll()
-        {
-            return _context.StudentToGroupActions
-               .Include(s => s.Student)
-               .Include(s => s.Group)
-               .ToList();
-        }
-
-        public StudentToGroupAction Get(int id)
-        {
-            return _context.StudentToGroupActions.Find(id);
-        }
-
         public IEnumerable<StudentToGroupAction> Find(Func<StudentToGroupAction, bool> predicate)
         {
             return _context.StudentToGroupActions.Where(predicate).ToList();
         }
-
         public void Create(StudentToGroupAction item)
         {
             _context.StudentToGroupActions.Add(item);

@@ -30,7 +30,15 @@
                 @Html.DisplayNameFor(model => model.StartDate)
             </th>
             <th>
-                Requests (Students | Teachers)
+                @if (User.IsInRole("Admin") || User.IsInRole("Manager"))
+                {
+
+                    <span>Requests(Students | Teachers)</span>
+                }
+                else
+                {
+                    <span>Action</span>
+                }
             </th>
             <th></th>
         </tr>
@@ -88,8 +96,9 @@
                                 {
                                     foreach (Student st in groupService.GetStudents(item.Id, UserGroupStates.Applied))
                                     {
-                                        if (st.UserId == userManager.GetUserId(User))
-                                            yourGroup = studentService.GetGroupByCourseId(st.Id, item.Id);
+                                        if (st != null)
+                                            if (st.UserId == userManager.GetUserId(User))
+                                                yourGroup = await studentService.GetGroupByCourseIdAsync(st.Id, item.Id);
                                     }
                                     if (yourGroup != null)
                                     {

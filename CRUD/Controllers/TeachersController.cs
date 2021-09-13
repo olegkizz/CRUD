@@ -83,14 +83,14 @@ namespace IdentityNLayer.Controllers
 
                     IdentityResult result = await _userManager.AddToRoleAsync(user, UserRoles.Teacher.ToString());
                     teacher.User = user;
-                    int newTeacherId = _teacherService.Create(_mapper.Map<Teacher>(teacher));
+                    int newTeacherId = _teacherService.CreateAsync(_mapper.Map<Teacher>(teacher));
                     if (courseId != null)
                         return RedirectToAction("SendRequest", new { courseId });
                     return RedirectToAction("Index", "Courses");
                 }
                 catch (DbUpdateConcurrencyException ex)
                 {
-                    if (_teacherService.GetById(teacher.Id) == null)
+                    if (await _teacherService.GetByIdAsync(teacher.Id) == null)
                     {
                         _logger.LogError("Teacher with id=" + teacher.Id + " not found");
                         return NotFound();
@@ -117,7 +117,7 @@ namespace IdentityNLayer.Controllers
                 return NotFound();
             }
 
-            TeacherModel teacher = _mapper.Map<TeacherModel>(_teacherService.GetById((int)id));
+            TeacherModel teacher = _mapper.Map<TeacherModel>(await _teacherService.GetByIdAsync((int)id));
             if (teacher == null)
             {
                 return NotFound();
@@ -130,7 +130,7 @@ namespace IdentityNLayer.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,FirstName,LastName,LinkToProfile,Bio,BirthDate")] TeacherModel teacher)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,FirstName,LastName,LinkToProfile,Bio,BirthDate,UserId")] TeacherModel teacher)
         {
             if ((await _teacherService.GetByIdAsync(id)).UserId != _userManager.GetUserId(User)
                 && !User.IsInRole("Admin") && !User.IsInRole("Manager"))
@@ -149,7 +149,7 @@ namespace IdentityNLayer.Controllers
                 }
                 catch (DbUpdateConcurrencyException ex)
                 {
-                    if (_teacherService.GetById(teacher.Id) == null)
+                    if (await _teacherService.GetByIdAsync(teacher.Id) == null)
                     {
                         _logger.LogError("Teacher with id=" + teacher.Id + " not found");
                         return NotFound();
@@ -162,7 +162,7 @@ namespace IdentityNLayer.Controllers
                 }
                 if (User.IsInRole("Admin") && User.IsInRole("Manager"))
                     return RedirectToAction(nameof(Index));
-                else return Redirect("Courses/Index");
+                else return RedirectToAction("Index", "Courses");
             }
             return View();
         }
@@ -175,7 +175,7 @@ namespace IdentityNLayer.Controllers
                 return NotFound();
             }
 
-            TeacherModel teacher = _mapper.Map<TeacherModel>(_teacherService.GetById((int)id));
+            TeacherModel teacher = _mapper.Map<TeacherModel>(await _teacherService.GetByIdAsync((int)id));
             if (teacher == null)
             {
                 return NotFound();

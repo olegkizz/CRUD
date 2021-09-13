@@ -13,7 +13,7 @@ namespace IdentityNLayer.Core.Entities
         public string Description { get; set; }
         public string Program { get; set; }
         public int TopicId { get; set; }
-        public Topic Topic { get; set; }
+        public ICollection<Topic> Topics { get; set; }
         public DateTime StartDate { get; set; }
         public DateTime Updated { get; set; }
     }

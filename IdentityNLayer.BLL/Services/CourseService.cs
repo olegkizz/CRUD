@@ -17,28 +17,12 @@ namespace IdentityNLayer.BLL.Services
         {
             Db = db;
         }
-        public int Create(Course entity)
-        {
-            Db.Courses.Create(entity);
-            Db.Save();
-            return entity.Id;
-        }
 
         public void Delete(int id)
         {
             throw new NotImplementedException();
         }
 
-        public IEnumerable<Course> GetAll()
-        {
-            return Db.Courses.GetAll();
-        }
-
-        public Course GetById(int id)
-        {
-            return Db.Courses.Get(id);
-        }
-        
         public void Update(Course entity)
         {
             Db.Courses.Update(entity);

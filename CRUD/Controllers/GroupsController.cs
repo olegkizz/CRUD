@@ -47,7 +47,7 @@ namespace IdentityNLayer.Controllers
         {
             if(User.IsInRole("Admin") || User.IsInRole("Manager"))
                 return View(_mapper.Map<IEnumerable<GroupModel>>(await _groupService.GetAllAsync()));
-            return View(_mapper.Map<IEnumerable<GroupModel>>(_groupService.GetGroupsByUserId(_userManager.GetUserId(User))));
+            return View(_mapper.Map<IEnumerable<GroupModel>>(await _groupService.GetGroupsByUserIdAsync(_userManager.GetUserId(User))));
         }
 
         // GET: Groups/Details/5
@@ -81,7 +81,7 @@ namespace IdentityNLayer.Controllers
         {
             if (ModelState.IsValid)
             {
-                int groupId = _groupService.Create(_mapper.Map<Group>(group));
+                int groupId = _groupService.CreateAsync(_mapper.Map<Group>(group));
                 if(group.StudentRequests != null)
                     foreach (StudentRequestsModel studentRequest in group.StudentRequests)
                     {
@@ -143,7 +143,7 @@ namespace IdentityNLayer.Controllers
                     }
                     if (group.TeacherId != null)
                     {
-                        Teacher newTeacher = _teacherService.GetById((int)group.TeacherId);
+                        Teacher newTeacher = await _teacherService.GetByIdAsync((int)group.TeacherId);
                         
                         if (currentTeacher != null)
                         {

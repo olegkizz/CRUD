@@ -86,7 +86,7 @@ namespace IdentityNLayer.Controllers
                 return NotFound();
             }
 
-            CourseModel course = _mapper.Map<CourseModel>(_courseService.GetById((int)id));
+            CourseModel course = _mapper.Map<CourseModel>(await _courseService.GetByIdAsync((int)id));
             if (course == null)
             {
                 return NotFound();
@@ -114,7 +114,7 @@ namespace IdentityNLayer.Controllers
                 }
                 catch (DbUpdateConcurrencyException ex)
                 {
-                    if (!CourseExists(course.Id))
+                    if (await _courseService.GetByIdAsync(id) != null)
                     {
                         _logger.LogError("Course with id=" + course.Id + " not found");
                         return NotFound();
@@ -161,10 +161,5 @@ namespace IdentityNLayer.Controllers
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }*/
-
-        private bool CourseExists(int id)
-        {
-            return _courseService.GetById(id) != null;
-        }
     }
 }

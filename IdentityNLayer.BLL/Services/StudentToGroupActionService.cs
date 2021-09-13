@@ -3,6 +3,7 @@ using IdentityNLayer.Core.Entities;
 using IdentityNLayer.DAL.Interfaces;
 using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace IdentityNLayer.BLL.Services
 {
@@ -14,9 +15,9 @@ namespace IdentityNLayer.BLL.Services
         {
             Db = db;
         }
-        public IEnumerable<StudentToGroupAction> GetAll()
+        public async Task<IEnumerable<StudentToGroupAction>> GetAllAsync()
         {
-            return Db.StudentToGroupActions.GetAll();
+            return await Db.StudentToGroupActions.GetAllAsync();
         }
        /* public StudentToGroupAction GetById(int id)
         {
@@ -42,7 +43,7 @@ namespace IdentityNLayer.BLL.Services
         }*/
         public void Apply(int studentId, int GroupId)
         {
-            Db.StudentToGroupActions.Create(new StudentToGroupAction()
+            Db.StudentToGroupActions.CreateAsync(new StudentToGroupAction()
             {
                 StudentId = studentId,
                 GroupId = GroupId,
@@ -71,7 +72,7 @@ namespace IdentityNLayer.BLL.Services
         }
         public void Request(int studentId, int GroupId)
         {
-            Db.StudentToGroupActions.Create(new StudentToGroupAction()
+            Db.StudentToGroupActions.CreateAsync(new StudentToGroupAction()
             {
                 StudentId = studentId,
                 GroupId = GroupId,

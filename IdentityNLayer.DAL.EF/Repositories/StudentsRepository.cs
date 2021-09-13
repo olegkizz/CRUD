@@ -18,20 +18,6 @@ namespace IdentityNLayer.DAL.EF.Repositories
         {
             _context = context;
         }        
-        public IEnumerable<Student> GetAll()
-        {
-            return _context.Students
-                .ToList();
-        }
-
-        public Student Get(int id)
-        {
-            return _context.Students
-                .Include(s => s.User)
-                .Where(s => s.Id == id)
-                .First();
-        }
-
         public IEnumerable<Student> Find(Func<Student, bool> predicate)
         {
             return _context.Students
@@ -39,15 +25,14 @@ namespace IdentityNLayer.DAL.EF.Repositories
                 .Where(predicate).ToList();
         }
 
-        public void Create(Student item)
-        {
-            _context.Students.Add(item);
-        }
-
         public void Update(Student item)
         {
-            _context.Entry(item).State = EntityState.Modified;
-            _context.Students.Update(item);
+            _context.Students.Attach(item);
+            
+            _context.Entry(item).Property(e => e.FirstName).IsModified = true;
+            _context.Entry(item).Property(e => e.LastName).IsModified = true;
+            _context.Entry(item).Property(e => e.BirthDate).IsModified = true;
+            _context.Entry(item).Property(e => e.Type).IsModified = true;
         }
 
         public void Delete(int id)
@@ -68,7 +53,7 @@ namespace IdentityNLayer.DAL.EF.Repositories
 
         public void CreateAsync(Student item)
         {
-            throw new NotImplementedException();
+            _context.Students.AddAsync(item);
         }
 
         public async Task<Student> GetAsync(int id)
@@ -83,7 +68,9 @@ namespace IdentityNLayer.DAL.EF.Repositories
 
         public async Task<IEnumerable<Student>> GetAllAsync()
         {
-            return await _context.Students.ToListAsync();
+            return await _context.Students
+                .AsNoTracking()
+                .ToListAsync();
         }
     }
 }

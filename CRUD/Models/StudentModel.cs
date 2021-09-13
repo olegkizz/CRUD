@@ -15,21 +15,5 @@ namespace IdentityNLayer.Models
         {
             StudentTypes = Enum.GetNames(typeof(StudentType));
         }
-        /*        public StudentModel CreateAssignGroups(IEnumerable<Group> groups = null)
-                {
-                    List<AssignGroupModel> assignGroups = new List<AssignGroupModel>();
-                    if (groups != null)
-                        foreach (Group gr in groups)
-                        {
-                            assignGroups.Add(new AssignGroupModel()
-                            {
-                                GroupID = gr.Id,
-                                Number = gr.Number,
-                                Assigned = false
-                            });
-                        }
-                    AssignGroups = assignGroups;
-                    return this;
-                }*/
     }
 }
