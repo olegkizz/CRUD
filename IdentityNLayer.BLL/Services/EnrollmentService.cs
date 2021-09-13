@@ -16,23 +16,26 @@ namespace IdentityNLayer.BLL.Services
         {
             Db = db;
         }
-        public void Enrol(string userId, int groupId, UserRoles role, bool confirmed = true)
+    
+        //entityId - CourseId or GroupId, depends on #confirmed(true - groupId, false - courseId)
+        public void Enrol(string userId, int entityId, UserRoles role, bool confirmed = true)
         {
-            Group group = Db.Groups.Find(gr => gr.Id == groupId).FirstOrDefault();
+            Group group = Db.Groups.Find(gr => gr.Id == entityId).FirstOrDefault();
+
             Enrollment enrollment =
-              Db.Enrollments.Find(en => en.UserID == userId && en.EntityID == (group != null ? group.CourseId : groupId) 
+              Db.Enrollments.Find(en => en.UserID == userId && en.EntityID == (confirmed ? entityId : group?.CourseId)
               && en.Role == role).FirstOrDefault();
             if (enrollment?.State == UserGroupStates.Aborted || enrollment?.State == UserGroupStates.Requested)
             {
                 enrollment.State = confirmed ? UserGroupStates.Applied : UserGroupStates.Requested;
-                enrollment.EntityID = groupId;
+                enrollment.EntityID = entityId;
                 Db.Enrollments.Update(enrollment);
             }
             else if (enrollment == null)
                 Db.Enrollments.CreateAsync(new Enrollment
                 {
                     UserID = userId,
-                    EntityID = groupId,
+                    EntityID = entityId,
                     Role = role,
                     State = confirmed ? UserGroupStates.Applied : UserGroupStates.Requested,
                     Updated = DateTime.Now
