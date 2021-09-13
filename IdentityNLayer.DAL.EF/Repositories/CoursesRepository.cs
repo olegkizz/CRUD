@@ -1,10 +1,11 @@
-﻿using IdentityNLayer.Core.Entities;
-using IdentityNLayer.DAL.EF.Context;
-using System;
+﻿using System;
 using System.Collections.Generic;
-using System.Data.Entity;
+using IdentityNLayer.DAL.EF.Context;
+using IdentityNLayer.Core.Entities;
+using Microsoft.EntityFrameworkCore;
 using System.Linq;
 using System.Threading.Tasks;
+
 
 namespace IdentityNLayer.DAL.EF.Repositories
 {
@@ -15,10 +16,6 @@ namespace IdentityNLayer.DAL.EF.Repositories
         public CoursesRepository(ApplicationContext context)
         {
             _context = context;
-        }
-        public void Create(Course item)
-        {
-            _context.Courses.Add(item);
         }
 
         public async void CreateAsync(Course item)
@@ -36,19 +33,9 @@ namespace IdentityNLayer.DAL.EF.Repositories
             throw new NotImplementedException();
         }
 
-        public IEnumerable<Course> FindAsync(Func<Course, bool> predicate)
+        public Task<IEnumerable<Course>> FindAsync(Func<Course, bool> predicate)
         {
             throw new NotImplementedException();
-        }
-
-        public Course Get(int id)
-        {
-            return _context.Courses.Where(crs => crs.Id == id).First();
-        }
-
-        public IEnumerable<Course> GetAll()
-        {
-            return _context.Courses;
         }
 
         public async Task<IEnumerable<Course>> GetAllAsync()
@@ -56,9 +43,12 @@ namespace IdentityNLayer.DAL.EF.Repositories
             return await _context.Courses.ToListAsync();
         }
 
-        public Task<Course> GetAsync(int id)
+        public async Task<Course> GetAsync(int id)
         {
-            throw new NotImplementedException();
+            return await _context.Courses
+                .AsNoTracking()
+                .Where(crs => crs.Id == id)
+                .SingleAsync();
         }
 
         public void Update(Course item)

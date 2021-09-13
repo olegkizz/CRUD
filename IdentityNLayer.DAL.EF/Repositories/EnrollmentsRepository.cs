@@ -17,32 +17,13 @@ namespace IdentityNLayer.DAL.EF.Repositories
         {
             _context = context;
         }
-        public IEnumerable<Enrollment> GetAll()
-        {
-            return _context.Enrollments
-               .Include(s => s.User)
-               .ToList();
-        }
-
-        public Enrollment Get(int id)
-        {
-            return _context.Enrollments
-                .Include(s => s.User)
-                .Where(s => s.Id == id)
-                .First();
-        }
-
         public IEnumerable<Enrollment> Find(Func<Enrollment, bool> predicate)
         {
             return _context.Enrollments
                 .Include(en => en.User)
+                .AsNoTracking()
                 .Where(predicate)
                 .ToList();
-        }
-
-        public void Create(Enrollment item)
-        {
-            _context.Enrollments.Add(item);
         }
 
         public void Update(Enrollment item)
@@ -58,27 +39,35 @@ namespace IdentityNLayer.DAL.EF.Repositories
                 _context.Enrollments.Remove(enrol);
         }
 
-        public IEnumerable<Enrollment> FindAsync(Func<Enrollment, bool> predicate)
+        public async Task<IEnumerable<Enrollment>> FindAsync(Func<Enrollment, bool> predicate)
         {
-            return _context.Enrollments
+            return await _context.Enrollments
                 .Include(en => en.User)
                 .Where(predicate)
-                .ToList();
+                .AsQueryable()
+                .ToListAsync();
         }
 
-        public void CreateAsync(Enrollment item)
+        public async void CreateAsync(Enrollment item)
         {
-            throw new NotImplementedException();
+            await _context.Enrollments.AddAsync(item);
         }
 
-        public Task<Enrollment> GetAsync(int id)
+        public async Task<Enrollment> GetAsync(int id)
         {
-            throw new NotImplementedException();
+            return await _context.Enrollments
+             .Include(s => s.User)
+             .AsNoTracking()
+             .Where(s => s.Id == id)
+             .SingleAsync();
         }
 
-        public Task<IEnumerable<Enrollment>> GetAllAsync()
+        public async Task<IEnumerable<Enrollment>> GetAllAsync()
         {
-            throw new NotImplementedException();
+            return await _context.Enrollments
+               .Include(s => s.User)
+               .AsNoTracking()
+               .ToListAsync();
         }
     }
 }

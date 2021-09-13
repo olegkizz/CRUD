@@ -12,6 +12,7 @@ using Microsoft.AspNetCore.Authorization;
 using AutoMapper;
 using IdentityNLayer.Models;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.Extensions.Logging;
 
 namespace IdentityNLayer.Controllers
 {
@@ -20,6 +21,7 @@ namespace IdentityNLayer.Controllers
         private readonly ICourseService _courseService;
         private readonly IStudentService _studentService;
         private readonly IMapper _mapper;
+        private readonly ILogger _logger;
         private readonly UserManager<IdentityUser> _userManager;
         private readonly IEnrollmentService _enrollmentService;
 
@@ -27,12 +29,14 @@ namespace IdentityNLayer.Controllers
             ICourseService courseService, 
             IStudentService studentService, 
             IMapper mapper,
+            ILogger<CoursesController> logger,
             UserManager<IdentityUser> userManager,
             IEnrollmentService enrollmentService)
         {
             _courseService = courseService;
             _studentService = studentService;
             _mapper = mapper;
+            _logger = logger;
             _userManager = userManager;
             _enrollmentService = enrollmentService;
         }
@@ -40,7 +44,7 @@ namespace IdentityNLayer.Controllers
         // GET: Courses
         public async Task<IActionResult> Index()
         {
-            return View(_mapper.Map<IEnumerable<CourseModel>>(_courseService.GetAllAsync()));
+            return View(_mapper.Map<IEnumerable<CourseModel>>(await _courseService.GetAllAsync()));
         }
 
 
@@ -82,7 +86,7 @@ namespace IdentityNLayer.Controllers
                 return NotFound();
             }
 
-            CourseModel course = _mapper.Map<CourseModel>(_courseService.GetById((int)id));
+            CourseModel course = _mapper.Map<CourseModel>(await _courseService.GetByIdAsync((int)id));
             if (course == null)
             {
                 return NotFound();
@@ -108,14 +112,16 @@ namespace IdentityNLayer.Controllers
                 {
                     _courseService.Update(_mapper.Map<Course>(course));
                 }
-                catch (DbUpdateConcurrencyException)
+                catch (DbUpdateConcurrencyException ex)
                 {
-                    if (!CourseExists(course.Id))
+                    if (await _courseService.GetByIdAsync(id) != null)
                     {
+                        _logger.LogError("Course with id=" + course.Id + " not found");
                         return NotFound();
                     }
                     else
                     {
+                        _logger.LogError(ex.Message);
                         throw;
                     }
                 }
@@ -155,10 +161,5 @@ namespace IdentityNLayer.Controllers
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }*/
-
-        private bool CourseExists(int id)
-        {
-            return _courseService.GetById(id) != null;
-        }
     }
 }

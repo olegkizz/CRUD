@@ -16,22 +16,6 @@ namespace IdentityNLayer.DAL.EF.Repositories
         {
             _context = context;
         }
-        public IEnumerable<Group> GetAll()
-        {
-            return _context.Groups
-                .Include(g => g.Enrollments)
-                .Include(g => g.Teacher);
-        }
-
-        public Group Get(int id)
-        {
-            return _context.Groups
-                .Include(g => g.Enrollments)
-                .Include(g => g.Teacher)
-                .Where(g => g.Id == id)
-                .First();
-        }
-
         public IEnumerable<Group> Find(Func<Group, bool> predicate)
         {
             return _context.Groups
@@ -39,11 +23,6 @@ namespace IdentityNLayer.DAL.EF.Repositories
                 .Include(gr => gr.Enrollments)
                 .AsNoTracking()
                 .Where(predicate).ToList();
-        }
-
-        public void Create(Group item)
-        {
-            _context.Groups.Add(item);
         }
 
         public void Update(Group item)
@@ -57,19 +36,31 @@ namespace IdentityNLayer.DAL.EF.Repositories
             throw new NotImplementedException();
         }
 
-        public IEnumerable<Group> FindAsync(Func<Group, bool> predicate)
+        public async Task<IEnumerable<Group>> FindAsync(Func<Group, bool> predicate)
         {
-            throw new NotImplementedException();
+            return await _context.Groups
+              .Include(gr => gr.Teacher)
+              .Include(gr => gr.Enrollments)
+              .AsNoTracking()
+              .Where(predicate)
+              .AsQueryable()
+              .ToListAsync();
         }
 
-        public void CreateAsync(Group item)
+        public async void CreateAsync(Group item)
         {
-            throw new NotImplementedException();
+            await _context.Groups.AddAsync(item);
+
         }
 
         public Task<Group> GetAsync(int id)
         {
-            throw new NotImplementedException();
+            return _context.Groups
+               .Include(g => g.Enrollments)
+               .Include(g => g.Teacher)
+               .AsNoTracking()
+               .Where(g => g.Id == id)
+               .SingleAsync();
         }
 
         public async Task<IEnumerable<Group>> GetAllAsync()
@@ -77,6 +68,7 @@ namespace IdentityNLayer.DAL.EF.Repositories
             return await _context.Groups
                 .Include(g => g.Enrollments)
                 .Include(g => g.Teacher)
+                .AsNoTracking()
                 .ToListAsync();
         }
     }

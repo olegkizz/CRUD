@@ -54,6 +54,8 @@ namespace IdentityNLayer
                     .RequireAuthenticatedUser()
                     .Build();
             });
+            services.AddLogging();
+
             // Authorization handlers.
             services.AddScoped<IAuthorizationHandler,
                 ContactIsOwnerAuthorizationHandler>();
@@ -100,6 +102,7 @@ namespace IdentityNLayer
               CourseService>();
             services.AddScoped<IStudentToGroupActionService,
               StudentToGroupActionService>();
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -120,7 +123,7 @@ namespace IdentityNLayer
 
             app.UseStaticFiles();
             app.UseRouting();
-
+            
             app.UseAuthentication();
             app.UseAuthorization();
             app.UseMiddleware<CreatingAccountMiddleware>();

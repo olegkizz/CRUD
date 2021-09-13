@@ -48,8 +48,6 @@ namespace IdentityNLayer.DAL.EF.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("TopicId");
-
                     b.ToTable("Courses");
 
                     b.HasData(
@@ -59,7 +57,7 @@ namespace IdentityNLayer.DAL.EF.Migrations
                             Description = "Super MVC",
                             StartDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Title = "ASP",
-                            TopicId = 1,
+                            TopicId = 0,
                             Updated = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified)
                         },
                         new
@@ -68,7 +66,16 @@ namespace IdentityNLayer.DAL.EF.Migrations
                             Description = "Super Spring",
                             StartDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Title = "Java",
-                            TopicId = 2,
+                            TopicId = 0,
+                            Updated = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified)
+                        },
+                        new
+                        {
+                            Id = 3,
+                            Description = "Super JavaScript",
+                            StartDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Title = "JavaScript",
+                            TopicId = 0,
                             Updated = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified)
                         });
                 });
@@ -237,6 +244,9 @@ namespace IdentityNLayer.DAL.EF.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
+                    b.Property<int>("CourseId")
+                        .HasColumnType("int");
+
                     b.Property<string>("Description")
                         .HasColumnType("nvarchar(max)");
 
@@ -248,6 +258,8 @@ namespace IdentityNLayer.DAL.EF.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("CourseId");
+
                     b.HasIndex("ParentId");
 
                     b.ToTable("Topics");
@@ -256,14 +268,37 @@ namespace IdentityNLayer.DAL.EF.Migrations
                         new
                         {
                             Id = 1,
+                            CourseId = 1,
                             Description = "Super MVC",
                             Title = ".NET"
                         },
                         new
                         {
                             Id = 2,
+                            CourseId = 2,
                             Description = "Super Spring",
                             Title = "Spring"
+                        },
+                        new
+                        {
+                            Id = 3,
+                            CourseId = 3,
+                            Description = "Super ReactJS",
+                            Title = "ReactJS"
+                        },
+                        new
+                        {
+                            Id = 4,
+                            CourseId = 3,
+                            Description = "Super AngularJS",
+                            Title = "AngularJS"
+                        },
+                        new
+                        {
+                            Id = 5,
+                            CourseId = 3,
+                            Description = "Super NodeJS",
+                            Title = "NodeJS"
                         });
                 });
 
@@ -296,29 +331,29 @@ namespace IdentityNLayer.DAL.EF.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "d5f2002a-b57e-4ef0-9ed5-b88e588a55bd",
-                            ConcurrencyStamp = "0e4c82ff-cfab-4ed1-b700-42567991920d",
+                            Id = "f974cfc9-615e-40ca-9be9-7c9b73ee80be",
+                            ConcurrencyStamp = "0845952e-d55d-4f0e-894d-0044fb11ead4",
                             Name = "Admin",
                             NormalizedName = "ADMIN"
                         },
                         new
                         {
-                            Id = "f5ba04f2-6685-41ef-819b-ee205c7c3a25",
-                            ConcurrencyStamp = "d24b3109-91b6-45fb-8f7a-4df58dbd657b",
+                            Id = "9139cbbb-2459-4edc-b1e7-5066480bc2f4",
+                            ConcurrencyStamp = "5393bf86-6f1d-42b5-aecd-fd8dd286b561",
                             Name = "Manager",
                             NormalizedName = "MANAGER"
                         },
                         new
                         {
-                            Id = "49819127-1e95-4cc5-8688-f7ee658ef0cf",
-                            ConcurrencyStamp = "975778e2-cee0-4c34-bca6-38e035911c3d",
+                            Id = "b670ed94-2ce7-4759-8e6b-afb0f705b48c",
+                            ConcurrencyStamp = "715de2cd-3e39-4216-b52c-a94c4896f4ee",
                             Name = "Student",
                             NormalizedName = "STUDENT"
                         },
                         new
                         {
-                            Id = "bac2d1b3-44f2-443f-bd0e-c2f0ca76e73a",
-                            ConcurrencyStamp = "ad383410-1276-45a2-91c8-9feb6bde40b0",
+                            Id = "90066eaa-99a5-4968-be1f-b423c3a070e6",
+                            ConcurrencyStamp = "ec7d6dfd-4c69-4422-9ec4-3dac567c2e8e",
                             Name = "Teacher",
                             NormalizedName = "TEACHER"
                         });
@@ -415,33 +450,318 @@ namespace IdentityNLayer.DAL.EF.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "b0142785-ef50-41ec-971b-97ce800b38f2",
+                            Id = "87b8ae22-f7bb-4a34-8305-b67d4ca8cf24",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "3c946514-05cb-4c23-8a28-2cb57eaf2e99",
+                            ConcurrencyStamp = "549c13bc-5f91-45f7-a8a0-6dd267e87192",
                             Email = "admin@admin.com",
                             EmailConfirmed = true,
                             LockoutEnabled = false,
                             NormalizedUserName = "ADMIN@ADMIN.COM",
-                            PasswordHash = "AQAAAAEAACcQAAAAENxgsICDn9EfdKvOhU6AWnaBBIALFh1lOoh7TFA/kFxuPzryxOkyfpdErwQQdd05fg==",
+                            PasswordHash = "AQAAAAEAACcQAAAAEMHDV1lMWYBbXobHEiiTeP6dbnNgfZWsXscxcc2VOvE6DFvj0JwlQUJwJfrxKe1tuA==",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "9fc3792c-7f75-4b65-b477-7b2c0a87d41e",
+                            SecurityStamp = "56247421-dbef-4202-ad49-ef736f3234ff",
                             TwoFactorEnabled = false,
                             UserName = "admin@admin.com"
                         },
                         new
                         {
-                            Id = "dfa65f86-7377-433c-a68f-5338777a025b",
+                            Id = "8ba459fd-a82a-444d-8283-028b5f9cb501",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "452a882d-b3e1-4061-a02b-50dbc99b2f18",
+                            ConcurrencyStamp = "5a435f49-06c7-47b7-9c8b-e332e2766425",
                             Email = "manager@manager.com",
                             EmailConfirmed = true,
                             LockoutEnabled = false,
                             NormalizedUserName = "MANAGER@MANAGER.COM",
-                            PasswordHash = "AQAAAAEAACcQAAAAEPlHWzREzCJ/TuuslIGc/bHuUjsdWXcKl/HthFMN5WsSDHG/LLq4dI14rrzTs0Epfg==",
+                            PasswordHash = "AQAAAAEAACcQAAAAEGoheJdd302ZvFg4QoeKflONDYYIRxNj0UwsF1CPIE0Y5i/iHLdP4BK24s6kq1MXTQ==",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "fb7d90f2-205d-43e8-b14e-e9a02a4477c5",
+                            SecurityStamp = "50c2e4be-cebe-4798-bc36-0fc0ef3dbee2",
                             TwoFactorEnabled = false,
                             UserName = "manager@manager.com"
+                        },
+                        new
+                        {
+                            Id = "5aa7651c-a469-4995-a9ba-a3724644882a",
+                            AccessFailedCount = 0,
+                            ConcurrencyStamp = "3f412604-38e1-45eb-946e-8634d7959a69",
+                            Email = "guest1@mail.com",
+                            EmailConfirmed = true,
+                            LockoutEnabled = false,
+                            NormalizedUserName = "guest1@MAIL.COM",
+                            PasswordHash = "AQAAAAEAACcQAAAAEHvOj/oA6gL1tpqt56g5qj2upakDwcm8Ifnnzx5p2s8EBT8acP/YNZwUMyNqHiPdIw==",
+                            PhoneNumberConfirmed = false,
+                            SecurityStamp = "5d5342d7-7e99-4027-b216-6e5e03dd1555",
+                            TwoFactorEnabled = false,
+                            UserName = "guest1@mail.com"
+                        },
+                        new
+                        {
+                            Id = "83176973-1496-4fb8-8e0f-b4f9b651ab01",
+                            AccessFailedCount = 0,
+                            ConcurrencyStamp = "3af4dbff-4f6f-4c2f-9aff-356da40bc4eb",
+                            Email = "guest2@mail.com",
+                            EmailConfirmed = true,
+                            LockoutEnabled = false,
+                            NormalizedUserName = "guest2@MAIL.COM",
+                            PasswordHash = "AQAAAAEAACcQAAAAEHFxwwwr/Pmao2ZuuMlsQpM0EUt4IDj7RimEmuWqTKng/pA8MCc0bWHz0efiLBAEdQ==",
+                            PhoneNumberConfirmed = false,
+                            SecurityStamp = "8ce84607-8197-42f2-a143-58a13d79b6bb",
+                            TwoFactorEnabled = false,
+                            UserName = "guest2@mail.com"
+                        },
+                        new
+                        {
+                            Id = "9a64d4a7-d6f4-4d50-8a6b-b9ca32ed5d87",
+                            AccessFailedCount = 0,
+                            ConcurrencyStamp = "665c36ee-fcd4-4a96-b63c-b04d69039630",
+                            Email = "guest3@mail.com",
+                            EmailConfirmed = true,
+                            LockoutEnabled = false,
+                            NormalizedUserName = "guest3@MAIL.COM",
+                            PasswordHash = "AQAAAAEAACcQAAAAENLjRgMkmisw6x3pZVKL5sbbDStXEnByWUIX9hHVO90ekaP+tEswUMQhIEAEd2zU2Q==",
+                            PhoneNumberConfirmed = false,
+                            SecurityStamp = "f4ebf4ed-3bb5-486d-8590-d3f02d36343e",
+                            TwoFactorEnabled = false,
+                            UserName = "guest3@mail.com"
+                        },
+                        new
+                        {
+                            Id = "b39932d7-4db7-4674-a3f2-fe00c72f8748",
+                            AccessFailedCount = 0,
+                            ConcurrencyStamp = "0cbe9e17-a432-4dd1-b841-b23c18428c27",
+                            Email = "guest4@mail.com",
+                            EmailConfirmed = true,
+                            LockoutEnabled = false,
+                            NormalizedUserName = "guest4@MAIL.COM",
+                            PasswordHash = "AQAAAAEAACcQAAAAEFYXCCB2L8P3OkhxfgT3hLl/wey/EaeVvAaa0OXFwqxys/VPsurIOHUCuPtAms+x2g==",
+                            PhoneNumberConfirmed = false,
+                            SecurityStamp = "86650fde-bfa4-4056-9b23-92fced99525b",
+                            TwoFactorEnabled = false,
+                            UserName = "guest4@mail.com"
+                        },
+                        new
+                        {
+                            Id = "a4e3680b-6791-45ed-b2ec-8dbee81577a5",
+                            AccessFailedCount = 0,
+                            ConcurrencyStamp = "8f1e315f-ce48-4103-b2a8-fecd70d26f1f",
+                            Email = "guest5@mail.com",
+                            EmailConfirmed = true,
+                            LockoutEnabled = false,
+                            NormalizedUserName = "guest5@MAIL.COM",
+                            PasswordHash = "AQAAAAEAACcQAAAAEI2pru7JkuBdc7zfD2LZwKBO8JpJw2EhwAuN22W7Mj1mfWEbiRQMU5Huof7KMxkNNg==",
+                            PhoneNumberConfirmed = false,
+                            SecurityStamp = "2e326771-b0d3-4e98-8a01-33acc71e5331",
+                            TwoFactorEnabled = false,
+                            UserName = "guest5@mail.com"
+                        },
+                        new
+                        {
+                            Id = "3f39d911-b85b-4c2f-8f56-c72a08421e57",
+                            AccessFailedCount = 0,
+                            ConcurrencyStamp = "651edb3c-676a-41e6-9502-4706a8b2288c",
+                            Email = "guest6@mail.com",
+                            EmailConfirmed = true,
+                            LockoutEnabled = false,
+                            NormalizedUserName = "guest6@MAIL.COM",
+                            PasswordHash = "AQAAAAEAACcQAAAAEL09IKIrSNP+UhzQ5RUkekVrJZ6KYESStc8KfJHfjHpP90/pBBYAMfdOaLsje2peZg==",
+                            PhoneNumberConfirmed = false,
+                            SecurityStamp = "3120089b-4102-45eb-a657-d4903edbd8ba",
+                            TwoFactorEnabled = false,
+                            UserName = "guest6@mail.com"
+                        },
+                        new
+                        {
+                            Id = "2c83f54e-49fe-4619-8046-806af9473a24",
+                            AccessFailedCount = 0,
+                            ConcurrencyStamp = "2ba8c7c1-b36e-4fdd-a211-9db009031ba5",
+                            Email = "guest7@mail.com",
+                            EmailConfirmed = true,
+                            LockoutEnabled = false,
+                            NormalizedUserName = "guest7@MAIL.COM",
+                            PasswordHash = "AQAAAAEAACcQAAAAENbo5kcPRQLmg4yMw3u3AheL8ux+QyMbteeYLfr1DNbFwFuLv9RuH3ja5hmJ7LJ/jw==",
+                            PhoneNumberConfirmed = false,
+                            SecurityStamp = "e5714087-c207-4091-81a3-b71fe614b545",
+                            TwoFactorEnabled = false,
+                            UserName = "guest7@mail.com"
+                        },
+                        new
+                        {
+                            Id = "dc66f024-8723-4b24-94fa-57cc75b92fda",
+                            AccessFailedCount = 0,
+                            ConcurrencyStamp = "ffce8b0d-a8e7-4180-a1fd-b7740df683e1",
+                            Email = "guest8@mail.com",
+                            EmailConfirmed = true,
+                            LockoutEnabled = false,
+                            NormalizedUserName = "guest8@MAIL.COM",
+                            PasswordHash = "AQAAAAEAACcQAAAAEPoCZHx3fOyo20lvWV2Ee3e4EaDRFDrVDoraV/T0GlG2IpkPhG3yBx6TB3mRyxT4rA==",
+                            PhoneNumberConfirmed = false,
+                            SecurityStamp = "089f9b7d-60a3-4f18-9a45-6cffce25de9d",
+                            TwoFactorEnabled = false,
+                            UserName = "guest8@mail.com"
+                        },
+                        new
+                        {
+                            Id = "06396765-0b99-48e3-8ade-b4d8b1ac6c73",
+                            AccessFailedCount = 0,
+                            ConcurrencyStamp = "a9daee95-decb-48c1-83d3-5ffc1f2e9c5f",
+                            Email = "guest9@mail.com",
+                            EmailConfirmed = true,
+                            LockoutEnabled = false,
+                            NormalizedUserName = "guest9@MAIL.COM",
+                            PasswordHash = "AQAAAAEAACcQAAAAEPp+2J+xvg2Wg9KP3WNWl/D7liDlYsEFWsOKRapfx5xeewFouWpnp4P4FdhJb+9qUg==",
+                            PhoneNumberConfirmed = false,
+                            SecurityStamp = "b80de4cd-6144-4ae0-8054-98c515718a42",
+                            TwoFactorEnabled = false,
+                            UserName = "guest9@mail.com"
+                        },
+                        new
+                        {
+                            Id = "af199eb4-3433-4856-af06-e7654b9d5bf7",
+                            AccessFailedCount = 0,
+                            ConcurrencyStamp = "3221fabc-ceb6-430e-975c-e7fe22cce4e7",
+                            Email = "guest10@mail.com",
+                            EmailConfirmed = true,
+                            LockoutEnabled = false,
+                            NormalizedUserName = "guest10@MAIL.COM",
+                            PasswordHash = "AQAAAAEAACcQAAAAEMNZzt5OA7OHoGibDHCuczapzlME3mC82bpSGNGsNlkavcs+seHpXbxLReLo662gxg==",
+                            PhoneNumberConfirmed = false,
+                            SecurityStamp = "8f4c6ddd-c71d-4ea0-b10f-0ce033a9a2dd",
+                            TwoFactorEnabled = false,
+                            UserName = "guest10@mail.com"
+                        },
+                        new
+                        {
+                            Id = "817db1aa-7569-4c74-915a-451779e30be3",
+                            AccessFailedCount = 0,
+                            ConcurrencyStamp = "355be7b2-fd2a-4011-a400-6850f689bac4",
+                            Email = "guest11@mail.com",
+                            EmailConfirmed = true,
+                            LockoutEnabled = false,
+                            NormalizedUserName = "guest11@MAIL.COM",
+                            PasswordHash = "AQAAAAEAACcQAAAAEL2dxw/NFnEnvlihyU8T1EpWdjhVFfGNxOHMD4yyL60TTKETvhwoKcACLRPC4ym9dw==",
+                            PhoneNumberConfirmed = false,
+                            SecurityStamp = "972a55db-6cfe-4422-bd74-0d2191275646",
+                            TwoFactorEnabled = false,
+                            UserName = "guest11@mail.com"
+                        },
+                        new
+                        {
+                            Id = "f8f6db97-1c7b-429d-b94a-3da89b3419f8",
+                            AccessFailedCount = 0,
+                            ConcurrencyStamp = "7c5c1a6b-58cf-462b-8475-96db91c8c1fc",
+                            Email = "guest12@mail.com",
+                            EmailConfirmed = true,
+                            LockoutEnabled = false,
+                            NormalizedUserName = "guest12@MAIL.COM",
+                            PasswordHash = "AQAAAAEAACcQAAAAEJmpSMO2QX0TlmWsKlXq72xqOVKwHSlgj6ZoSbrW1ApKkVElryQz/fbrLFFR5GomUw==",
+                            PhoneNumberConfirmed = false,
+                            SecurityStamp = "e28d4bad-c027-4b3a-af3b-8c6b0464a1a1",
+                            TwoFactorEnabled = false,
+                            UserName = "guest12@mail.com"
+                        },
+                        new
+                        {
+                            Id = "1a04fe4f-60aa-460d-8fe0-06a0c5aaaceb",
+                            AccessFailedCount = 0,
+                            ConcurrencyStamp = "8479d6c6-318f-46fa-b3a5-5d9e7ac97c4f",
+                            Email = "guest13@mail.com",
+                            EmailConfirmed = true,
+                            LockoutEnabled = false,
+                            NormalizedUserName = "guest13@MAIL.COM",
+                            PasswordHash = "AQAAAAEAACcQAAAAEB6cOCH0KykM1MX7RJlQpggHXU17HgvabQPvFEaWQ0oPITo6TSabWjzNSghCK5lM3w==",
+                            PhoneNumberConfirmed = false,
+                            SecurityStamp = "7817d6dc-3d3e-4530-87d6-83ba1ffdabc0",
+                            TwoFactorEnabled = false,
+                            UserName = "guest13@mail.com"
+                        },
+                        new
+                        {
+                            Id = "dcc7b531-1b55-41af-8819-0ab4478b65e3",
+                            AccessFailedCount = 0,
+                            ConcurrencyStamp = "5f8dca84-37c3-46f4-96e0-5af3e9d85ae2",
+                            Email = "guest14@mail.com",
+                            EmailConfirmed = true,
+                            LockoutEnabled = false,
+                            NormalizedUserName = "guest14@MAIL.COM",
+                            PasswordHash = "AQAAAAEAACcQAAAAEMv5SQU78wXva8cjy3DaGapR5Gfg0AUHeukFpQvtRZf1tPJ7EAgTXBypzi+gsugGEw==",
+                            PhoneNumberConfirmed = false,
+                            SecurityStamp = "abbbc3c9-ff60-4fcf-ae9a-73c6a7526c95",
+                            TwoFactorEnabled = false,
+                            UserName = "guest14@mail.com"
+                        },
+                        new
+                        {
+                            Id = "dc3ac115-a993-4e5b-b675-f92bf5053ba3",
+                            AccessFailedCount = 0,
+                            ConcurrencyStamp = "1c6537b7-a5ea-453d-8195-b6e10b9744a3",
+                            Email = "guest15@mail.com",
+                            EmailConfirmed = true,
+                            LockoutEnabled = false,
+                            NormalizedUserName = "guest15@MAIL.COM",
+                            PasswordHash = "AQAAAAEAACcQAAAAEFeRFZYljSXdbyLba7Rvq73OmTS8RZpgzPlIdCwT/OVzJWFEB1zbhtPIYHzhM+yeZw==",
+                            PhoneNumberConfirmed = false,
+                            SecurityStamp = "dc3801e1-ca89-42b6-b625-907799ed2490",
+                            TwoFactorEnabled = false,
+                            UserName = "guest15@mail.com"
+                        },
+                        new
+                        {
+                            Id = "36b4c48b-18cd-46e3-b1c2-e3cb66acc40b",
+                            AccessFailedCount = 0,
+                            ConcurrencyStamp = "0ffa9b86-596f-4053-9ed5-30f4f23448b9",
+                            Email = "guest16@mail.com",
+                            EmailConfirmed = true,
+                            LockoutEnabled = false,
+                            NormalizedUserName = "guest16@MAIL.COM",
+                            PasswordHash = "AQAAAAEAACcQAAAAECoWGvC66wJl3y8/7ClFiIeRzUjC2bXgI3rQAiXEmOe0oB+r4zUF2prhWiqGWvnWCA==",
+                            PhoneNumberConfirmed = false,
+                            SecurityStamp = "82cfa8c3-7a31-43a1-83e1-7a83ad765108",
+                            TwoFactorEnabled = false,
+                            UserName = "guest16@mail.com"
+                        },
+                        new
+                        {
+                            Id = "891acd0b-40e2-4b44-aa86-e33b964ce923",
+                            AccessFailedCount = 0,
+                            ConcurrencyStamp = "99c03f6d-4451-48b8-8348-d09fbb2ef734",
+                            Email = "guest17@mail.com",
+                            EmailConfirmed = true,
+                            LockoutEnabled = false,
+                            NormalizedUserName = "guest17@MAIL.COM",
+                            PasswordHash = "AQAAAAEAACcQAAAAEKDUgqNU9FdP1HWEkK+kTxUuvkbSEg8XBaiHKORC+HdkR2wSkhNe8m8SQTT08PcABQ==",
+                            PhoneNumberConfirmed = false,
+                            SecurityStamp = "41767906-78bd-4dfd-8aa7-2f9578366b13",
+                            TwoFactorEnabled = false,
+                            UserName = "guest17@mail.com"
+                        },
+                        new
+                        {
+                            Id = "b5d12a7b-9012-40b4-9be4-c60edc0752f8",
+                            AccessFailedCount = 0,
+                            ConcurrencyStamp = "d5457c0a-ec54-4c8a-8996-58ead37411f5",
+                            Email = "guest18@mail.com",
+                            EmailConfirmed = true,
+                            LockoutEnabled = false,
+                            NormalizedUserName = "guest18@MAIL.COM",
+                            PasswordHash = "AQAAAAEAACcQAAAAEGgbVUf2D5z4czdBwa5e5NYC7lMsM5TDNTErE/1Z7CubQQ3hcSl9eANDE6CuXts7QA==",
+                            PhoneNumberConfirmed = false,
+                            SecurityStamp = "a65566f2-f23e-4a48-8351-d02e816aec17",
+                            TwoFactorEnabled = false,
+                            UserName = "guest18@mail.com"
+                        },
+                        new
+                        {
+                            Id = "fb95a654-d906-49b5-8247-b827c1dc0106",
+                            AccessFailedCount = 0,
+                            ConcurrencyStamp = "4a7e7047-5cc5-404f-99e8-40b26f6e1fcc",
+                            Email = "guest19@mail.com",
+                            EmailConfirmed = true,
+                            LockoutEnabled = false,
+                            NormalizedUserName = "guest19@MAIL.COM",
+                            PasswordHash = "AQAAAAEAACcQAAAAEFXrTwDxkuLos0ln+jQBA1tPvprfn/c7iVZjWzetDCY2rJG09zWxIU5qvxYexX/fiA==",
+                            PhoneNumberConfirmed = false,
+                            SecurityStamp = "effb2556-6f07-4540-8c79-45ba2f668f8e",
+                            TwoFactorEnabled = false,
+                            UserName = "guest19@mail.com"
                         });
                 });
 
@@ -508,13 +828,13 @@ namespace IdentityNLayer.DAL.EF.Migrations
                     b.HasData(
                         new
                         {
-                            UserId = "b0142785-ef50-41ec-971b-97ce800b38f2",
-                            RoleId = "d5f2002a-b57e-4ef0-9ed5-b88e588a55bd"
+                            UserId = "87b8ae22-f7bb-4a34-8305-b67d4ca8cf24",
+                            RoleId = "f974cfc9-615e-40ca-9be9-7c9b73ee80be"
                         },
                         new
                         {
-                            UserId = "dfa65f86-7377-433c-a68f-5338777a025b",
-                            RoleId = "f5ba04f2-6685-41ef-819b-ee205c7c3a25"
+                            UserId = "8ba459fd-a82a-444d-8283-028b5f9cb501",
+                            RoleId = "9139cbbb-2459-4edc-b1e7-5066480bc2f4"
                         });
                 });
 
@@ -535,17 +855,6 @@ namespace IdentityNLayer.DAL.EF.Migrations
                     b.HasKey("UserId", "LoginProvider", "Name");
 
                     b.ToTable("AspNetUserTokens");
-                });
-
-            modelBuilder.Entity("IdentityNLayer.Core.Entities.Course", b =>
-                {
-                    b.HasOne("IdentityNLayer.Core.Entities.Topic", "Topic")
-                        .WithMany()
-                        .HasForeignKey("TopicId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Topic");
                 });
 
             modelBuilder.Entity("IdentityNLayer.Core.Entities.Enrollment", b =>
@@ -617,9 +926,17 @@ namespace IdentityNLayer.DAL.EF.Migrations
 
             modelBuilder.Entity("IdentityNLayer.Core.Entities.Topic", b =>
                 {
+                    b.HasOne("IdentityNLayer.Core.Entities.Course", "Course")
+                        .WithMany("Topics")
+                        .HasForeignKey("CourseId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.HasOne("IdentityNLayer.Core.Entities.Topic", "Parent")
                         .WithMany()
                         .HasForeignKey("ParentId");
+
+                    b.Navigation("Course");
 
                     b.Navigation("Parent");
                 });
@@ -673,6 +990,11 @@ namespace IdentityNLayer.DAL.EF.Migrations
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+                });
+
+            modelBuilder.Entity("IdentityNLayer.Core.Entities.Course", b =>
+                {
+                    b.Navigation("Topics");
                 });
 
             modelBuilder.Entity("IdentityNLayer.Core.Entities.Group", b =>

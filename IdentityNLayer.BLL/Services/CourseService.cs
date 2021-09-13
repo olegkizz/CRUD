@@ -17,28 +17,12 @@ namespace IdentityNLayer.BLL.Services
         {
             Db = db;
         }
-        public int Create(Course entity)
-        {
-            Db.Courses.Create(entity);
-            Db.Save();
-            return entity.Id;
-        }
 
         public void Delete(int id)
         {
             throw new NotImplementedException();
         }
 
-        public IEnumerable<Course> GetAll()
-        {
-            return Db.Courses.GetAll();
-        }
-
-        public Course GetById(int id)
-        {
-            return Db.Courses.Get(id);
-        }
-        
         public void Update(Course entity)
         {
             Db.Courses.Update(entity);
@@ -54,15 +38,15 @@ namespace IdentityNLayer.BLL.Services
             foreach (Enrollment en
                 in Db.Enrollments.Find(en => en.EntityID == id && en.State == UserGroupStates.Requested && en.Role == UserRoles.Teacher))
             {
-                Teacher teacher = Db.Teachers.Find(tc => tc.UserId == en.UserID).FirstOrDefault();
+                Teacher teacher = Db.Teachers.Find(tc => tc.UserId == en.UserID).SingleOrDefault();
                 if (teacher != null)
                     teachers.Add(teacher);
             }
             return teachers;
         }
-        public IEnumerable<Topic> GetAvailableTopics()
+        public IEnumerable<Topic> GetAvailableTopics(int courseId = 0)
         {
-            return Db.Topics.GetAll();
+            return Db.Topics.Find(c => c.CourseId == courseId);
         }
 
         public bool HasRequest(int courseId, string userId, UserRoles role)
@@ -96,7 +80,8 @@ namespace IdentityNLayer.BLL.Services
 
         public Task<Course> GetByIdAsync(int id)
         {
-            throw new NotImplementedException();
+            return Db.Courses.GetAsync(id);
+
         }
 
         public Task<IEnumerable<Course>> GetAllAsync()

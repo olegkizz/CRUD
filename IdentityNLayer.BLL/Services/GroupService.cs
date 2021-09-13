@@ -15,21 +15,6 @@ namespace IdentityNLayer.BLL.Services
         {
             Db = db;
         }
-        public IEnumerable<Group> GetAll()
-        {
-            return Db.Groups.GetAll();
-        }
-        public Group GetById(int id)
-        {
-            return Db.Groups.Get(id);
-        }
-
-        public int Create(Group entity)
-        {
-            Db.Groups.Create(entity);
-            Db.Save();
-            return entity.Id;
-        }
 
         public void Update(Group entity)
         {
@@ -47,13 +32,13 @@ namespace IdentityNLayer.BLL.Services
             return Db.Groups.Find(gr => gr.Id == groupId).FirstOrDefault()?.Teacher;
         }
 
-        public IEnumerable<Group> GetGroupsByUserId(string userId)
+        public async Task<IEnumerable<Group>> GetGroupsByUserIdAsync(string userId)
         {
             List<Group> groups = new();
-            foreach (Enrollment en in Db.Enrollments.Find(en => en.UserID == userId))
+            foreach (Enrollment en in Db.Enrollments.Find(en => en.UserID == userId && en.State == UserGroupStates.Applied))
             {
                 if (en.State != UserGroupStates.Requested && en.State != UserGroupStates.Aborted)
-                    groups.Add(Db.Groups.Get(en.EntityID));
+                    groups.Add(await Db.Groups.GetAsync(en.EntityID));
             }
             return groups;
         }
@@ -69,14 +54,14 @@ namespace IdentityNLayer.BLL.Services
                 case UserGroupStates.Applied:
                     foreach (Enrollment en in Db.Enrollments.Find(en => en.EntityID == groupId && en.State == state && en.Role == UserRoles.Student))
                     {
-                        students.Add(Db.Students.Find(st => st.UserId == en.UserID).FirstOrDefault());
+                        students.Add(Db.Students.Find(st => st.UserId == en.UserID).SingleOrDefault());
                     }
                     return students;
                 case UserGroupStates.Requested:
                     foreach (Enrollment en in Db.Enrollments.Find(en => en.EntityID == Db.Groups.Find(gr => gr.Id == groupId).FirstOrDefault()?.CourseId 
                     && en.State == state && en.Role == UserRoles.Student))
                     {
-                        students.Add(Db.Students.Find(st => st.UserId == en.UserID).FirstOrDefault());
+                        students.Add(Db.Students.Find(st => st.UserId == en.UserID).SingleOrDefault());
                     }
                     return students;
                 default:
@@ -95,14 +80,14 @@ namespace IdentityNLayer.BLL.Services
                 case UserGroupStates.Applied:
                     foreach (Enrollment en in Db.Enrollments.Find(en => en.EntityID == groupId && en.State == state && en.Role == UserRoles.Teacher))
                     {
-                        teachers.Add(Db.Teachers.Find(tc => tc.UserId == en.UserID).FirstOrDefault());
+                        teachers.Add(Db.Teachers.Find(tc => tc.UserId == en.UserID).SingleOrDefault());
                     }
                     return teachers;
                 case UserGroupStates.Requested:
                     foreach (Enrollment en in Db.Enrollments.Find(en => en.EntityID == Db.Groups.Find(gr => gr.Id == groupId).FirstOrDefault()?.CourseId
                     && en.State == state && en.Role == UserRoles.Teacher))
                     {
-                        teachers.Add(Db.Teachers.Find(tc => tc.UserId == en.UserID).FirstOrDefault());
+                        teachers.Add(Db.Teachers.Find(tc => tc.UserId == en.UserID).SingleOrDefault());
                     }
                     return teachers;
                 default:
@@ -122,12 +107,14 @@ namespace IdentityNLayer.BLL.Services
 
         public int CreateAsync(Group entity)
         {
-            throw new NotImplementedException();
+            Db.Groups.CreateAsync(entity);
+            Db.Save();
+            return entity.Id;
         }
 
-        public string GetAsync(int id)
+        public Task<Group> GetAsync(int id)
         {
-            throw new NotImplementedException();
+            return Db.Groups.GetAsync(id);
         }
 
         public Task<Group> GetByIdAsync(int id)

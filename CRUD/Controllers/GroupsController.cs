@@ -11,6 +11,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.Extensions.Logging;
 
 namespace IdentityNLayer.Controllers
 {
@@ -21,6 +22,7 @@ namespace IdentityNLayer.Controllers
         private readonly ICourseService _courseService;
         private readonly ITeacherService _teacherService;
         private readonly IMapper _mapper;
+        private readonly ILogger _logger;
         private readonly UserManager<IdentityUser> _userManager;
 
 
@@ -28,7 +30,8 @@ namespace IdentityNLayer.Controllers
             IEnrollmentService enrollmentService,
             ICourseService courseService,
             ITeacherService teacherService,
-            UserManager<IdentityUser> userManager)
+            UserManager<IdentityUser> userManager,
+            ILogger<CoursesController> logger)
         {
             _groupService = groupService;
             _mapper = mapper;
@@ -36,17 +39,15 @@ namespace IdentityNLayer.Controllers
             _courseService = courseService;
             _teacherService = teacherService;
             _userManager = userManager;
+            _logger = logger;
         }
 
         // GET: Groups
         public async Task<IActionResult> Index()
         {
             if(User.IsInRole("Admin") || User.IsInRole("Manager"))
-            {
-                IEnumerable<Group> groups = await _groupService.GetAllAsync();
-                return View(_mapper.Map<IEnumerable<GroupModel>>(groups));
-            }
-            return View(_mapper.Map<IEnumerable<GroupModel>>(_groupService.GetGroupsByUserId(_userManager.GetUserId(User))));
+                return View(_mapper.Map<IEnumerable<GroupModel>>(await _groupService.GetAllAsync()));
+            return View(_mapper.Map<IEnumerable<GroupModel>>(await _groupService.GetGroupsByUserIdAsync(_userManager.GetUserId(User))));
         }
 
         // GET: Groups/Details/5
@@ -57,7 +58,7 @@ namespace IdentityNLayer.Controllers
                 return NotFound();
             }
 
-            return View(_groupService.GetByIdAsync((int)id));
+            return View(_mapper.Map<GroupModel>(await _groupService.GetByIdAsync((int)id)));
         }
 
         // GET: Groups/Create
@@ -80,15 +81,15 @@ namespace IdentityNLayer.Controllers
         {
             if (ModelState.IsValid)
             {
-                int groupId = _groupService.Create(_mapper.Map<Group>(group));
-
-                foreach (StudentRequestsModel studentRequest in group.StudentRequests)
-                {
-                    if (studentRequest.Applied)
-                        _enrollmentService.Enrol(studentRequest.UserId, groupId, UserRoles.Student);
-                }
+                int groupId = _groupService.CreateAsync(_mapper.Map<Group>(group));
+                if(group.StudentRequests != null)
+                    foreach (StudentRequestsModel studentRequest in group.StudentRequests)
+                    {
+                        if (studentRequest.Applied)
+                            _enrollmentService.Enrol(studentRequest.UserId, groupId, UserRoles.Student);
+                    }
                 if (group.TeacherId != null)
-                    _enrollmentService.Enrol(_teacherService.GetById((int)group.TeacherId).UserId, groupId, UserRoles.Teacher);
+                    _enrollmentService.Enrol((await _teacherService.GetByIdAsync((int)group.TeacherId)).UserId, groupId, UserRoles.Teacher);
                 return RedirectToAction(nameof(Index));
             }
             return View();
@@ -103,7 +104,7 @@ namespace IdentityNLayer.Controllers
                 return NotFound();
             }
 
-            GroupModel group = _mapper.Map<GroupModel>(_groupService.GetById((int)id));
+            GroupModel group = _mapper.Map<GroupModel>(await _groupService.GetByIdAsync((int)id));
             group.SetStudents(_mapper.Map<IEnumerable<StudentModel>>(_groupService.GetStudents(group.Id)), _groupService);
 
             if (group == null)
@@ -142,7 +143,7 @@ namespace IdentityNLayer.Controllers
                     }
                     if (group.TeacherId != null)
                     {
-                        Teacher newTeacher = _teacherService.GetById((int)group.TeacherId);
+                        Teacher newTeacher = await _teacherService.GetByIdAsync((int)group.TeacherId);
                         
                         if (currentTeacher != null)
                         {
@@ -151,20 +152,22 @@ namespace IdentityNLayer.Controllers
                                 _enrollmentService.UnEnrol(currentTeacher.UserId, group.Id);
                                 _enrollmentService.Enrol(newTeacher.UserId, group.Id, UserRoles.Teacher);
                             }
-                        }
+                        } else _enrollmentService.Enrol(newTeacher.UserId, group.Id, UserRoles.Teacher);
                     } else if(currentTeacher != null)
                         _enrollmentService.UnEnrol(currentTeacher.UserId, group.Id);
 
                     return RedirectToAction(nameof(Index));
                 }
-                catch (DbUpdateConcurrencyException)
+                catch (DbUpdateConcurrencyException ex)
                 {
                     if (!GroupExists(group.Id))
                     {
+                        _logger.LogError("Group with id=" +  group.Id + " not found");
                         return NotFound();
                     }
                     else
                     {
+                        _logger.LogError(ex.Message);
                         throw;
                     }
                 }
@@ -180,7 +183,7 @@ namespace IdentityNLayer.Controllers
                 return NotFound();
             }
 
-            GroupModel teacher = _mapper.Map<GroupModel>(_groupService.GetById((int)id));
+            GroupModel teacher = _mapper.Map<GroupModel>(await _groupService.GetByIdAsync((int)id));
             if (teacher == null)
             {
                 return NotFound();

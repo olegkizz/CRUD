@@ -1,9 +1,9 @@
-﻿using IdentityNLayer.Core.Entities;
-using IdentityNLayer.DAL.EF.Context;
-using System;
+﻿using System;
 using System.Collections.Generic;
+using IdentityNLayer.DAL.EF.Context;
+using IdentityNLayer.Core.Entities;
+using Microsoft.EntityFrameworkCore;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace IdentityNLayer.DAL.EF.Repositories
@@ -33,32 +33,24 @@ namespace IdentityNLayer.DAL.EF.Repositories
 
         public IEnumerable<Topic> Find(Func<Topic, bool> predicate)
         {
-            throw new NotImplementedException();
+            return _context.Topics
+                    .Where(predicate)
+                    .ToList();
         }
 
-        public IEnumerable<Topic> FindAsync(Func<Topic, bool> predicate)
+        public async Task<IEnumerable<Topic>> FindAsync(Func<Topic, bool> predicate)
         {
             throw new NotImplementedException();
         }
 
-        public Topic Get(int id)
+        public async Task<IEnumerable<Topic>> GetAllAsync()
         {
-            throw new NotImplementedException();
+            return await  _context.Topics.ToListAsync();
         }
 
-        public IEnumerable<Topic> GetAll()
+        public async Task<Topic> GetAsync(int id)
         {
-            return _context.Topics;
-        }
-
-        public Task<IEnumerable<Topic>> GetAllAsync()
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<Topic> GetAsync(int id)
-        {
-            throw new NotImplementedException();
+            return await _context.Topics.SingleAsync(t => t.Id == id);
         }
 
         public void Update(Topic item)

@@ -8,12 +8,14 @@ using IdentityNLayer.Core.Entities;
 using System.Collections.Generic;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.Extensions.Logging;
 
 namespace IdentityNLayer.Controllers
 {
     public class StudentsController : Controller
     {
         private readonly IMapper _mapper;
+        private readonly ILogger _logger;
         private readonly IStudentService _studentService;
         private readonly IGroupService _groupService;
         private readonly IEnrollmentService _enrollmentService;
@@ -24,6 +26,7 @@ namespace IdentityNLayer.Controllers
         public StudentsController(IStudentService studentService,
             IGroupService groupService,
             IMapper mapper,
+            ILogger<StudentsController> logger,
             RoleManager<IdentityRole> roleManager,
             UserManager<IdentityUser> userManager,
             IEnrollmentService enrollmentService,
@@ -32,6 +35,7 @@ namespace IdentityNLayer.Controllers
             _studentService = studentService;
             _groupService = groupService;
             _mapper = mapper;
+            _logger = logger;
             _enrollmentService = enrollmentService;
             _courseService = courseService;
             _roleManager = roleManager;
@@ -43,7 +47,7 @@ namespace IdentityNLayer.Controllers
 
         public async Task<IActionResult> Index()
         {
-            return View(_mapper.Map<IEnumerable<StudentModel>>(_studentService.GetAll()));
+            return View(_mapper.Map<IEnumerable<StudentModel>>(await _studentService.GetAllAsync()));
         }
         [HttpGet]
         public IActionResult SendRequest(int courseId)
@@ -77,35 +81,51 @@ namespace IdentityNLayer.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("FirstName, LastName, BirthDate, Email," +
-            "Type, User")] StudentModel student, int? courseId)
+            "Type")] StudentModel student, int? courseId)
         {
             if (ModelState.IsValid)
             {
-                var user = await _userManager.GetUserAsync(User);
+                try
+                {
+                    var user = await _userManager.GetUserAsync(User);
 
-
-                IdentityResult result = await _userManager.AddToRoleAsync(user, UserRoles.Student.ToString());
-                student.User = user;
-                int newStudentId = _studentService.Create(_mapper.Map<Student>(student));
-                if (courseId != 0)
-                    return RedirectToAction("SendRequest", new { courseId });
-                return RedirectToAction(nameof(Index));
+                    IdentityResult result = await _userManager.AddToRoleAsync(user, UserRoles.Student.ToString());
+                    student.User = user;
+                    int newStudentId = _studentService.CreateAsync(_mapper.Map<Student>(student));
+                    if (courseId != null)
+                        return RedirectToAction("SendRequest", new { courseId });
+                    return Redirect("Courses/Index");
+                }
+                catch (DbUpdateConcurrencyException ex)
+                {
+                    if ((await _studentService.GetByIdAsync(student.Id)) == null)
+                    {
+                        _logger.LogError("Student with id=" + student.Id + " not found");
+                        return NotFound();
+                    }
+                    else
+                    {
+                        _logger.LogError(ex.Message);
+                        throw;
+                    }
+                }
             }
-            else
-            {
-                throw new DbUpdateConcurrencyException();
-            }
+            return View(student);
         }
 
-        // GET: Contacts/Edit/5
+        // GET: Students/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
+            if ((await _studentService.GetByIdAsync((int)id)).UserId != _userManager.GetUserId(User)
+                  && !User.IsInRole("Admin") && !User.IsInRole("Manager"))
+                return LocalRedirect("Edit/" + id);
+
             if (id == null)
             {
                 return NotFound();
             }
 
-            StudentModel student = _mapper.Map<StudentModel>(_studentService.GetById((int)id));
+            StudentModel student = _mapper.Map<StudentModel>(await _studentService.GetByIdAsync((int)id));
 
 
             if (student == null)
@@ -121,9 +141,13 @@ namespace IdentityNLayer.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id, FirstName, LastName, BirthDate, User, " +
-            "PhoneNumber, Type, UserId")] StudentModel student)
+        public async Task<IActionResult> Edit(int id, [Bind("Id, FirstName, LastName, BirthDate," +
+            "Type")] StudentModel student)
         {
+            if ((await _studentService.GetByIdAsync(id)).UserId != _userManager.GetUserId(User)
+                && !User.IsInRole("Admin") && !User.IsInRole("Manager"))
+                return BadRequest();
+
             if (id != student.Id)
             {
                 return NotFound();
@@ -135,11 +159,22 @@ namespace IdentityNLayer.Controllers
                 {
                     _studentService.Update(_mapper.Map<Student>(student));
                 }
-                catch (DbUpdateConcurrencyException)
+                catch (DbUpdateConcurrencyException ex)
                 {
-                    throw new DbUpdateConcurrencyException();
+                    if (await _studentService.GetByIdAsync(student.Id) == null)
+                    {
+                        _logger.LogError("Student with id=" + student.Id + " not found");
+                        return NotFound();
+                    }
+                    else
+                    {
+                        _logger.LogError(ex.Message);
+                        throw;
+                    }
                 }
-                return RedirectToAction(nameof(Index));
+                if (User.IsInRole("Admin") && User.IsInRole("Manager"))
+                    return RedirectToAction(nameof(Index));
+                else return RedirectToAction("Index", "Courses");
             }
             return View(student);
         }
@@ -152,7 +187,7 @@ namespace IdentityNLayer.Controllers
                 return NotFound();
             }
 
-            StudentModel student = _mapper.Map<StudentModel>(_studentService.GetById((int)id));
+            StudentModel student = _mapper.Map<StudentModel>(await _studentService.GetByIdAsync((int)id));
             if (student == null)
             {
                 return NotFound();

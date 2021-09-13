@@ -16,25 +16,10 @@ namespace IdentityNLayer.BLL.Services
             Db = db;
         }
 
-        public IEnumerable<Teacher> GetAll()
-        {
-            return Db.Teachers.GetAll();
-        }
-        public Teacher GetById(int id)
-        { 
-            return Db.Teachers.Get(id);
-        }
-
-        public int Create(Teacher entity)
-        {
-            Db.Teachers.Create(entity);
-            Db.Save();
-            return entity.Id;
-        }
-
         public void Update(Teacher entity)
         {
-            throw new NotImplementedException();
+            Db.Teachers.Update(entity);
+            Db.Save();
         }
 
         public void Delete(int id)
@@ -49,33 +34,43 @@ namespace IdentityNLayer.BLL.Services
 
         public Teacher GetByUserId(string userId)
         {
-            return Db.Teachers.Find(tc => tc.UserId == userId).FirstOrDefault();
+            return Db.Teachers.Find(tc => tc.UserId == userId).SingleOrDefault();
         }
 
         public IEnumerable<Group> GetTeacherGroups(int teacherId)
         {
             List<Group> groups = new();
-            foreach (Enrollment en in Db.Enrollments.Find(en => en.UserID == Db.Teachers.Get(teacherId).UserId))
+
+            Task.Factory.StartNew(async () =>
             {
-                if (en.State != UserGroupStates.Aborted && en.State != UserGroupStates.Requested)
-                    groups.Add(Db.Groups.Get(en.EntityID));
-            }
+                Teacher teacher = await Db.Teachers.GetAsync(teacherId);
+                foreach (Enrollment en in Db.Enrollments.Find(en => en.UserID == teacher.UserId))
+                {
+                    if (en.State != UserGroupStates.Aborted && en.State != UserGroupStates.Requested)
+                    {
+                        Group group = await Db.Groups.GetAsync(en.EntityID);
+                        groups.Add(group);
+                    }
+                }
+            });
             return groups;
         }
 
         public int CreateAsync(Teacher entity)
         {
-            throw new NotImplementedException();
+            Db.Teachers.CreateAsync(entity);
+            Db.Save();
+            return entity.Id;
         }
 
         public Task<Teacher> GetByIdAsync(int id)
         {
-            throw new NotImplementedException();
+            return Db.Teachers.GetAsync(id);
         }
 
         public Task<IEnumerable<Teacher>> GetAllAsync()
         {
-            throw new NotImplementedException();
+            return Db.Teachers.GetAllAsync();
         }
     }
 }

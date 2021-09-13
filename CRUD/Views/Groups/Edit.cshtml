@@ -1,6 +1,7 @@
 ﻿@model IdentityNLayer.Models.GroupModel
 @inject IdentityNLayer.BLL.Interfaces.ICourseService courseService
 @inject IdentityNLayer.BLL.Interfaces.IGroupService groupService
+@inject IdentityNLayer.BLL.Interfaces.IStudentService studentService
 @using AutoMapper
 @inject IMapper mapper
 @using IdentityNLayer.Core.Entities
@@ -28,7 +29,6 @@
                 <select asp-for="Status" asp-items="@Html.GetEnumSelectList<GroupStatus>()"></select>
                 <span asp-validation-for="Status" class="text-danger"></span>
             </div>
-
             <div class="form-group">
                 <label class="control-label">TeacherRequests</label>
                 @if (groupService.GetTeachers(Model.Id) != null)
@@ -51,7 +51,8 @@
                     <input type="hidden" asp-for="@Model.StudentRequests[i].UserId" />
                     <input type="hidden" asp-for="@Model.StudentRequests[i].UserName" />
                     @Html.CheckBoxFor(m => m.StudentRequests[i].Applied)
-                    @Model.StudentRequests[i].UserName
+                    <a href="Students/Edit/@studentService.GetByUserId(Model.StudentRequests[i].UserId).Id">
+                        @Model.StudentRequests[i].UserName</a>
                 }
             </div>
             <div class="form-group">

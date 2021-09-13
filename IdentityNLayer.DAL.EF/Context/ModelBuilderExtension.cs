@@ -8,7 +8,7 @@ namespace IdentityNLayer.DAL.EF.Context
 {
     public static class ModelBuilderExtension
     {
-        public async static void Seed(this ModelBuilder modelBuilder)
+        public static void Seed(this ModelBuilder modelBuilder)
         {
             var userManager = modelBuilder.Entity<IdentityUser>();
             var roleManager = modelBuilder.Entity<IdentityRole>();
@@ -29,7 +29,7 @@ namespace IdentityNLayer.DAL.EF.Context
                 rolesIdentity.Add(roleIdentity);
             }
 
-            IdentityUser[] users =
+            List<IdentityUser> users = new()
             {
                 new IdentityUser
                     {
@@ -95,15 +95,23 @@ namespace IdentityNLayer.DAL.EF.Context
                        EmailConfirmed = true,
                        Email = "studentfifth@mail.com"
                   },*/
-            };           
-            foreach(IdentityUser user in users)
+            };
+            for (int i = 1; i < 20; ++i)
+                users.Add(new IdentityUser
+                {
+                    UserName = "guest" + i + "@mail.com",
+                    NormalizedUserName = "guest" + i + "@mail.com".ToUpper(),
+                    EmailConfirmed = true,
+                    Email = "guest" + i + "@mail.com"
+                });
+            foreach (IdentityUser user in users)
             {
+                user.PasswordHash = new PasswordHasher<IdentityUser>().HashPassword(user, "Kiselev12-");
+                userManager.HasData(user);
                 foreach (IdentityRole role in rolesIdentity)
                 {
                     if (user.UserName.Contains(role.Name.ToLower()))
                     {
-                        user.PasswordHash = new PasswordHasher<IdentityUser>().HashPassword(user, "Kiselev12-");
-                        userManager.HasData(user);
                         modelBuilder.Entity<IdentityUserRole<string>>().HasData(new IdentityUserRole<string>
                         {
                             RoleId = role.Id,
@@ -112,175 +120,202 @@ namespace IdentityNLayer.DAL.EF.Context
                     }
                 }
             }
-           
-               /* Teacher teacher1 = new Teacher
-                {
-                    Id = 1,
-                    FirstName = "Teach",
-                    LastName = "First",
-                    BirthDate = new DateTime(1985, 2, 21),
-                    UserId = users[5].Id,
-                    Bio = "Super Teacher"
-                };
-                Teacher teacher2 = new Teacher
-                {
-                    Id = 2,
-                    FirstName = "Teach",
-                    LastName = "Second",
-                    BirthDate = new DateTime(1992, 2, 21),
-                    UserId = users[6].Id,
-                    Bio = "Super Teacher"
-                };
 
-                modelBuilder.Entity<Teacher>().HasData(
-                   new Teacher[]
-                   {
-                    teacher1, teacher2
-                   }
-               );*/
-                Topic topic1 = new Topic()
+            /* Teacher teacher1 = new Teacher
+             {
+                 Id = 1,
+                 FirstName = "Teach",
+                 LastName = "First",
+                 BirthDate = new DateTime(1985, 2, 21),
+                 UserId = users[5].Id,
+                 Bio = "Super Teacher"
+             };
+             Teacher teacher2 = new Teacher
+             {
+                 Id = 2,
+                 FirstName = "Teach",
+                 LastName = "Second",
+                 BirthDate = new DateTime(1992, 2, 21),
+                 UserId = users[6].Id,
+                 Bio = "Super Teacher"
+             };
+
+             modelBuilder.Entity<Teacher>().HasData(
+                new Teacher[]
                 {
-                    Id = 1,
-                    Title = ".NET",
-                    Description = "Super MVC"
-                };
-                Topic topic2 = new Topic()
-                {
-                    Id = 2,
-                    Title = "Spring",
-                    Description = "Super Spring"
-                };
-                modelBuilder.Entity<Topic>().HasData(
-                 new Topic[]
-                 {
-                    topic1, topic2
-                 });
-                Course course1 = new Course()
-                {
-                    Id = 1,
-                    Title = "ASP",
-                    Description = "Super MVC",
-                    TopicId = topic1.Id
-                };
-                Course course2 = new Course()
-                {
-                    Id = 2,
-                    Title = "Java",
-                    Description = "Super Spring",
-                    TopicId = topic2.Id
-                };
+                 teacher1, teacher2
+                }
+            );*/
+            Topic topic1 = new Topic()
+            {
+                Id = 1,
+                Title = ".NET",
+                Description = "Super MVC",
+                CourseId = 1
+            };
+            Topic topic2 = new Topic()
+            {
+                Id = 2,
+                Title = "Spring",
+                Description = "Super Spring",
+                CourseId = 2
+            };
+            Topic topic3 = new Topic()
+            {
+                Id = 3,
+                Title = "ReactJS",
+                Description = "Super ReactJS",
+                CourseId = 3
+            };    
+            Topic topic4 = new Topic()
+            {
+                Id = 4,
+                Title = "AngularJS",
+                Description = "Super AngularJS",
+                CourseId = 3
+            };  
+            Topic topic5 = new Topic()
+            {
+                Id = 5,
+                Title = "NodeJS",
+                Description = "Super NodeJS",
+                CourseId = 3
+            };
+            modelBuilder.Entity<Topic>().HasData(
+             new Topic[]
+             {
+                    topic1, topic2, topic3, topic4, topic5
+             });
+            Course course1 = new Course()
+            {
+                Id = 1,
+                Title = "ASP",
+                Description = "Super MVC",
+            };
+            Course course2 = new Course()
+            {
+                Id = 2,
+                Title = "Java",
+                Description = "Super Spring",
+            };
+            Course course3 = new Course()
+            {
+                Id = 3,
+                Title = "JavaScript",
+                Description = "Super JavaScript",
+            };
             modelBuilder.Entity<Course>().Property(en => en.Updated).HasDefaultValueSql("getdate()");
 
             modelBuilder.Entity<Course>().HasData(
                     new Course[]
                     {
-                        course1, course2
+                        course1, course2, course3
                     });
-      /*      Group firstGroup = new Group
-            {
-                Id = 1,
-                Number = "Nemiga-1",
-                Status = GroupStatus.Started,
-                TeacherId = teacher1.Id,
-                StartDate = new DateTime(2021, 9, 21),
-                CourseId = course1.Id
-            };
-            Group secondGroup = new Group
-            {
-                Id = 2,
-                Number = "Nemiga-2",
-                Status = GroupStatus.Pending,
-                TeacherId = teacher2.Id,
-                StartDate = new DateTime(2021, 10, 21),
-                CourseId = course2.Id
-            };
-            modelBuilder.Entity<Group>().HasData(
-                new Group[]
-                {
-                    firstGroup, secondGroup
-                }
-            );*/
-       /*     Student studentFirst = new Student
-                {
-                    Id = 1,
-                    FirstName = "Oleg",
-                    LastName = "Kizz",
-                    UserId = users[2].Id,
-                    BirthDate = new DateTime(2005, 12, 11),
-                    Type = StudentType.Online
-                };
-                Student studentSecond = new Student
-                {
-                    Id = 2,
-                    FirstName = "Vova",
-                    LastName = "Braslav",
-                    UserId = users[3].Id,
-                    BirthDate = new DateTime(2006, 10, 11),
-                    Type = StudentType.Offline
-                };
-                Student studentThird = new Student
-                {
-                    Id = 3,
-                    FirstName = "Nikita",
-                    LastName = "Chebur",
-                    UserId = users[4].Id,
-                    BirthDate = new DateTime(2005, 04, 12),
-                    Type = StudentType.Mix
-                };
-                Student studentFourth = new Student
-                {
-                    Id = 4,
-                    FirstName = "Mikola",
-                    LastName = "Cool",
-                    UserId = users[7].Id,
-                    BirthDate = new DateTime(2005, 04, 12),
-                    Type = StudentType.Online
-                };
-                Student studentFifth = new Student
-                {
-                    Id = 5,
-                    FirstName = "Vovka",
-                    LastName = "Sabur",
-                    UserId = users[8].Id,
-                    BirthDate = new DateTime(2005, 04, 12),
-                    Type = StudentType.Mix
-                };
-            modelBuilder.Entity<Student>().HasData(
-                     new Student[]
+            /*      Group firstGroup = new Group
+                  {
+                      Id = 1,
+                      Number = "Nemiga-1",
+                      Status = GroupStatus.Started,
+                      TeacherId = teacher1.Id,
+                      StartDate = new DateTime(2021, 9, 21),
+                      CourseId = course1.Id
+                  };
+                  Group secondGroup = new Group
+                  {
+                      Id = 2,
+                      Number = "Nemiga-2",
+                      Status = GroupStatus.Pending,
+                      TeacherId = teacher2.Id,
+                      StartDate = new DateTime(2021, 10, 21),
+                      CourseId = course2.Id
+                  };
+                  modelBuilder.Entity<Group>().HasData(
+                      new Group[]
+                      {
+                          firstGroup, secondGroup
+                      }
+                  );*/
+            /*     Student studentFirst = new Student
                      {
-                        studentFirst, studentSecond, studentThird, studentFourth, studentFifth
+                         Id = 1,
+                         FirstName = "Oleg",
+                         LastName = "Kizz",
+                         UserId = users[2].Id,
+                         BirthDate = new DateTime(2005, 12, 11),
+                         Type = StudentType.Online
+                     };
+                     Student studentSecond = new Student
+                     {
+                         Id = 2,
+                         FirstName = "Vova",
+                         LastName = "Braslav",
+                         UserId = users[3].Id,
+                         BirthDate = new DateTime(2006, 10, 11),
+                         Type = StudentType.Offline
+                     };
+                     Student studentThird = new Student
+                     {
+                         Id = 3,
+                         FirstName = "Nikita",
+                         LastName = "Chebur",
+                         UserId = users[4].Id,
+                         BirthDate = new DateTime(2005, 04, 12),
+                         Type = StudentType.Mix
+                     };
+                     Student studentFourth = new Student
+                     {
+                         Id = 4,
+                         FirstName = "Mikola",
+                         LastName = "Cool",
+                         UserId = users[7].Id,
+                         BirthDate = new DateTime(2005, 04, 12),
+                         Type = StudentType.Online
+                     };
+                     Student studentFifth = new Student
+                     {
+                         Id = 5,
+                         FirstName = "Vovka",
+                         LastName = "Sabur",
+                         UserId = users[8].Id,
+                         BirthDate = new DateTime(2005, 04, 12),
+                         Type = StudentType.Mix
+                     };
+                 modelBuilder.Entity<Student>().HasData(
+                          new Student[]
+                          {
+                             studentFirst, studentSecond, studentThird, studentFourth, studentFifth
+                          }
+                     );*/
+            modelBuilder.Entity<Enrollment>().Property(en => en.Updated).HasDefaultValueSql("getdate()");
+            /*modelBuilder.Entity<Enrollment>().HasData(
+                new Enrollment[]
+                {
+                    new Enrollment {
+                        Id = 1,
+                        UserID = users[2].Id,
+                        GroupID = firstGroup.Id,
+                    },
+                     new Enrollment {
+                        Id = 2,
+                        UserID = users[2].Id,
+                        GroupID = secondGroup.Id,
+                     },
+                    new Enrollment {
+                        Id = 3,
+                        UserID = users[3].Id,
+                        GroupID = secondGroup.Id,
+                     },
+                    new Enrollment {
+                        Id = 4,
+                        UserID = users[3].Id,
+                        GroupID = firstGroup.Id,
+                     },
+                    new Enrollment {
+                        Id = 5,
+                        UserID = users[4].Id,
+                        GroupID = secondGroup.Id,
                      }
-                );*/
-                modelBuilder.Entity<Enrollment>().Property(en => en.Updated).HasDefaultValueSql("getdate()");
-                /*modelBuilder.Entity<Enrollment>().HasData(
-                    new Enrollment[]
-                    {
-                        new Enrollment {
-                            Id = 1,
-                            UserID = users[2].Id,
-                            GroupID = firstGroup.Id,
-                        },
-                         new Enrollment {
-                            Id = 2,
-                            UserID = users[2].Id,
-                            GroupID = secondGroup.Id,
-                         },
-                        new Enrollment {
-                            Id = 3,
-                            UserID = users[3].Id,
-                            GroupID = secondGroup.Id,
-                         },
-                        new Enrollment {
-                            Id = 4,
-                            UserID = users[3].Id,
-                            GroupID = firstGroup.Id,
-                         },
-                        new Enrollment {
-                            Id = 5,
-                            UserID = users[4].Id,
-                            GroupID = secondGroup.Id,
-                         }
-                });*/
+            });*/
         }
     }
 }

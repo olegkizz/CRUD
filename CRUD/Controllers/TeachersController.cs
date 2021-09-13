@@ -6,6 +6,8 @@ using IdentityNLayer.Models;
 using IdentityNLayer.Core.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.Extensions.Logging;
+using System.Collections.Generic;
 
 namespace IdentityNLayer.Controllers
 {
@@ -13,26 +15,27 @@ namespace IdentityNLayer.Controllers
     {
         private readonly ITeacherService _teacherService;
         private readonly IMapper _mapper;
+        private readonly ILogger _logger;
         UserManager<IdentityUser> _userManager;
         private readonly IEnrollmentService _enrollmentService;
 
         public TeachersController(ITeacherService teacherService,
             IMapper mapper,
+            ILogger<TeachersController> logger,
             UserManager<IdentityUser> userManager,
             IEnrollmentService enrollmentService)
         {
             _teacherService = teacherService;
             _mapper = mapper;
+            _logger = logger;
             _userManager = userManager;
             _enrollmentService = enrollmentService;
-
-
         }
 
         // GET: Teachers
         public async Task<IActionResult> Index()
         {
-            return View(_mapper.Map<TeacherModel>(_teacherService.GetAll()));
+            return View(_mapper.Map<IEnumerable<TeacherModel>>(await _teacherService.GetAllAsync()));
         }
         public IActionResult SendRequest(int courseId)
         {
@@ -70,34 +73,51 @@ namespace IdentityNLayer.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,FirstName,LastName,Email,LinkToProfile,Bio,BirthDate")] TeacherModel teacher, int courseId)
+        public async Task<IActionResult> Create([Bind("Id,FirstName,LastName,LinkToProfile,Bio,BirthDate")] TeacherModel teacher, int? courseId)
         {
             if (ModelState.IsValid)
             {
-                var user = await _userManager.GetUserAsync(User);
+                try
+                {
+                    var user = await _userManager.GetUserAsync(User);
 
-                IdentityResult result = await _userManager.AddToRoleAsync(user, UserRoles.Teacher.ToString());
-                teacher.User = user;
-                int newTeacherId = _teacherService.Create(_mapper.Map<Teacher>(teacher));
-                if (courseId != 0)
-                    return RedirectToAction("SendRequest", new { courseId });
-                return RedirectToAction(nameof(Index));
+                    IdentityResult result = await _userManager.AddToRoleAsync(user, UserRoles.Teacher.ToString());
+                    teacher.User = user;
+                    int newTeacherId = _teacherService.CreateAsync(_mapper.Map<Teacher>(teacher));
+                    if (courseId != null)
+                        return RedirectToAction("SendRequest", new { courseId });
+                    return RedirectToAction("Index", "Courses");
+                }
+                catch (DbUpdateConcurrencyException ex)
+                {
+                    if (await _teacherService.GetByIdAsync(teacher.Id) == null)
+                    {
+                        _logger.LogError("Teacher with id=" + teacher.Id + " not found");
+                        return NotFound();
+                    }
+                    else
+                    {
+                        _logger.LogError(ex.Message);
+                        throw;
+                    }
+                }
             }
-            else
-            {
-                throw new DbUpdateConcurrencyException();
-            }
+            return View(teacher);
         }
 
         // GET: Teachers/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
+            if ((await _teacherService.GetByIdAsync((int)id)).UserId != _userManager.GetUserId(User)
+                && !User.IsInRole("Admin") && !User.IsInRole("Manager"))
+                return LocalRedirect("Edit/" + id);
+
             if (id == null)
             {
                 return NotFound();
             }
 
-            TeacherModel teacher = _mapper.Map<TeacherModel>(_teacherService.GetById((int)id));
+            TeacherModel teacher = _mapper.Map<TeacherModel>(await _teacherService.GetByIdAsync((int)id));
             if (teacher == null)
             {
                 return NotFound();
@@ -110,8 +130,12 @@ namespace IdentityNLayer.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,FirstName,LastName,LinkToProfile,Bio")] TeacherModel teacher)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,FirstName,LastName,LinkToProfile,Bio,BirthDate,UserId")] TeacherModel teacher)
         {
+            if ((await _teacherService.GetByIdAsync(id)).UserId != _userManager.GetUserId(User)
+                && !User.IsInRole("Admin") && !User.IsInRole("Manager"))
+                return BadRequest();
+
             if (id != teacher.Id)
             {
                 return NotFound();
@@ -123,23 +147,27 @@ namespace IdentityNLayer.Controllers
                 {
                     _teacherService.Update(_mapper.Map<Teacher>(teacher));
                 }
-                catch (DbUpdateConcurrencyException)
+                catch (DbUpdateConcurrencyException ex)
                 {
-                    if (!TeacherExists(teacher.Id))
+                    if (await _teacherService.GetByIdAsync(teacher.Id) == null)
                     {
+                        _logger.LogError("Teacher with id=" + teacher.Id + " not found");
                         return NotFound();
                     }
                     else
                     {
+                        _logger.LogError(ex.Message);
                         throw;
                     }
                 }
-                return RedirectToAction(nameof(Index));
+                if (User.IsInRole("Admin") && User.IsInRole("Manager"))
+                    return RedirectToAction(nameof(Index));
+                else return RedirectToAction("Index", "Courses");
             }
             return View();
         }
 
-        // GET: Contacts/Delete/5
+        // GET: Teachers/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -147,7 +175,7 @@ namespace IdentityNLayer.Controllers
                 return NotFound();
             }
 
-            TeacherModel teacher = _mapper.Map<TeacherModel>(_teacherService.GetById((int)id));
+            TeacherModel teacher = _mapper.Map<TeacherModel>(await _teacherService.GetByIdAsync((int)id));
             if (teacher == null)
             {
                 return NotFound();

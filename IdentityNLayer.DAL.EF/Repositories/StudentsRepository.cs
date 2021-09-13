@@ -1,11 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using IdentityNLayer.DAL.EF.Context;
 using IdentityNLayer.Core.Entities;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.AspNetCore.Identity;
+using System.Linq;
 using System.Threading.Tasks;
+
+
 
 namespace IdentityNLayer.DAL.EF.Repositories
 {
@@ -17,48 +18,21 @@ namespace IdentityNLayer.DAL.EF.Repositories
         {
             _context = context;
         }        
-        public IEnumerable<Student> GetAll()
-        {
-            return _context.Students
-                .ToList();
-        }
-
-        public Student Get(int id)
-        {
-            return _context.Students
-                .Include(s => s.User)
-                .Where(s => s.Id == id)
-                .First();
-        }
-
         public IEnumerable<Student> Find(Func<Student, bool> predicate)
         {
-            return _context.Students.Where(predicate).ToList();
-        }
-
-        public void Create(Student item)
-        {
-            _context.Students.Add(item);
+            return _context.Students
+                .AsNoTracking()
+                .Where(predicate).ToList();
         }
 
         public void Update(Student item)
         {
-            _context.Entry(item).State = EntityState.Modified;
-            _context.Students.Update(item);
-            if (item.User != null)
-            {
-                IdentityUser user = _context.Users.Single(us => us.Id == item.UserId);
+            _context.Students.Attach(item);
             
-                user.Email = item.User.Email;
-                user.NormalizedEmail = item.User.Email.ToUpper();
-                user.PhoneNumber = item.User.PhoneNumber;
-  /*              _context.Entry(item.User).Property("Email").IsModified = true;
-                _context.Entry(item.User).Property("NormalizedEmail").IsModified = true;
-                _context.Entry(item.User).Property("PhoneNumber").IsModified = true;*/
-                /*_context.Attach(user);*/
-                /* item.User.NormalizedEmail = item.User.Email.ToUpper();*/
-                _context.Users.Update(user);
-            }
+            _context.Entry(item).Property(e => e.FirstName).IsModified = true;
+            _context.Entry(item).Property(e => e.LastName).IsModified = true;
+            _context.Entry(item).Property(e => e.BirthDate).IsModified = true;
+            _context.Entry(item).Property(e => e.Type).IsModified = true;
         }
 
         public void Delete(int id)
@@ -68,24 +42,35 @@ namespace IdentityNLayer.DAL.EF.Repositories
                 _context.Students.Remove(student);
         }
 
-        public IEnumerable<Student> FindAsync(Func<Student, bool> predicate)
+        public async Task<IEnumerable<Student>> FindAsync(Func<Student, bool> predicate)
         {
-            throw new NotImplementedException();
+            return await _context.Students
+                .AsNoTracking()
+                .Where(predicate)
+                .AsQueryable()
+                .ToListAsync();
         }
 
         public void CreateAsync(Student item)
         {
-            throw new NotImplementedException();
+            _context.Students.AddAsync(item);
         }
 
-        public Task<Student> GetAsync(int id)
+        public async Task<Student> GetAsync(int id)
         {
-            throw new NotImplementedException();
+            return await _context.Students
+              .Include(s => s.User)
+              .Where(s => s.Id == id)
+              .AsNoTracking()
+              .AsQueryable()
+              .SingleOrDefaultAsync();
         }
 
-        public Task<IEnumerable<Student>> GetAllAsync()
+        public async Task<IEnumerable<Student>> GetAllAsync()
         {
-            throw new NotImplementedException();
+            return await _context.Students
+                .AsNoTracking()
+                .ToListAsync();
         }
     }
 }

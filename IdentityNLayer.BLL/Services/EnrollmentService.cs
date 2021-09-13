@@ -4,8 +4,7 @@ using IdentityNLayer.DAL.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+
 
 namespace IdentityNLayer.BLL.Services
 {
@@ -16,7 +15,6 @@ namespace IdentityNLayer.BLL.Services
         public EnrollmentService(IUnitOfWork db)
         {
             Db = db;
-
         }
         public void Enrol(string userId, int groupId, UserRoles role, bool confirmed = true)
         {
@@ -31,7 +29,7 @@ namespace IdentityNLayer.BLL.Services
                 Db.Enrollments.Update(enrollment);
             }
             else if (enrollment == null)
-                Db.Enrollments.Create(new Enrollment
+                Db.Enrollments.CreateAsync(new Enrollment
                 {
                     UserID = userId,
                     EntityID = groupId,
@@ -45,17 +43,13 @@ namespace IdentityNLayer.BLL.Services
         public void UnEnrol(string userId, int groupdId)
         {
             Enrollment enrollment =
-             Db.Enrollments.Find(en => en.UserID == userId && en.EntityID == groupdId).FirstOrDefault();
+             Db.Enrollments.Find(en => en.UserID == userId && en.EntityID == groupdId && en.State == UserGroupStates.Applied).FirstOrDefault();
             if (enrollment != null)
             {
                 enrollment.State = UserGroupStates.Aborted;
                 Db.Enrollments.Update(enrollment);
             }
             Db.Save();
-        }
-        public IEnumerable<Enrollment> Get(string userId)
-        {
-            return Db.Enrollments.Find(en => en.UserID == userId);
         }
     }
 }

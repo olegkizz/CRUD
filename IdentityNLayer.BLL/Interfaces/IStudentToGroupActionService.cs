@@ -1,11 +1,12 @@
 ﻿using IdentityNLayer.Core.Entities;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace IdentityNLayer.BLL.Interfaces
 {
     public interface IStudentToGroupActionService
     {
-        public IEnumerable<StudentToGroupAction> GetAll();
+        public Task<IEnumerable<StudentToGroupAction>> GetAllAsync();
 
         public void Apply(int studentId, int GroupId);
         public void Grade(int studentId, int GroupId, Grade grade);

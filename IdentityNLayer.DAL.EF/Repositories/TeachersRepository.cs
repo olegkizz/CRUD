@@ -1,10 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using IdentityNLayer.DAL.EF.Context;
 using IdentityNLayer.Core.Entities;
-using System.Data.Entity;
+using Microsoft.EntityFrameworkCore;
+using System.Linq;
 using System.Threading.Tasks;
+
 
 namespace IdentityNLayer.DAL.EF.Repositories
 {
@@ -16,32 +17,23 @@ namespace IdentityNLayer.DAL.EF.Repositories
         {
             _context = context;
         }
-        public IEnumerable<Teacher> GetAll()
-        {
-            return _context.Teachers.ToList();
-        }
-
-        public Teacher Get(int id)
-        {
-            return _context.Teachers
-                .Include(s => s.User)
-                .Where(s => s.Id == id)
-                .First();
-        }
 
         public IEnumerable<Teacher> Find(Func<Teacher, bool> predicate)
         {
-            return _context.Teachers.Where(predicate).ToList();
-        }
-
-        public void Create(Teacher item)
-        {
-            _context.Teachers.Add(item);
+            return _context.Teachers
+                .Where(predicate)
+                .ToList();
         }
 
         public void Update(Teacher item)
         {
-            throw new NotImplementedException();
+            _context.Teachers.Attach(item);
+
+            _context.Entry(item).Property(e => e.FirstName).IsModified = true;
+            _context.Entry(item).Property(e => e.LastName).IsModified = true;
+            _context.Entry(item).Property(e => e.BirthDate).IsModified = true;
+            _context.Entry(item).Property(e => e.Bio).IsModified = true;
+            _context.Entry(item).Property(e => e.LinkToProfile).IsModified = true;
         }
 
         public void Delete(int id)
@@ -49,24 +41,30 @@ namespace IdentityNLayer.DAL.EF.Repositories
             throw new NotImplementedException();
         }
 
-        public IEnumerable<Teacher> FindAsync(Func<Teacher, bool> predicate)
+        public Task<IEnumerable<Teacher>> FindAsync(Func<Teacher, bool> predicate)
         {
             throw new NotImplementedException();
         }
 
-        public void CreateAsync(Teacher item)
+        public async void CreateAsync(Teacher item)
         {
-            throw new NotImplementedException();
+            await _context.Teachers.AddAsync(item);
         }
 
-        public Task<Teacher> GetAsync(int id)
+        public async Task<Teacher> GetAsync(int id)
         {
-            throw new NotImplementedException();
+            return await _context.Teachers
+               .Include(s => s.User)
+               .Where(s => s.Id == id)
+               .AsNoTracking()
+               .SingleAsync();
         }
 
-        public Task<IEnumerable<Teacher>> GetAllAsync()
+        public async Task<IEnumerable<Teacher>> GetAllAsync()
         {
-            throw new NotImplementedException();
+            return await _context.Teachers
+                .AsNoTracking()
+                .ToListAsync();
         }
     }
 }

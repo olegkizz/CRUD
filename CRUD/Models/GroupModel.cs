@@ -17,7 +17,7 @@ namespace IdentityNLayer.Models
         public int CourseId { get; set; }
         public Course Course { get; set; }
         public DateTime? StartDate { get; set; }
-      
+
         public List<StudentRequestsModel> StudentRequests { get; set; }
         public void SetStudents(IEnumerable<StudentModel> students, IGroupService _groupService)
         {
@@ -25,12 +25,13 @@ namespace IdentityNLayer.Models
             if (students != null)
                 foreach (StudentModel student in students)
                 {
-                    studentRequests.Add(new StudentRequestsModel()
-                    {
-                        UserName = student.Name,
-                        UserId = student.UserId,
-                        Applied = _groupService.HasStudent(Id, student.UserId) ? true : false
-                    });
+                    if (student != null)
+                        studentRequests.Add(new StudentRequestsModel()
+                        {
+                            UserName = student.Name,
+                            UserId = student.UserId,
+                            Applied = _groupService.HasStudent(Id, student.UserId) ? true : false
+                        });
                 }
             StudentRequests = studentRequests;
         }
