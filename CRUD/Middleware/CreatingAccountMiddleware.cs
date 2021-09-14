@@ -1,4 +1,5 @@
 ﻿using IdentityNLayer.BLL.Interfaces;
+using IdentityNLayer.Core.Entities;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using System;
@@ -20,22 +21,22 @@ namespace IdentityNLayer.Middleware
         }
         public async Task InvokeAsync(HttpContext context, 
             IStudentService studentService,
-            UserManager<IdentityUser> userManager,
+            UserManager<Person> userManager,
             ITeacherService teacherService)
         { 
-            var courseId = context.Request.Query["courseId"];
+            var courseId = context.Request.RouteValues.Where(rv => rv.Key == "id")?.SingleOrDefault().Value;
             
             if (context.Request.HasFormContentType)
             {
                 if (context.Request.Method.ToLower() == "post" && context.Request.Form["request"] == "Yes")
                 {
-                    if (context.Request.Path == "/Students/SendRequest")
+                    if (context.Request.Path.Value.Contains("/Students/SendRequest"))
                     {
                         if (!studentService.HasAccount(userManager.GetUserAsync(context.User).Result.Id))
                             context.Response.Redirect("/Students/Create?courseId=" + courseId);
                         else await _next.Invoke(context);
                     }
-                    else if (context.Request.Path == "/Teachers/SendRequest")
+                    else if (context.Request.Path.Value.Contains("/Teachers/SendRequest"))
                     {
                         if (!teacherService.HasAccount(userManager.GetUserAsync(context.User).Result.Id))
                             context.Response.Redirect("/Teachers/Create?courseId=" + courseId);

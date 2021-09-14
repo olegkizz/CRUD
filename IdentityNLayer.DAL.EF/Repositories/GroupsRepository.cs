@@ -19,10 +19,12 @@ namespace IdentityNLayer.DAL.EF.Repositories
         public IEnumerable<Group> Find(Func<Group, bool> predicate)
         {
             return _context.Groups
-                .Include(gr => gr.Teacher)
-                .Include(gr => gr.Enrollments)
-                .AsNoTracking()
-                .Where(predicate).ToList();
+                  .Include(gr => gr.Enrollments)
+                  .Include(gr => gr.Teacher)
+                  .ThenInclude(tc => tc.User)
+                  .AsNoTracking()
+                  .Where(predicate)
+                  .ToList();
         }
 
         public void Update(Group item)
@@ -39,8 +41,9 @@ namespace IdentityNLayer.DAL.EF.Repositories
         public async Task<IEnumerable<Group>> FindAsync(Func<Group, bool> predicate)
         {
             return await _context.Groups
-              .Include(gr => gr.Teacher)
               .Include(gr => gr.Enrollments)
+              .Include(gr => gr.Teacher)
+              .ThenInclude(tc => tc.User)
               .AsNoTracking()
               .Where(predicate)
               .AsQueryable()
@@ -50,7 +53,6 @@ namespace IdentityNLayer.DAL.EF.Repositories
         public async void CreateAsync(Group item)
         {
             await _context.Groups.AddAsync(item);
-
         }
 
         public Task<Group> GetAsync(int id)
@@ -58,6 +60,7 @@ namespace IdentityNLayer.DAL.EF.Repositories
             return _context.Groups
                .Include(g => g.Enrollments)
                .Include(g => g.Teacher)
+               .ThenInclude(tc => tc.User)
                .AsNoTracking()
                .Where(g => g.Id == id)
                .SingleAsync();
@@ -68,6 +71,7 @@ namespace IdentityNLayer.DAL.EF.Repositories
             return await _context.Groups
                 .Include(g => g.Enrollments)
                 .Include(g => g.Teacher)
+                .ThenInclude(tc => tc.User)
                 .AsNoTracking()
                 .ToListAsync();
         }

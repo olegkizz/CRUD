@@ -10,7 +10,7 @@ namespace IdentityNLayer.DAL.EF.Context
     {
         public static void Seed(this ModelBuilder modelBuilder)
         {
-            var userManager = modelBuilder.Entity<IdentityUser>();
+            var userManager = modelBuilder.Entity<Person>();
             var roleManager = modelBuilder.Entity<IdentityRole>();
             string[] roles = { "Admin", "Manager",
                 "Student", "Teacher"
@@ -28,23 +28,29 @@ namespace IdentityNLayer.DAL.EF.Context
                 roleManager.HasData(roleIdentity);
                 rolesIdentity.Add(roleIdentity);
             }
-
-            List<IdentityUser> users = new()
+      
+            List<Person> users = new()
             {
-                new IdentityUser
-                    {
+                new Person
+                {
                         UserName = "admin@admin.com",
                         NormalizedUserName = "admin@admin.com".ToUpper(),
                         EmailConfirmed = true,
-                        Email = "admin@admin.com"
-                    },
-                new IdentityUser
-                    {
+                        Email = "admin@admin.com",
+                        BirthDate = new DateTime(1998, 9, 21),
+                        FirstName = "admin",
+                        LastName = "admin"
+                },
+                new Person
+                {
                         UserName = "manager@manager.com",
                         NormalizedUserName = "manager@manager.com".ToUpper(),
                         EmailConfirmed = true,
-                        Email = "manager@manager.com"
-                    },
+                        Email = "manager@manager.com",
+                        BirthDate = new DateTime(2000, 9, 21),
+                    FirstName = "manager",
+                    LastName = "manager"
+                },
                /* new IdentityUser
                     {
                         UserName = "studentfirst@mail.com",
@@ -97,16 +103,19 @@ namespace IdentityNLayer.DAL.EF.Context
                   },*/
             };
             for (int i = 1; i < 20; ++i)
-                users.Add(new IdentityUser
+                users.Add(new Person
                 {
                     UserName = "guest" + i + "@mail.com",
                     NormalizedUserName = "guest" + i + "@mail.com".ToUpper(),
                     EmailConfirmed = true,
-                    Email = "guest" + i + "@mail.com"
+                    Email = "guest" + i + "@mail.com",
+                    BirthDate = new DateTime(1999, 3, 22),
+                    FirstName = "guest" + i,
+                    LastName = "standart"
                 });
-            foreach (IdentityUser user in users)
+            foreach (Person user in users)
             {
-                user.PasswordHash = new PasswordHasher<IdentityUser>().HashPassword(user, "Kiselev12-");
+                user.PasswordHash = new PasswordHasher<Person>().HashPassword(user, "Kiselev12-");
                 userManager.HasData(user);
                 foreach (IdentityRole role in rolesIdentity)
                 {

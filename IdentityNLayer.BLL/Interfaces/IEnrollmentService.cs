@@ -5,7 +5,7 @@ namespace IdentityNLayer.BLL.Interfaces
 {
     public interface IEnrollmentService
     {
-        public void Enrol(string userId, int groupdId, UserRoles role, bool confirmed = true);
-        public void UnEnrol(string userId, int groupdId);
+        public void Enrol(string userId, int entityId, UserRoles role, bool confirmed = true);
+        public void UnEnrol(string userId, int entityId);
     }
 }

@@ -16,13 +16,13 @@ namespace IdentityNLayer.Controllers
         private readonly ITeacherService _teacherService;
         private readonly IMapper _mapper;
         private readonly ILogger _logger;
-        UserManager<IdentityUser> _userManager;
+        UserManager<Person> _userManager;
         private readonly IEnrollmentService _enrollmentService;
 
         public TeachersController(ITeacherService teacherService,
             IMapper mapper,
             ILogger<TeachersController> logger,
-            UserManager<IdentityUser> userManager,
+            UserManager<Person> userManager,
             IEnrollmentService enrollmentService)
         {
             _teacherService = teacherService;
@@ -46,6 +46,8 @@ namespace IdentityNLayer.Controllers
         {
             if (request == "Yes")
             {
+                if (!_teacherService.HasAccount(_userManager.GetUserId(User)))
+                    return RedirectToAction("Create", new { courseId });
                 _enrollmentService.Enrol(_userManager.GetUserId(User), courseId, UserRoles.Teacher, false);
             }
 
@@ -59,7 +61,7 @@ namespace IdentityNLayer.Controllers
             {
                 return NotFound();
             }
-            return View();
+            return View(await _teacherService.GetByIdAsync((int)id));
         }
 
         // GET: Contacts/Create
@@ -83,10 +85,10 @@ namespace IdentityNLayer.Controllers
 
                     IdentityResult result = await _userManager.AddToRoleAsync(user, UserRoles.Teacher.ToString());
                     teacher.User = user;
-                    int newTeacherId = _teacherService.CreateAsync(_mapper.Map<Teacher>(teacher));
+                    int newTeacherId = await _teacherService.CreateAsync(_mapper.Map<Teacher>(teacher));
                     if (courseId != null)
                         return RedirectToAction("SendRequest", new { courseId });
-                    return RedirectToAction("Index", "Courses");
+                    return RedirectToAction("Index", "Courses", new { area = "Courses" });
                 }
                 catch (DbUpdateConcurrencyException ex)
                 {
@@ -108,9 +110,24 @@ namespace IdentityNLayer.Controllers
         // GET: Teachers/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
-            if ((await _teacherService.GetByIdAsync((int)id)).UserId != _userManager.GetUserId(User)
+            if (id == null)
+            {
+                if (!User.IsInRole("Admin") && !User.IsInRole("Manager"))
+                    id = _teacherService.GetByUserId(_userManager.GetUserId(User)).Id;
+                else return BadRequest();
+            }
+            else
+            {
+                if (!User.IsInRole("Admin") && !User.IsInRole("Manager"))
+                {
+                    int currentStudentId = _teacherService.GetByUserId(_userManager.GetUserId(User)).Id;
+                    if (id != currentStudentId)
+                        return RedirectToAction("Edit", new { currentStudentId });
+                }
+            }
+  /*          if ((await _teacherService.GetByIdAsync((int)id)).UserId != _userManager.GetUserId(User)
                 && !User.IsInRole("Admin") && !User.IsInRole("Manager"))
-                return LocalRedirect("Edit/" + id);
+                return LocalRedirect("Edit/" + id);*/
 
             if (id == null)
             {
@@ -136,10 +153,10 @@ namespace IdentityNLayer.Controllers
                 && !User.IsInRole("Admin") && !User.IsInRole("Manager"))
                 return BadRequest();
 
-            if (id != teacher.Id)
+         /*   if (id != teacher.Id)
             {
                 return NotFound();
-            }
+            }*/
 
             if (ModelState.IsValid)
             {
@@ -149,7 +166,7 @@ namespace IdentityNLayer.Controllers
                 }
                 catch (DbUpdateConcurrencyException ex)
                 {
-                    if (await _teacherService.GetByIdAsync(teacher.Id) == null)
+                    /*if (await _teacherService.GetByIdAsync(teacher.Id) == null)
                     {
                         _logger.LogError("Teacher with id=" + teacher.Id + " not found");
                         return NotFound();
@@ -158,7 +175,7 @@ namespace IdentityNLayer.Controllers
                     {
                         _logger.LogError(ex.Message);
                         throw;
-                    }
+                    }*/
                 }
                 if (User.IsInRole("Admin") && User.IsInRole("Manager"))
                     return RedirectToAction(nameof(Index));

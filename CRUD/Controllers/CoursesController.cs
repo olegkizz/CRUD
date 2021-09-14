@@ -22,7 +22,7 @@ namespace IdentityNLayer.Controllers
         private readonly IStudentService _studentService;
         private readonly IMapper _mapper;
         private readonly ILogger _logger;
-        private readonly UserManager<IdentityUser> _userManager;
+        private readonly UserManager<Person> _userManager;
         private readonly IEnrollmentService _enrollmentService;
 
         public CoursesController(ApplicationContext context, 
@@ -30,7 +30,7 @@ namespace IdentityNLayer.Controllers
             IStudentService studentService, 
             IMapper mapper,
             ILogger<CoursesController> logger,
-            UserManager<IdentityUser> userManager,
+            UserManager<Person> userManager,
             IEnrollmentService enrollmentService)
         {
             _courseService = courseService;

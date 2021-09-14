@@ -7,7 +7,7 @@ using System.Collections.Generic;
 
 namespace IdentityNLayer.DAL.EF.Context
 {
-    public class ApplicationContext : IdentityDbContext<IdentityUser>
+    public class ApplicationContext : IdentityDbContext<Person>
     {
 
         public ApplicationContext()
@@ -19,8 +19,8 @@ namespace IdentityNLayer.DAL.EF.Context
         {
         }
         public DbSet<Student> Students { get; set; }
-        public DbSet<Group> Groups { get; set; }
         public DbSet<Teacher> Teachers { get; set; }
+        public DbSet<Group> Groups { get; set; }
         public DbSet<StudentToGroupAction> StudentToGroupActions { get; set; }
         public DbSet<Enrollment> Enrollments { get; set; }
         public DbSet<Course> Courses { get; set; }

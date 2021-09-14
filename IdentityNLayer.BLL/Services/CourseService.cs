@@ -71,11 +71,11 @@ namespace IdentityNLayer.BLL.Services
             return groups;
         }
 
-        public int CreateAsync(Course entity)
+        public Task<int> CreateAsync(Course entity)
         {
             Db.Courses.CreateAsync(entity);
             Db.Save();
-            return entity.Id;
+            return Task.FromResult(entity.Id);
         }
 
         public Task<Course> GetByIdAsync(int id)

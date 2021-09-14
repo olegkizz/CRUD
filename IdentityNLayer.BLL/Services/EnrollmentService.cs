@@ -2,7 +2,6 @@
 using IdentityNLayer.Core.Entities;
 using IdentityNLayer.DAL.Interfaces;
 using System;
-using System.Collections.Generic;
 using System.Linq;
 
 
@@ -20,11 +19,12 @@ namespace IdentityNLayer.BLL.Services
         //entityId - CourseId or GroupId, depends on #confirmed(true - groupId, false - courseId)
         public void Enrol(string userId, int entityId, UserRoles role, bool confirmed = true)
         {
-            Group group = Db.Groups.Find(gr => gr.Id == entityId).FirstOrDefault();
+            Group group = Db.Groups.Find(gr => gr.Id == entityId)?.SingleOrDefault();
 
             Enrollment enrollment =
-              Db.Enrollments.Find(en => en.UserID == userId && en.EntityID == (confirmed ? entityId : group?.CourseId)
-              && en.Role == role).FirstOrDefault();
+              Db.Enrollments.Find(en => en.UserID == userId && en.EntityID == (confirmed ? group?.CourseId : entityId)
+              && en.Role == role)?.SingleOrDefault();
+         
             if (enrollment?.State == UserGroupStates.Aborted || enrollment?.State == UserGroupStates.Requested)
             {
                 enrollment.State = confirmed ? UserGroupStates.Applied : UserGroupStates.Requested;
@@ -46,7 +46,7 @@ namespace IdentityNLayer.BLL.Services
         public void UnEnrol(string userId, int groupdId)
         {
             Enrollment enrollment =
-             Db.Enrollments.Find(en => en.UserID == userId && en.EntityID == groupdId && en.State == UserGroupStates.Applied).FirstOrDefault();
+             Db.Enrollments.Find(en => en.UserID == userId && en.EntityID == groupdId && en.State == UserGroupStates.Applied)?.SingleOrDefault();
             if (enrollment != null)
             {
                 enrollment.State = UserGroupStates.Aborted;

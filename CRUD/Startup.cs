@@ -38,7 +38,7 @@ namespace IdentityNLayer
                     Configuration.GetConnectionString("DefaultConnection")));
 
        
-            services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
+            services.AddDefaultIdentity<Person>(options => options.SignIn.RequireConfirmedAccount = true)
                 .AddRoles<IdentityRole>()
                 .AddEntityFrameworkStores<ApplicationContext>();
             services.AddControllersWithViews(config =>
@@ -126,7 +126,7 @@ namespace IdentityNLayer
             
             app.UseAuthentication();
             app.UseAuthorization();
-            app.UseMiddleware<CreatingAccountMiddleware>();
+            /*app.UseMiddleware<CreatingAccountMiddleware>();*/
 
             app.UseEndpoints(endpoints =>
             {

@@ -23,14 +23,14 @@ namespace IdentityNLayer.Controllers
         private readonly ITeacherService _teacherService;
         private readonly IMapper _mapper;
         private readonly ILogger _logger;
-        private readonly UserManager<IdentityUser> _userManager;
+        private readonly UserManager<Person> _userManager;
 
 
         public GroupsController(IGroupService groupService, IMapper mapper,
             IEnrollmentService enrollmentService,
             ICourseService courseService,
             ITeacherService teacherService,
-            UserManager<IdentityUser> userManager,
+            UserManager<Person> userManager,
             ILogger<CoursesController> logger)
         {
             _groupService = groupService;
@@ -45,7 +45,7 @@ namespace IdentityNLayer.Controllers
         // GET: Groups
         public async Task<IActionResult> Index()
         {
-            if(User.IsInRole("Admin") || User.IsInRole("Manager"))
+            if (User.IsInRole("Admin") || User.IsInRole("Manager"))
                 return View(_mapper.Map<IEnumerable<GroupModel>>(await _groupService.GetAllAsync()));
             return View(_mapper.Map<IEnumerable<GroupModel>>(await _groupService.GetGroupsByUserIdAsync(_userManager.GetUserId(User))));
         }
@@ -81,8 +81,8 @@ namespace IdentityNLayer.Controllers
         {
             if (ModelState.IsValid)
             {
-                int groupId = _groupService.CreateAsync(_mapper.Map<Group>(group));
-                if(group.StudentRequests != null)
+                int groupId = await _groupService.CreateAsync(_mapper.Map<Group>(group));
+                if (group.StudentRequests != null)
                     foreach (StudentRequestsModel studentRequest in group.StudentRequests)
                     {
                         if (studentRequest.Applied)
@@ -105,8 +105,9 @@ namespace IdentityNLayer.Controllers
             }
 
             GroupModel group = _mapper.Map<GroupModel>(await _groupService.GetByIdAsync((int)id));
-            group.SetStudents(_mapper.Map<IEnumerable<StudentModel>>(_groupService.GetStudents(group.Id)), _groupService);
-
+            IEnumerable<Student> students = _groupService.GetStudents(group.Id);
+            group.SetStudents(_mapper.Map<IEnumerable<StudentModel>>(students), _groupService);
+            ViewBag.CountStudentRequest = students.Count();
             if (group == null)
             {
                 return NotFound();
@@ -136,24 +137,29 @@ namespace IdentityNLayer.Controllers
                     _groupService.Update(_mapper.Map<Group>(group));
 
                     if (group.StudentRequests != null) foreach (StudentRequestsModel studentRequest in group.StudentRequests)
-                    {
-                        if (studentRequest.Applied)
-                            _enrollmentService.Enrol(studentRequest.UserId, group.Id, UserRoles.Student);
-                        else _enrollmentService.UnEnrol(studentRequest.UserId, group.Id);
-                    }
+                        {
+                            if (studentRequest.Applied)
+                            {
+                                if (!_groupService.HasStudent(group.Id, studentRequest.UserId))
+                                    _enrollmentService.Enrol(studentRequest.UserId, group.Id, UserRoles.Student);
+                            }
+                            else _enrollmentService.UnEnrol(studentRequest.UserId, group.Id);
+                        }
                     if (group.TeacherId != null)
                     {
                         Teacher newTeacher = await _teacherService.GetByIdAsync((int)group.TeacherId);
-                        
+
                         if (currentTeacher != null)
                         {
-                            if(currentTeacher.Id != group.TeacherId)
+                            if (currentTeacher.Id != group.TeacherId)
                             {
                                 _enrollmentService.UnEnrol(currentTeacher.UserId, group.Id);
                                 _enrollmentService.Enrol(newTeacher.UserId, group.Id, UserRoles.Teacher);
                             }
-                        } else _enrollmentService.Enrol(newTeacher.UserId, group.Id, UserRoles.Teacher);
-                    } else if(currentTeacher != null)
+                        }
+                        else _enrollmentService.Enrol(newTeacher.UserId, group.Id, UserRoles.Teacher);
+                    }
+                    else if (currentTeacher != null)
                         _enrollmentService.UnEnrol(currentTeacher.UserId, group.Id);
 
                     return RedirectToAction(nameof(Index));
@@ -162,7 +168,7 @@ namespace IdentityNLayer.Controllers
                 {
                     if (!GroupExists(group.Id))
                     {
-                        _logger.LogError("Group with id=" +  group.Id + " not found");
+                        _logger.LogError("Group with id=" + group.Id + " not found");
                         return NotFound();
                     }
                     else

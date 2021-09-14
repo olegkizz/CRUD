@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace IdentityNLayer.DAL.EF.Migrations
 {
-    public partial class FirstData : Migration
+    public partial class FirstDAta : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -26,6 +26,9 @@ namespace IdentityNLayer.DAL.EF.Migrations
                 columns: table => new
                 {
                     Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    FirstName = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    LastName = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    BirthDate = table.Column<DateTime>(type: "datetime2", nullable: true),
                     UserName = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
                     NormalizedUserName = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
                     Email = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
@@ -177,9 +180,6 @@ namespace IdentityNLayer.DAL.EF.Migrations
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Type = table.Column<int>(type: "int", nullable: false),
-                    FirstName = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    LastName = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    BirthDate = table.Column<DateTime>(type: "datetime2", nullable: true),
                     UserId = table.Column<string>(type: "nvarchar(450)", nullable: true)
                 },
                 constraints: table =>
@@ -201,9 +201,6 @@ namespace IdentityNLayer.DAL.EF.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Bio = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     LinkToProfile = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    FirstName = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    LastName = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    BirthDate = table.Column<DateTime>(type: "datetime2", nullable: true),
                     UserId = table.Column<string>(type: "nvarchar(450)", nullable: true)
                 },
                 constraints: table =>
@@ -337,38 +334,38 @@ namespace IdentityNLayer.DAL.EF.Migrations
                 columns: new[] { "Id", "ConcurrencyStamp", "Name", "NormalizedName" },
                 values: new object[,]
                 {
-                    { "f974cfc9-615e-40ca-9be9-7c9b73ee80be", "0845952e-d55d-4f0e-894d-0044fb11ead4", "Admin", "ADMIN" },
-                    { "9139cbbb-2459-4edc-b1e7-5066480bc2f4", "5393bf86-6f1d-42b5-aecd-fd8dd286b561", "Manager", "MANAGER" },
-                    { "b670ed94-2ce7-4759-8e6b-afb0f705b48c", "715de2cd-3e39-4216-b52c-a94c4896f4ee", "Student", "STUDENT" },
-                    { "90066eaa-99a5-4968-be1f-b423c3a070e6", "ec7d6dfd-4c69-4422-9ec4-3dac567c2e8e", "Teacher", "TEACHER" }
+                    { "6af2d20b-b113-45d0-9e82-66648006fb5c", "c767bc93-a07c-475f-9fd0-649b0897029e", "Teacher", "TEACHER" },
+                    { "62df2641-3ce0-4b61-b5eb-5a64c0bc465e", "0df4f9b8-021a-4966-8321-96931c7d2472", "Manager", "MANAGER" },
+                    { "1a850231-a336-4407-b177-ca71d4267e33", "460b7740-f546-40f7-823f-6a23670fc331", "Admin", "ADMIN" },
+                    { "b3cdb649-ed9c-40f0-b96a-810a034b1d1f", "8cbdea32-6d11-4a7a-afb3-1758b0a1c3d1", "Student", "STUDENT" }
                 });
 
             migrationBuilder.InsertData(
                 table: "AspNetUsers",
-                columns: new[] { "Id", "AccessFailedCount", "ConcurrencyStamp", "Email", "EmailConfirmed", "LockoutEnabled", "LockoutEnd", "NormalizedEmail", "NormalizedUserName", "PasswordHash", "PhoneNumber", "PhoneNumberConfirmed", "SecurityStamp", "TwoFactorEnabled", "UserName" },
+                columns: new[] { "Id", "AccessFailedCount", "BirthDate", "ConcurrencyStamp", "Email", "EmailConfirmed", "FirstName", "LastName", "LockoutEnabled", "LockoutEnd", "NormalizedEmail", "NormalizedUserName", "PasswordHash", "PhoneNumber", "PhoneNumberConfirmed", "SecurityStamp", "TwoFactorEnabled", "UserName" },
                 values: new object[,]
                 {
-                    { "a4e3680b-6791-45ed-b2ec-8dbee81577a5", 0, "8f1e315f-ce48-4103-b2a8-fecd70d26f1f", "guest5@mail.com", true, false, null, null, "guest5@MAIL.COM", "AQAAAAEAACcQAAAAEI2pru7JkuBdc7zfD2LZwKBO8JpJw2EhwAuN22W7Mj1mfWEbiRQMU5Huof7KMxkNNg==", null, false, "2e326771-b0d3-4e98-8a01-33acc71e5331", false, "guest5@mail.com" },
-                    { "891acd0b-40e2-4b44-aa86-e33b964ce923", 0, "99c03f6d-4451-48b8-8348-d09fbb2ef734", "guest17@mail.com", true, false, null, null, "guest17@MAIL.COM", "AQAAAAEAACcQAAAAEKDUgqNU9FdP1HWEkK+kTxUuvkbSEg8XBaiHKORC+HdkR2wSkhNe8m8SQTT08PcABQ==", null, false, "41767906-78bd-4dfd-8aa7-2f9578366b13", false, "guest17@mail.com" },
-                    { "36b4c48b-18cd-46e3-b1c2-e3cb66acc40b", 0, "0ffa9b86-596f-4053-9ed5-30f4f23448b9", "guest16@mail.com", true, false, null, null, "guest16@MAIL.COM", "AQAAAAEAACcQAAAAECoWGvC66wJl3y8/7ClFiIeRzUjC2bXgI3rQAiXEmOe0oB+r4zUF2prhWiqGWvnWCA==", null, false, "82cfa8c3-7a31-43a1-83e1-7a83ad765108", false, "guest16@mail.com" },
-                    { "dc3ac115-a993-4e5b-b675-f92bf5053ba3", 0, "1c6537b7-a5ea-453d-8195-b6e10b9744a3", "guest15@mail.com", true, false, null, null, "guest15@MAIL.COM", "AQAAAAEAACcQAAAAEFeRFZYljSXdbyLba7Rvq73OmTS8RZpgzPlIdCwT/OVzJWFEB1zbhtPIYHzhM+yeZw==", null, false, "dc3801e1-ca89-42b6-b625-907799ed2490", false, "guest15@mail.com" },
-                    { "dcc7b531-1b55-41af-8819-0ab4478b65e3", 0, "5f8dca84-37c3-46f4-96e0-5af3e9d85ae2", "guest14@mail.com", true, false, null, null, "guest14@MAIL.COM", "AQAAAAEAACcQAAAAEMv5SQU78wXva8cjy3DaGapR5Gfg0AUHeukFpQvtRZf1tPJ7EAgTXBypzi+gsugGEw==", null, false, "abbbc3c9-ff60-4fcf-ae9a-73c6a7526c95", false, "guest14@mail.com" },
-                    { "1a04fe4f-60aa-460d-8fe0-06a0c5aaaceb", 0, "8479d6c6-318f-46fa-b3a5-5d9e7ac97c4f", "guest13@mail.com", true, false, null, null, "guest13@MAIL.COM", "AQAAAAEAACcQAAAAEB6cOCH0KykM1MX7RJlQpggHXU17HgvabQPvFEaWQ0oPITo6TSabWjzNSghCK5lM3w==", null, false, "7817d6dc-3d3e-4530-87d6-83ba1ffdabc0", false, "guest13@mail.com" },
-                    { "f8f6db97-1c7b-429d-b94a-3da89b3419f8", 0, "7c5c1a6b-58cf-462b-8475-96db91c8c1fc", "guest12@mail.com", true, false, null, null, "guest12@MAIL.COM", "AQAAAAEAACcQAAAAEJmpSMO2QX0TlmWsKlXq72xqOVKwHSlgj6ZoSbrW1ApKkVElryQz/fbrLFFR5GomUw==", null, false, "e28d4bad-c027-4b3a-af3b-8c6b0464a1a1", false, "guest12@mail.com" },
-                    { "817db1aa-7569-4c74-915a-451779e30be3", 0, "355be7b2-fd2a-4011-a400-6850f689bac4", "guest11@mail.com", true, false, null, null, "guest11@MAIL.COM", "AQAAAAEAACcQAAAAEL2dxw/NFnEnvlihyU8T1EpWdjhVFfGNxOHMD4yyL60TTKETvhwoKcACLRPC4ym9dw==", null, false, "972a55db-6cfe-4422-bd74-0d2191275646", false, "guest11@mail.com" },
-                    { "af199eb4-3433-4856-af06-e7654b9d5bf7", 0, "3221fabc-ceb6-430e-975c-e7fe22cce4e7", "guest10@mail.com", true, false, null, null, "guest10@MAIL.COM", "AQAAAAEAACcQAAAAEMNZzt5OA7OHoGibDHCuczapzlME3mC82bpSGNGsNlkavcs+seHpXbxLReLo662gxg==", null, false, "8f4c6ddd-c71d-4ea0-b10f-0ce033a9a2dd", false, "guest10@mail.com" },
-                    { "06396765-0b99-48e3-8ade-b4d8b1ac6c73", 0, "a9daee95-decb-48c1-83d3-5ffc1f2e9c5f", "guest9@mail.com", true, false, null, null, "guest9@MAIL.COM", "AQAAAAEAACcQAAAAEPp+2J+xvg2Wg9KP3WNWl/D7liDlYsEFWsOKRapfx5xeewFouWpnp4P4FdhJb+9qUg==", null, false, "b80de4cd-6144-4ae0-8054-98c515718a42", false, "guest9@mail.com" },
-                    { "dc66f024-8723-4b24-94fa-57cc75b92fda", 0, "ffce8b0d-a8e7-4180-a1fd-b7740df683e1", "guest8@mail.com", true, false, null, null, "guest8@MAIL.COM", "AQAAAAEAACcQAAAAEPoCZHx3fOyo20lvWV2Ee3e4EaDRFDrVDoraV/T0GlG2IpkPhG3yBx6TB3mRyxT4rA==", null, false, "089f9b7d-60a3-4f18-9a45-6cffce25de9d", false, "guest8@mail.com" },
-                    { "fb95a654-d906-49b5-8247-b827c1dc0106", 0, "4a7e7047-5cc5-404f-99e8-40b26f6e1fcc", "guest19@mail.com", true, false, null, null, "guest19@MAIL.COM", "AQAAAAEAACcQAAAAEFXrTwDxkuLos0ln+jQBA1tPvprfn/c7iVZjWzetDCY2rJG09zWxIU5qvxYexX/fiA==", null, false, "effb2556-6f07-4540-8c79-45ba2f668f8e", false, "guest19@mail.com" },
-                    { "3f39d911-b85b-4c2f-8f56-c72a08421e57", 0, "651edb3c-676a-41e6-9502-4706a8b2288c", "guest6@mail.com", true, false, null, null, "guest6@MAIL.COM", "AQAAAAEAACcQAAAAEL09IKIrSNP+UhzQ5RUkekVrJZ6KYESStc8KfJHfjHpP90/pBBYAMfdOaLsje2peZg==", null, false, "3120089b-4102-45eb-a657-d4903edbd8ba", false, "guest6@mail.com" },
-                    { "b5d12a7b-9012-40b4-9be4-c60edc0752f8", 0, "d5457c0a-ec54-4c8a-8996-58ead37411f5", "guest18@mail.com", true, false, null, null, "guest18@MAIL.COM", "AQAAAAEAACcQAAAAEGgbVUf2D5z4czdBwa5e5NYC7lMsM5TDNTErE/1Z7CubQQ3hcSl9eANDE6CuXts7QA==", null, false, "a65566f2-f23e-4a48-8351-d02e816aec17", false, "guest18@mail.com" },
-                    { "b39932d7-4db7-4674-a3f2-fe00c72f8748", 0, "0cbe9e17-a432-4dd1-b841-b23c18428c27", "guest4@mail.com", true, false, null, null, "guest4@MAIL.COM", "AQAAAAEAACcQAAAAEFYXCCB2L8P3OkhxfgT3hLl/wey/EaeVvAaa0OXFwqxys/VPsurIOHUCuPtAms+x2g==", null, false, "86650fde-bfa4-4056-9b23-92fced99525b", false, "guest4@mail.com" },
-                    { "9a64d4a7-d6f4-4d50-8a6b-b9ca32ed5d87", 0, "665c36ee-fcd4-4a96-b63c-b04d69039630", "guest3@mail.com", true, false, null, null, "guest3@MAIL.COM", "AQAAAAEAACcQAAAAENLjRgMkmisw6x3pZVKL5sbbDStXEnByWUIX9hHVO90ekaP+tEswUMQhIEAEd2zU2Q==", null, false, "f4ebf4ed-3bb5-486d-8590-d3f02d36343e", false, "guest3@mail.com" },
-                    { "83176973-1496-4fb8-8e0f-b4f9b651ab01", 0, "3af4dbff-4f6f-4c2f-9aff-356da40bc4eb", "guest2@mail.com", true, false, null, null, "guest2@MAIL.COM", "AQAAAAEAACcQAAAAEHFxwwwr/Pmao2ZuuMlsQpM0EUt4IDj7RimEmuWqTKng/pA8MCc0bWHz0efiLBAEdQ==", null, false, "8ce84607-8197-42f2-a143-58a13d79b6bb", false, "guest2@mail.com" },
-                    { "5aa7651c-a469-4995-a9ba-a3724644882a", 0, "3f412604-38e1-45eb-946e-8634d7959a69", "guest1@mail.com", true, false, null, null, "guest1@MAIL.COM", "AQAAAAEAACcQAAAAEHvOj/oA6gL1tpqt56g5qj2upakDwcm8Ifnnzx5p2s8EBT8acP/YNZwUMyNqHiPdIw==", null, false, "5d5342d7-7e99-4027-b216-6e5e03dd1555", false, "guest1@mail.com" },
-                    { "8ba459fd-a82a-444d-8283-028b5f9cb501", 0, "5a435f49-06c7-47b7-9c8b-e332e2766425", "manager@manager.com", true, false, null, null, "MANAGER@MANAGER.COM", "AQAAAAEAACcQAAAAEGoheJdd302ZvFg4QoeKflONDYYIRxNj0UwsF1CPIE0Y5i/iHLdP4BK24s6kq1MXTQ==", null, false, "50c2e4be-cebe-4798-bc36-0fc0ef3dbee2", false, "manager@manager.com" },
-                    { "87b8ae22-f7bb-4a34-8305-b67d4ca8cf24", 0, "549c13bc-5f91-45f7-a8a0-6dd267e87192", "admin@admin.com", true, false, null, null, "ADMIN@ADMIN.COM", "AQAAAAEAACcQAAAAEMHDV1lMWYBbXobHEiiTeP6dbnNgfZWsXscxcc2VOvE6DFvj0JwlQUJwJfrxKe1tuA==", null, false, "56247421-dbef-4202-ad49-ef736f3234ff", false, "admin@admin.com" },
-                    { "2c83f54e-49fe-4619-8046-806af9473a24", 0, "2ba8c7c1-b36e-4fdd-a211-9db009031ba5", "guest7@mail.com", true, false, null, null, "guest7@MAIL.COM", "AQAAAAEAACcQAAAAENbo5kcPRQLmg4yMw3u3AheL8ux+QyMbteeYLfr1DNbFwFuLv9RuH3ja5hmJ7LJ/jw==", null, false, "e5714087-c207-4091-81a3-b71fe614b545", false, "guest7@mail.com" }
+                    { "0b90a86b-949f-4856-8891-9b45b0bc52e9", 0, new DateTime(1999, 3, 22, 0, 0, 0, 0, DateTimeKind.Unspecified), "318c075b-98d8-497b-b3f1-c669ffa35315", "guest19@mail.com", true, "guest19", "standart", false, null, null, "guest19@MAIL.COM", "AQAAAAEAACcQAAAAEGFaY5xB0zvSKHE9kMy8OeebDeIbwKllD7h0oQ3LBeMk7gsSAbxOnkLZgYSwwXqHdg==", null, false, "5f39b29d-3fe7-47e8-b6e5-a3365d23717c", false, "guest19@mail.com" },
+                    { "a54b8ee7-72ff-402e-a3ba-86a2cead1c19", 0, new DateTime(1999, 3, 22, 0, 0, 0, 0, DateTimeKind.Unspecified), "e75ab222-e813-4d8b-83b9-d5973b9a73c0", "guest18@mail.com", true, "guest18", "standart", false, null, null, "guest18@MAIL.COM", "AQAAAAEAACcQAAAAEMKsG5WHBup5iFNiGpe5cwvmiVPNSyj7yWgVTaq6yhXeQ2Qk2AKJBpLazVCxPpQ0Cw==", null, false, "97f4ea42-b174-4ade-9f33-7e6ac2f458d4", false, "guest18@mail.com" },
+                    { "cc7ff695-c0b4-4872-af30-b996c95d4211", 0, new DateTime(1999, 3, 22, 0, 0, 0, 0, DateTimeKind.Unspecified), "ea0680f3-d8b9-4df8-b48f-af1b8d4bce1f", "guest17@mail.com", true, "guest17", "standart", false, null, null, "guest17@MAIL.COM", "AQAAAAEAACcQAAAAEJZu39DUnDE/49m5R0vcJp2NduobHhDVw8OJXmkrasdXARYVinKI5cE+/uPu9RlPUA==", null, false, "7e50e501-ddbc-4057-a207-90bb4e689ee8", false, "guest17@mail.com" },
+                    { "e2f3f11d-530f-4048-8b02-9863739f2026", 0, new DateTime(1999, 3, 22, 0, 0, 0, 0, DateTimeKind.Unspecified), "40f073fd-b461-4679-96b4-39af2fcf1560", "guest16@mail.com", true, "guest16", "standart", false, null, null, "guest16@MAIL.COM", "AQAAAAEAACcQAAAAEHnGKagbH6zhLuSBqC2VdpSLUfTBEjlX8cljPeerALny9kVGmspNiucfhVgGPG2C1Q==", null, false, "5d314997-aad2-447c-845c-331734cb27e4", false, "guest16@mail.com" },
+                    { "02625fde-e353-435a-981f-72ddeffd9fb0", 0, new DateTime(1999, 3, 22, 0, 0, 0, 0, DateTimeKind.Unspecified), "3b84e622-1ad1-41f9-b0da-4f2d2651d9af", "guest15@mail.com", true, "guest15", "standart", false, null, null, "guest15@MAIL.COM", "AQAAAAEAACcQAAAAEGS6M63KBjIyLxn05QXTjOY/avLqNf30Z8S7XhBlN2570lafDW5TZQdmZnaUqyLosQ==", null, false, "df58a24f-b2c5-484f-b759-a45524e8d5ee", false, "guest15@mail.com" },
+                    { "7c5bdad2-446e-4687-8a18-f343300357b4", 0, new DateTime(1999, 3, 22, 0, 0, 0, 0, DateTimeKind.Unspecified), "b36bb167-cf0f-457b-8e86-fa30a3582585", "guest14@mail.com", true, "guest14", "standart", false, null, null, "guest14@MAIL.COM", "AQAAAAEAACcQAAAAEMknqWG0FXZVU2eLDKmfXMHaPeT9IExxFugd1br1JWdRtKDkzBH/YV7QNW3sfb5Qmw==", null, false, "c36190db-c783-4ccc-b9af-ce9108643798", false, "guest14@mail.com" },
+                    { "31ef740c-707c-4535-b4cd-17a86339b286", 0, new DateTime(1999, 3, 22, 0, 0, 0, 0, DateTimeKind.Unspecified), "469299c0-83e6-4dc6-bbee-2f0e35b8f3a6", "guest13@mail.com", true, "guest13", "standart", false, null, null, "guest13@MAIL.COM", "AQAAAAEAACcQAAAAECTIfiIKuAQ9fyQuU7qbQN3ttaHdSulUzRbuV0ApugL6opUkRchBPvaaZmzpILKhPg==", null, false, "83895968-a495-4d5c-93c3-04fe0d7bfd61", false, "guest13@mail.com" },
+                    { "207284bc-8116-44ef-8936-332dd0809840", 0, new DateTime(1999, 3, 22, 0, 0, 0, 0, DateTimeKind.Unspecified), "2e05f87a-a493-49e1-bdf9-08254595c8ce", "guest12@mail.com", true, "guest12", "standart", false, null, null, "guest12@MAIL.COM", "AQAAAAEAACcQAAAAEOqzJHJpYVvZ/DyI8yFgr1/wAjx1I5yhM9vrBPSsWRk7ZnG2AU7l5JjdoPIUW+qlfQ==", null, false, "f8687968-06b1-4969-859a-b43496a66758", false, "guest12@mail.com" },
+                    { "86980d47-6227-4445-8f59-660b397b0137", 0, new DateTime(1999, 3, 22, 0, 0, 0, 0, DateTimeKind.Unspecified), "909efd25-2a95-479a-9ef8-8fade5596432", "guest11@mail.com", true, "guest11", "standart", false, null, null, "guest11@MAIL.COM", "AQAAAAEAACcQAAAAEKWF1JQJZws8RJw9DslFMvrMOJVBYNc8JsFbQ5x+PqqgsaPdxQdsuLI/CvCNZtZzlg==", null, false, "769c1b09-d79b-4895-88e7-576a9b41dc08", false, "guest11@mail.com" },
+                    { "199c09ef-9668-4015-83b5-3d44d4de8c1a", 0, new DateTime(1999, 3, 22, 0, 0, 0, 0, DateTimeKind.Unspecified), "f692a009-ed00-41b9-b005-3d3816505387", "guest10@mail.com", true, "guest10", "standart", false, null, null, "guest10@MAIL.COM", "AQAAAAEAACcQAAAAEMu2OaFyaophzjqEhxFlWRsgDqBNUZgOX0FWGE2VQxlTDGkoWLgcgMsnmnwMeCWQfg==", null, false, "0fa875a4-93fc-4ba9-a129-59fad3b3830a", false, "guest10@mail.com" },
+                    { "5614966d-8a8e-4224-9893-5e9c81c07bda", 0, new DateTime(1999, 3, 22, 0, 0, 0, 0, DateTimeKind.Unspecified), "83c2cbdd-cff8-4b6f-8a46-07ac0117ae04", "guest9@mail.com", true, "guest9", "standart", false, null, null, "guest9@MAIL.COM", "AQAAAAEAACcQAAAAEB8jY6IuaWVYP06I3SpB3s/s4Db5pTniQIUanIgdLhvWsUzKLMO7ineGntisgv1dvA==", null, false, "cdb9a2e1-871e-47a1-a4ea-672a193711b8", false, "guest9@mail.com" },
+                    { "de75d06d-ec68-4ea9-979a-decac518fcf6", 0, new DateTime(1999, 3, 22, 0, 0, 0, 0, DateTimeKind.Unspecified), "50bcc35e-ea9c-4cb8-bf6a-f5b691abad14", "guest7@mail.com", true, "guest7", "standart", false, null, null, "guest7@MAIL.COM", "AQAAAAEAACcQAAAAEFn28mCRYs/reXL882t1Nu7gZaOMtX5FWoSvCrDoRHBqurQklZm07EzhNkMs6Z1tdw==", null, false, "6a942cda-f6b7-4754-91ca-2b313b6ff3bc", false, "guest7@mail.com" },
+                    { "c68bca45-322a-4695-b2b9-88440973b06b", 0, new DateTime(1999, 3, 22, 0, 0, 0, 0, DateTimeKind.Unspecified), "e53e528d-8545-450c-964e-b754e808e868", "guest6@mail.com", true, "guest6", "standart", false, null, null, "guest6@MAIL.COM", "AQAAAAEAACcQAAAAEISak01JKom2hBYDNJK6g51Etc+Am6PatSUaJLoiazCY9XH3rrcrzTPyV8RA9YaIXg==", null, false, "f4883e03-1bef-430b-aab9-06cc73d8d806", false, "guest6@mail.com" },
+                    { "2d4c882a-0c18-46ef-a96e-0e0cb3746f97", 0, new DateTime(1999, 3, 22, 0, 0, 0, 0, DateTimeKind.Unspecified), "73320288-4018-4322-b0d6-e2e89ad3a2bb", "guest5@mail.com", true, "guest5", "standart", false, null, null, "guest5@MAIL.COM", "AQAAAAEAACcQAAAAELquhm158/ctbwb7aZQo4QiP+TMRmGp2E8LS4jYwd9Y3iYfu73B8twq+mRZ5FivD1Q==", null, false, "39174241-9205-4ca2-b18b-22dd063ae40b", false, "guest5@mail.com" },
+                    { "fe808efa-47ba-4806-83bf-f3d985fea494", 0, new DateTime(1999, 3, 22, 0, 0, 0, 0, DateTimeKind.Unspecified), "ef3e9481-2b79-4093-852e-166856677e8d", "guest4@mail.com", true, "guest4", "standart", false, null, null, "guest4@MAIL.COM", "AQAAAAEAACcQAAAAEAxOJc75lArnZvY2lLHrD3WCoBxu5mWuLat+1Wu7UCTF+axPa8fCzLh+LYhGVP0Ttw==", null, false, "86ec7e53-842f-4cd7-a17e-6eef33d2a632", false, "guest4@mail.com" },
+                    { "c67e1c37-6ce2-4d48-a148-f74cd81608cf", 0, new DateTime(1999, 3, 22, 0, 0, 0, 0, DateTimeKind.Unspecified), "05105bc1-b448-439d-b728-1bb7348bc51d", "guest3@mail.com", true, "guest3", "standart", false, null, null, "guest3@MAIL.COM", "AQAAAAEAACcQAAAAEBFyotxUx42XrDPQxIVxP89ykaU1PQK7DhjUJI7zwU2TOlxdRSXlxvYOGtzRqPZSOQ==", null, false, "16fc26f5-cbe9-47a8-a6b8-c9483fa8541d", false, "guest3@mail.com" },
+                    { "66d2a5e5-7fab-48a3-a2e4-dd7792d5e343", 0, new DateTime(1999, 3, 22, 0, 0, 0, 0, DateTimeKind.Unspecified), "d28fcb3b-8e94-4f52-82e2-05882aee10e2", "guest2@mail.com", true, "guest2", "standart", false, null, null, "guest2@MAIL.COM", "AQAAAAEAACcQAAAAEChFwme4p40/DBMK9ZBvSmGm4/VHIIOeUYpUTGc1TiuhFF5eHIpR7N0nKBfEdvP+1w==", null, false, "822da6e7-51e0-4fbb-9a58-1de96b89bfe4", false, "guest2@mail.com" },
+                    { "b7895ba8-0f90-4b2e-a3de-e17a6f854e0c", 0, new DateTime(1999, 3, 22, 0, 0, 0, 0, DateTimeKind.Unspecified), "64e6ca33-42fc-4829-bcf2-d02923a4ae3f", "guest1@mail.com", true, "guest1", "standart", false, null, null, "guest1@MAIL.COM", "AQAAAAEAACcQAAAAENus2AxYlPmlg0XdRnPCocROUcgzmyMsOA7qIFhHK/dkHPVHBR+dHO1CMvRdc9aylw==", null, false, "6c5cec04-28fd-4e5b-82de-c0328125545c", false, "guest1@mail.com" },
+                    { "70809927-0934-4046-9227-8fe693cf581d", 0, new DateTime(2000, 9, 21, 0, 0, 0, 0, DateTimeKind.Unspecified), "2cb84fa6-1a15-469b-8298-c698367afaa9", "manager@manager.com", true, "manager", "manager", false, null, null, "MANAGER@MANAGER.COM", "AQAAAAEAACcQAAAAEIfL5ygFB52YYIiicK8yq4/hk0KPmVeRWYGI5j+cQnKfM3jwvmEwVsF9h3LMPLMdeg==", null, false, "96c1de80-5b9f-4738-987d-05d9aa70bb89", false, "manager@manager.com" },
+                    { "77dbb15b-cb84-4105-bd60-1412e6105e9b", 0, new DateTime(1998, 9, 21, 0, 0, 0, 0, DateTimeKind.Unspecified), "2286069a-52d5-4dbf-962b-5e0f33485e08", "admin@admin.com", true, "admin", "admin", false, null, null, "ADMIN@ADMIN.COM", "AQAAAAEAACcQAAAAEJVQz++pv6e8HT81az6+HLMr7NuyGywFwczW1DmQEoYYE3ywRmZIz/w/MYfqWmx2gQ==", null, false, "8207f357-3df7-4b3b-8ca7-815e574cd555", false, "admin@admin.com" },
+                    { "058956ce-4182-4568-927b-f02dd0d52b76", 0, new DateTime(1999, 3, 22, 0, 0, 0, 0, DateTimeKind.Unspecified), "8d99ac6b-dd4e-4b61-942d-b6789e68f668", "guest8@mail.com", true, "guest8", "standart", false, null, null, "guest8@MAIL.COM", "AQAAAAEAACcQAAAAEGXD//VzYDIaaZjD9S7PeVJWpbpNI094HA7b4Edey27AqeCBA6XXq0xy99uKqWOH1A==", null, false, "81e87c7f-6eee-4421-8fa6-3cc222b150e1", false, "guest8@mail.com" }
                 });
 
             migrationBuilder.InsertData(
@@ -386,8 +383,8 @@ namespace IdentityNLayer.DAL.EF.Migrations
                 columns: new[] { "RoleId", "UserId" },
                 values: new object[,]
                 {
-                    { "f974cfc9-615e-40ca-9be9-7c9b73ee80be", "87b8ae22-f7bb-4a34-8305-b67d4ca8cf24" },
-                    { "9139cbbb-2459-4edc-b1e7-5066480bc2f4", "8ba459fd-a82a-444d-8283-028b5f9cb501" }
+                    { "1a850231-a336-4407-b177-ca71d4267e33", "77dbb15b-cb84-4105-bd60-1412e6105e9b" },
+                    { "62df2641-3ce0-4b61-b5eb-5a64c0bc465e", "70809927-0934-4046-9227-8fe693cf581d" }
                 });
 
             migrationBuilder.InsertData(

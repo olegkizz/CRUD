@@ -21,6 +21,7 @@ namespace IdentityNLayer.DAL.EF.Repositories
         public IEnumerable<Student> Find(Func<Student, bool> predicate)
         {
             return _context.Students
+                .Include(st => st.User)
                 .AsNoTracking()
                 .Where(predicate).ToList();
         }
@@ -29,9 +30,9 @@ namespace IdentityNLayer.DAL.EF.Repositories
         {
             _context.Students.Attach(item);
             
-            _context.Entry(item).Property(e => e.FirstName).IsModified = true;
+      /*      _context.Entry(item).Property(e => e.FirstName).IsModified = true;
             _context.Entry(item).Property(e => e.LastName).IsModified = true;
-            _context.Entry(item).Property(e => e.BirthDate).IsModified = true;
+            _context.Entry(item).Property(e => e.BirthDate).IsModified = true;*/
             _context.Entry(item).Property(e => e.Type).IsModified = true;
         }
 
@@ -45,6 +46,7 @@ namespace IdentityNLayer.DAL.EF.Repositories
         public async Task<IEnumerable<Student>> FindAsync(Func<Student, bool> predicate)
         {
             return await _context.Students
+                .Include(st => st.User)
                 .AsNoTracking()
                 .Where(predicate)
                 .AsQueryable()
@@ -69,6 +71,7 @@ namespace IdentityNLayer.DAL.EF.Repositories
         public async Task<IEnumerable<Student>> GetAllAsync()
         {
             return await _context.Students
+                .Include(st => st.User)
                 .AsNoTracking()
                 .ToListAsync();
         }

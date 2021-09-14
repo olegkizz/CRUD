@@ -22,13 +22,13 @@ namespace IdentityNLayer.Controllers
         private readonly ICourseService _courseService;
 
         private readonly RoleManager<IdentityRole> _roleManager;
-        private readonly UserManager<IdentityUser> _userManager;
+        private readonly UserManager<Person> _userManager;
         public StudentsController(IStudentService studentService,
             IGroupService groupService,
             IMapper mapper,
             ILogger<StudentsController> logger,
             RoleManager<IdentityRole> roleManager,
-            UserManager<IdentityUser> userManager,
+            UserManager<Person> userManager,
             IEnrollmentService enrollmentService,
             ICourseService courseService)
         {
@@ -50,15 +50,18 @@ namespace IdentityNLayer.Controllers
             return View(_mapper.Map<IEnumerable<StudentModel>>(await _studentService.GetAllAsync()));
         }
         [HttpGet]
-        public IActionResult SendRequest(int courseId)
+        public IActionResult SendRequest()
         {
             return View();
         }
+        
         [HttpPost]
         public IActionResult SendRequest(int courseId, string request)
         {
             if (request == "Yes")
             {
+                if (!_studentService.HasAccount(_userManager.GetUserId(User)))
+                    return RedirectToAction("Create", new { courseId });
                 _enrollmentService.Enrol(_userManager.GetUserId(User), courseId, UserRoles.Student, false);
             }
 
@@ -80,21 +83,23 @@ namespace IdentityNLayer.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("FirstName, LastName, BirthDate, Email," +
-            "Type")] StudentModel student, int? courseId)
+        public async Task<IActionResult> Create([Bind("Type")] StudentModel student, int? courseId)
         {
             if (ModelState.IsValid)
             {
                 try
                 {
-                    var user = await _userManager.GetUserAsync(User);
-
-                    IdentityResult result = await _userManager.AddToRoleAsync(user, UserRoles.Student.ToString());
+                    Person user = await _userManager.GetUserAsync(User);
                     student.User = user;
-                    int newStudentId = _studentService.CreateAsync(_mapper.Map<Student>(student));
-                    if (courseId != null)
-                        return RedirectToAction("SendRequest", new { courseId });
-                    return Redirect("Courses/Index");
+                    int newStudentId = await _studentService.CreateAsync(_mapper.Map<Student>(student));
+                    if (newStudentId >= 0)
+                    {
+                        IdentityResult result = await _userManager.AddToRoleAsync(user, UserRoles.Student.ToString());
+                        if (courseId != null)
+                            return RedirectToAction("SendRequest", new { courseId });
+                        return RedirectToAction("Index", "Courses", new { area = "Courses" });
+                    }
+                    else throw new DbUpdateConcurrencyException();
                 }
                 catch (DbUpdateConcurrencyException ex)
                 {
@@ -116,10 +121,27 @@ namespace IdentityNLayer.Controllers
         // GET: Students/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
-            if ((await _studentService.GetByIdAsync((int)id)).UserId != _userManager.GetUserId(User)
-                  && !User.IsInRole("Admin") && !User.IsInRole("Manager"))
-                return LocalRedirect("Edit/" + id);
-
+            if (id == null)
+            {
+                if (!User.IsInRole("Admin") && !User.IsInRole("Manager"))
+                    id = _studentService.GetByUserId(_userManager.GetUserId(User)).Id;
+                else return BadRequest();
+            } else
+            {
+                if(!User.IsInRole("Admin") && !User.IsInRole("Manager"))
+                {
+                    int currentStudentId = _studentService.GetByUserId(_userManager.GetUserId(User)).Id;
+                    if (id != currentStudentId)
+                        return RedirectToAction("Edit", new { currentStudentId });
+                }
+            }
+          /*  if (id == null && !User.IsInRole("Admin") && !User.IsInRole("Manager"))
+                id = _studentService.GetByUserId(_userManager.GetUserId(User)).Id;
+            else if ()
+                if ((await _studentService.GetByIdAsync((int)id)).UserId != _userManager.GetUserId(User)
+                      && !User.IsInRole("Admin") && !User.IsInRole("Manager"))
+                    return LocalRedirect("Edit/" + id);
+*/
             if (id == null)
             {
                 return NotFound();

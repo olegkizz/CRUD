@@ -1,16 +1,19 @@
 ﻿using IdentityNLayer.Core.Entities;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Mvc;
 using System;
-using System.Collections.Generic;
-
+using Microsoft.AspNetCore.Identity;
 namespace IdentityNLayer.Models
 {
-    public class StudentModel : PersonModel
+    public class StudentModel : Student
     {
-        public string Type { get; set; }
-        /*   public List<AssignGroupModel> AssignGroups { get; set; }*/
         public string[] StudentTypes { get; set; }
+        public string Name
+        {
+            get
+            {
+                return User?.FirstName + " " + User?.LastName;
+            }
+        }
         public StudentModel()
         {
             StudentTypes = Enum.GetNames(typeof(StudentType));

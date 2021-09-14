@@ -28,9 +28,9 @@ namespace IdentityNLayer.Client.Controllers
         }
 
         [HttpGet]
-        public IEnumerable<Course> Get()
+        public async Task<IEnumerable<Course>> GetAsync()
         {
-            return _courseService.GetAll();
+            return await _courseService.GetAllAsync();
         }
     }
 }

@@ -67,10 +67,11 @@ namespace IdentityNLayer.BLL.Services
         public async Task<List<Group>> GetStudentGroupsAsync(int studentId)
         {
             List<Group> groups = new();
+            
             Student student = await Db.Students.GetAsync(studentId);
             foreach (Enrollment en in Db.Enrollments.Find(en => en.UserID == student.UserId))
             {
-                if(en.State != UserGroupStates.Aborted && en.State != UserGroupStates.Requested)
+                if (en.State != UserGroupStates.Aborted && en.State != UserGroupStates.Requested)
                     groups.Add(await Db.Groups.GetAsync(en.EntityID));
             }
             return groups;
@@ -94,11 +95,11 @@ namespace IdentityNLayer.BLL.Services
             return null;
         }
 
-        public int CreateAsync(Student entity)
+        public Task<int> CreateAsync(Student entity)
         {
             Db.Students.CreateAsync(entity);
             Db.Save();
-            return entity.Id;
+            return Task.FromResult(entity.Id);
         }
 
         public Task<Student> GetByIdAsync(int id)

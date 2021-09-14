@@ -47,7 +47,6 @@ namespace IdentityNLayer.BLL.Services
         {
             if (groupId == null)
                 return new List<Student>();
-
             List<Student> students = new ();
             switch (state)
             {
@@ -58,7 +57,7 @@ namespace IdentityNLayer.BLL.Services
                     }
                     return students;
                 case UserGroupStates.Requested:
-                    foreach (Enrollment en in Db.Enrollments.Find(en => en.EntityID == Db.Groups.Find(gr => gr.Id == groupId).FirstOrDefault()?.CourseId 
+                    foreach (Enrollment en in Db.Enrollments.Find(en => en.EntityID == Db.Groups.Find(gr => gr.Id == groupId).FirstOrDefault()?.CourseId
                     && en.State == state && en.Role == UserRoles.Student))
                     {
                         students.Add(Db.Students.Find(st => st.UserId == en.UserID).SingleOrDefault());
@@ -73,7 +72,6 @@ namespace IdentityNLayer.BLL.Services
         {
             if (groupId == null)
                 return new List<Teacher>();
-            
             List<Teacher> teachers = new();
             switch (state)
             {
@@ -105,11 +103,11 @@ namespace IdentityNLayer.BLL.Services
                 ? true : false;
         }
 
-        public int CreateAsync(Group entity)
+        public Task<int> CreateAsync(Group entity)
         {
             Db.Groups.CreateAsync(entity);
             Db.Save();
-            return entity.Id;
+            return Task.FromResult(entity.Id);
         }
 
         public Task<Group> GetAsync(int id)

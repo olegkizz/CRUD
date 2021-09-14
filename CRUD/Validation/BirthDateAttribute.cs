@@ -29,7 +29,7 @@ namespace IdentityNLayer.Validation
         public override bool IsValid(object value)
         {
             if (value == null)
-                return false;
+                return true;
             var age = (DateTime.Today - (DateTime)value).TotalDays / 365;
 
             return age > minAge && age < maxAge;

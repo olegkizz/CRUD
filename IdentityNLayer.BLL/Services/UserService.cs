@@ -10,14 +10,14 @@ namespace IdentityNLayer.BLL.Services
     public class UserService : IUserService
     {
         private readonly RoleManager<IdentityRole> _roleManager;
-        private readonly UserManager<IdentityUser> _userManager;
+        private readonly UserManager<Person> _userManager;
 
-        public UserService(RoleManager<IdentityRole> roleManager, UserManager<IdentityUser> userManager)
+        public UserService(RoleManager<IdentityRole> roleManager, UserManager<Person> userManager)
         {
             _roleManager = roleManager;
             _userManager = userManager;
         }
-        public async void CreateAsync(IdentityUser entity, UserRoles role)
+        public async void CreateAsync(Person entity, UserRoles role)
         {
             IdentityRole identityole = new IdentityRole();
             identityole.Name = role.ToString();

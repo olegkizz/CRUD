@@ -10,9 +10,9 @@ namespace IdentityNLayer.BLL.Authorization
     public class ContactManagerAuthorizationHandler : 
         AuthorizationHandler<OperationAuthorizationRequirement, Student>
     {
-        UserManager<IdentityUser> _userManager;
+        UserManager<Person> _userManager;
 
-        public ContactManagerAuthorizationHandler(UserManager<IdentityUser>
+        public ContactManagerAuthorizationHandler(UserManager<Person>
             userManager)
         {
             _userManager = userManager;

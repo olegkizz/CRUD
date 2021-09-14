@@ -1,10 +1,10 @@
 ﻿@inject IdentityNLayer.BLL.Interfaces.ICourseService courseService
 @{
-    Dictionary<string, string> prms = new Dictionary<string, string> { { "courseId", Context.Request.Query["courseId"].ToString() } };
-    var course = await courseService.GetByIdAsync(Convert.ToInt32(prms.Values.First()));
+    var course = await courseService.GetByIdAsync(Convert.ToInt32(Context.Request.Query["courseId"]));
 }
 <div>Do you really want send request in @course.Title course as Student?</div>
-<form asp-all-route-data="prms" asp-action="SendRequest" method="post">
+<form asp-action="SendRequest" method="post">
     <input type="submit" name="request" value="Yes" />
     <input type="submit" name="request" value="No" />
+    <input type="hidden" name="courseId" value="@course.Id" />
 </form>

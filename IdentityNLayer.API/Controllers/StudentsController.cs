@@ -26,14 +26,14 @@ namespace IdentityNLayer.API.Controllers
             return _studentService.GetStudentTypes();
         }
         [HttpGet("{id}")]
-        public Student Get(int id)
+        public async Task<Student> GetAsync(int id)
         {
-            return _studentService.GetById((int)id);
+            return await _studentService.GetByIdAsync((int)id);
         }
 
-        public IEnumerable<Student> GettAll()
+        public async Task<IEnumerable<Student>> GettAllAsync()
         {
-            return _studentService.GetAll();
+            return await _studentService.GetAllAsync();
         }
     }
 }

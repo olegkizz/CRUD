@@ -1,6 +1,7 @@
 ﻿@model IEnumerable<IdentityNLayer.Models.StudentModel>
 @using IdentityNLayer.Core.Entities
 @inject IdentityNLayer.BLL.Interfaces.IStudentService studentService
+
 @{
     ViewData["Title"] = "Index";
 }
@@ -19,18 +20,19 @@
         </tr>
     </thead>
     <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                <a asp-controller="Students" asp-action="Edit" asp-route-id="@item.Id">@item.FirstName @item.LastName</a>
-            </td>   
-            <td>
-                @foreach(Group gr in await studentService.GetStudentGroupsAsync(item.Id))
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    <a asp-controller="Students" asp-action="Edit" asp-route-id="@item.Id">@item.User.FirstName @item.User.LastName</a>
+                </td>
+                <td>
+                    @foreach (Group gr in await studentService.GetStudentGroupsAsync(item.Id))
                     {
-                       <a asp-controller="Groups" asp-action="Edit" asp-route-id="@gr.Id">@gr.Number </a>
+                        <a asp-controller="Groups" asp-action="Edit" asp-route-id="@gr.Id">@gr.Number </a>
                     }
-            </td>
-        </tr>
-}
+                </td>
+            </tr>
+        }
     </tbody>
 </table>

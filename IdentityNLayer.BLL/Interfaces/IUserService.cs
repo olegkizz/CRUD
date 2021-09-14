@@ -6,6 +6,6 @@ namespace IdentityNLayer.BLL.Interfaces
 {
     public interface IUserService
     {
-        public async void CreateAsync(IdentityUser entity, UserRoles role, string password) { }
+        public async void CreateAsync(Person entity, UserRoles role, string password) { }
     }   
 }

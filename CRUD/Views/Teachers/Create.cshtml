@@ -13,8 +13,11 @@
     <div class="col-md-4">
         <form asp-action="Create">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <input type="hidden" name="courseId" value="@Context.Request.Query["courseId"].ToString()" />
-            <div class="form-group">
+            @{ 
+                string courseId = Context.Request.Query["courseId"].ToString();
+            }
+            <input type="hidden" name="courseId" value="@courseId" />
+        @*    <div class="form-group">
                 <label asp-for="FirstName" class="control-label"></label>
                 <input asp-for="FirstName" class="form-control" />
                 <span asp-validation-for="FirstName" class="text-danger"></span>
@@ -28,7 +31,7 @@
                 <label asp-for="BirthDate" class="control-label"></label>
                 <input asp-for="BirthDate" type="date" class="form-control" />
                 <span asp-validation-for="BirthDate" class="text-danger"></span>
-            </div>
+            </div>*@
             <div class="form-group">
                 <label asp-for="Bio" class="control-label"></label>
                 <input asp-for="Bio" class="form-control" />
@@ -41,7 +44,7 @@
             </div>
             <div class="form-group">
                 @{string action = "Create"; }
-                @if (Context.Request.Query["courseId"].ToString() != null)
+                @if (courseId != null)
                     action = "Create And Send Request";
                 <input type="submit" value="@action" class="btn btn-primary" />
             </div>

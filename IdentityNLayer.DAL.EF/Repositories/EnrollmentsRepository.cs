@@ -48,9 +48,9 @@ namespace IdentityNLayer.DAL.EF.Repositories
                 .ToListAsync();
         }
 
-        public async void CreateAsync(Enrollment item)
+        public void CreateAsync(Enrollment item)
         {
-            await _context.Enrollments.AddAsync(item);
+            _context.Enrollments.AddAsync(item);
         }
 
         public async Task<Enrollment> GetAsync(int id)

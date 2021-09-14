@@ -25,7 +25,7 @@
             Teacher Link To Profile
         </dt>
         <dd class="col-sm-10">
-            @Html.RouteLink(Model.Teacher?.FirstName + " " + Model.Teacher?.LastName, Model.Teacher?.LinkToProfile)
+            @Html.RouteLink(Model.Teacher?.User.FirstName + " " + Model.Teacher?.User.LastName, Model.Teacher?.LinkToProfile)
         </dd>
         <dt class="col-sm-2">
             Number Of Students
