@@ -26,7 +26,7 @@ namespace IdentityNLayer.DAL.EF.Repositories
                 .ToList();
         }
 
-        public void Update(Enrollment item)
+        public void UpdateAsync(Enrollment item)
         {
             _context.Entry(item).State = EntityState.Modified;
             _context.Enrollments.Update(item);

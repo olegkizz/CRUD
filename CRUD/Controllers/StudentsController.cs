@@ -135,13 +135,7 @@ namespace IdentityNLayer.Controllers
                         return RedirectToAction("Edit", new { currentStudentId });
                 }
             }
-          /*  if (id == null && !User.IsInRole("Admin") && !User.IsInRole("Manager"))
-                id = _studentService.GetByUserId(_userManager.GetUserId(User)).Id;
-            else if ()
-                if ((await _studentService.GetByIdAsync((int)id)).UserId != _userManager.GetUserId(User)
-                      && !User.IsInRole("Admin") && !User.IsInRole("Manager"))
-                    return LocalRedirect("Edit/" + id);
-*/
+    
             if (id == null)
             {
                 return NotFound();
@@ -163,8 +157,7 @@ namespace IdentityNLayer.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id, FirstName, LastName, BirthDate," +
-            "Type")] StudentModel student)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,Type,User")] StudentModel student)
         {
             if ((await _studentService.GetByIdAsync(id)).UserId != _userManager.GetUserId(User)
                 && !User.IsInRole("Admin") && !User.IsInRole("Manager"))
@@ -179,7 +172,7 @@ namespace IdentityNLayer.Controllers
             {
                 try
                 {
-                    _studentService.Update(_mapper.Map<Student>(student));
+                    _studentService.UpdateAsync(_mapper.Map<Student>(student));
                 }
                 catch (DbUpdateConcurrencyException ex)
                 {
@@ -201,7 +194,7 @@ namespace IdentityNLayer.Controllers
             return View(student);
         }
 
-        // GET: Contacts/Delete/5
+        // GET: Students/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -218,7 +211,7 @@ namespace IdentityNLayer.Controllers
             return View(student);
         }
 
-        // POST: Contacts/Delete/5
+        // POST: Students/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)

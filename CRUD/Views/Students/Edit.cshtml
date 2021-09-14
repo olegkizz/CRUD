@@ -13,7 +13,8 @@
     <div class="col-md-4">
         <form asp-action="Edit">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <input type="hidden" asp-for="UserId" />
+            <input type="hidden" asp-for="Id" />
+            <input type="hidden" name="id" value="@Model.Id" />
          @*   <div class="form-group">
                 <label asp-for="FirstName" class="control-label"></label>
                 <input asp-for="FirstName" class="form-control" />
@@ -41,11 +42,11 @@
             </div>
             <div class="form-group">
                 <label class="control-label">Your Assign Groups Like Student</label>
-            @*    @foreach (Group gr in await studentService.GetStudentGroupsAsync(Model.Id))
+                @foreach (Group gr in await studentService.GetStudentGroupsAsync(Model.Id))
                 {
                     Dictionary<string, string> groupdId = new Dictionary<string, string> { { "id", gr.Id.ToString() } };
                     <span class="form-control"><a asp-controller="Groups" asp-action="Details" asp-all-route-data="groupdId">@gr.Number </a></span>
-                }*@
+                }
             </div>
             <div class="form-group">
                 <input type="submit" value="Save" class="btn btn-primary" />

@@ -53,9 +53,9 @@ namespace IdentityNLayer.BLL.Services
             return Enum.GetValues(typeof(StudentType));
         }
 
-        public void Update(Student entity)
+        public void UpdateAsync(Student entity)
         {
-            Db.Students.Update(entity);
+            Db.Students.UpdateAsync(entity);
             Db.Save();
         }
 

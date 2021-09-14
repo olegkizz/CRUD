@@ -53,9 +53,9 @@ namespace IdentityNLayer.DAL.EF.Repositories
             return await _context.Topics.SingleAsync(t => t.Id == id);
         }
 
-        public void Update(Topic item)
+        public void UpdateAsync(Topic item)
         {
-            throw new NotImplementedException();
+            _context.Topics.Update(item);
         }
     }
 }

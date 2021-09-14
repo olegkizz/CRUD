@@ -26,19 +26,16 @@ namespace IdentityNLayer.DAL.EF.Repositories
                 .Where(predicate).ToList();
         }
 
-        public void Update(Student item)
+        public void UpdateAsync(Student item)
         {
-            _context.Students.Attach(item);
-            
-      /*      _context.Entry(item).Property(e => e.FirstName).IsModified = true;
-            _context.Entry(item).Property(e => e.LastName).IsModified = true;
-            _context.Entry(item).Property(e => e.BirthDate).IsModified = true;*/
-            _context.Entry(item).Property(e => e.Type).IsModified = true;
+            _context.Attach(item);
+            _context.Entry(item).Property("Type").IsModified = true;
+         /*   _context.Students.Update(item));*/
         }
 
-        public void Delete(int id)
+        public async void Delete(int id)
         {
-            Student student = _context.Students.Find(id);
+            Student student = await _context.Students.FindAsync(id);
             if (student != null)
                 _context.Students.Remove(student);
         }

@@ -16,9 +16,9 @@ namespace IdentityNLayer.BLL.Services
             Db = db;
         }
 
-        public void Update(Teacher entity)
+        public void UpdateAsync(Teacher entity)
         {
-            Db.Teachers.Update(entity);
+            Db.Teachers.UpdateAsync(entity);
             Db.Save();
         }
 

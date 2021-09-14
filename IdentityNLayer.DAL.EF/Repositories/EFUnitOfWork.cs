@@ -15,7 +15,9 @@ namespace IdentityNLayer.DAL.EF.Repositories
         private IRepository<Enrollment> _enrollmentsRepository;
         private IRepository<Course> _coursesRepository;
         private IRepository<Topic> _topicsRepository;
-
+        private IRepository<Lesson> _lessonsRepository;
+        private IRepository<File> _filesRepository;
+        private IRepository<GroupLesson> _groupLessonsRepository;
         public EFUnitOfWork(ApplicationContext context,
             IRepository<Student> studentRepository,
             IRepository<Group> groupRepository,
@@ -23,7 +25,10 @@ namespace IdentityNLayer.DAL.EF.Repositories
             IRepository<StudentToGroupAction> studentToGroupActionsRepository,
             IRepository<Enrollment> enrollmentsRepository,
             IRepository<Course> coursesRepository,
-            IRepository<Topic> topicsRepository)
+            IRepository<Topic> topicsRepository,
+            IRepository<Lesson> lessonsRepository,
+            IRepository<File> filesRepository,
+            IRepository<GroupLesson> groupLessonsRepository)
         {
             _context = context;
             _studentRepository = studentRepository;
@@ -33,6 +38,9 @@ namespace IdentityNLayer.DAL.EF.Repositories
             _enrollmentsRepository = enrollmentsRepository;
             _coursesRepository = coursesRepository;
             _topicsRepository = topicsRepository;
+            _lessonsRepository = lessonsRepository;
+            _filesRepository = filesRepository;
+            _groupLessonsRepository = groupLessonsRepository;
         }
         public IRepository<Student> Students => _studentRepository;
         public IRepository<Group> Groups => _groupRepository;
@@ -41,6 +49,9 @@ namespace IdentityNLayer.DAL.EF.Repositories
         public IRepository<Enrollment> Enrollments => _enrollmentsRepository;
         public IRepository<Course> Courses => _coursesRepository;
         public IRepository<Topic> Topics => _topicsRepository;
+        public IRepository<Lesson> Lessons => _lessonsRepository;
+        public IRepository<File> Files => _filesRepository;
+        public IRepository<GroupLesson> GroupLessons => _groupLessonsRepository;
 
         public void Save()
         {
@@ -55,7 +66,7 @@ namespace IdentityNLayer.DAL.EF.Repositories
             {
                 if (disposing)
                 {
-                    _context.Dispose();
+                    _context.DisposeAsync();
                 }
                 disposed = true;
             }

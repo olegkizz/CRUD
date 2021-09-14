@@ -75,7 +75,7 @@ namespace IdentityNLayer.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,FirstName,LastName,LinkToProfile,Bio,BirthDate")] TeacherModel teacher, int? courseId)
+        public async Task<IActionResult> Create([Bind("Id,LinkToProfile,Bio,User")] TeacherModel teacher, int? courseId)
         {
             if (ModelState.IsValid)
             {
@@ -147,26 +147,26 @@ namespace IdentityNLayer.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,FirstName,LastName,LinkToProfile,Bio,BirthDate,UserId")] TeacherModel teacher)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,LinkToProfile,Bio,User")] TeacherModel teacher)
         {
             if ((await _teacherService.GetByIdAsync(id)).UserId != _userManager.GetUserId(User)
                 && !User.IsInRole("Admin") && !User.IsInRole("Manager"))
                 return BadRequest();
 
-         /*   if (id != teacher.Id)
+            if (id != teacher.Id)
             {
                 return NotFound();
-            }*/
+            }
 
             if (ModelState.IsValid)
             {
                 try
                 {
-                    _teacherService.Update(_mapper.Map<Teacher>(teacher));
+                    _teacherService.UpdateAsync(_mapper.Map<Teacher>(teacher));
                 }
                 catch (DbUpdateConcurrencyException ex)
                 {
-                    /*if (await _teacherService.GetByIdAsync(teacher.Id) == null)
+                    if (await _teacherService.GetByIdAsync(teacher.Id) == null)
                     {
                         _logger.LogError("Teacher with id=" + teacher.Id + " not found");
                         return NotFound();
@@ -175,7 +175,7 @@ namespace IdentityNLayer.Controllers
                     {
                         _logger.LogError(ex.Message);
                         throw;
-                    }*/
+                    }
                 }
                 if (User.IsInRole("Admin") && User.IsInRole("Manager"))
                     return RedirectToAction(nameof(Index));
@@ -210,11 +210,6 @@ namespace IdentityNLayer.Controllers
                        _context.Contact.Remove(contact);
                        await _context.SaveChangesAsync();*/
             return RedirectToAction(nameof(Index));
-        }
-
-        private bool TeacherExists(int id)
-        {
-            return true;
         }
     }
 }

@@ -13,7 +13,7 @@ namespace IdentityNLayer.DAL
         IEnumerable<T> Find(Func<T, Boolean> predicate);
         Task<IEnumerable<T>> FindAsync(Func<T, Boolean> predicate);
         void CreateAsync(T item);
-        void Update(T item);
+        void UpdateAsync(T item);
         void Delete(int id);
     }   
 }

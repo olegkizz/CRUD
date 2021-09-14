@@ -26,15 +26,19 @@ namespace IdentityNLayer.DAL.EF.Repositories
                 .ToList();
         }
 
-        public void Update(Teacher item)
+        public void UpdateAsync(Teacher item)
         {
-            _context.Teachers.Attach(item);
+
+            _context.Attach(item);
+            _context.Entry(item).Property(e => e.Bio).IsModified = true;
+            _context.Entry(item).Property(e => e.LinkToProfile).IsModified = true;
+            /*_context.Teachers.Update(item));*/
 
             /*_context.Entry(item).Property(e => e.FirstName).IsModified = true;
             _context.Entry(item).Property(e => e.LastName).IsModified = true;
             _context.Entry(item).Property(e => e.BirthDate).IsModified = true;*/
-            _context.Entry(item).Property(e => e.Bio).IsModified = true;
-            _context.Entry(item).Property(e => e.LinkToProfile).IsModified = true;
+            /*_context.Entry(item).Property(e => e.Bio).IsModified = true;
+            _context.Entry(item).Property(e => e.LinkToProfile).IsModified = true;*/
         }
 
         public void Delete(int id)

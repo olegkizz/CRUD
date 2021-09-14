@@ -29,7 +29,7 @@ namespace IdentityNLayer.BLL.Services
             {
                 enrollment.State = confirmed ? UserGroupStates.Applied : UserGroupStates.Requested;
                 enrollment.EntityID = entityId;
-                Db.Enrollments.Update(enrollment);
+                Db.Enrollments.UpdateAsync(enrollment);
             }
             else if (enrollment == null)
                 Db.Enrollments.CreateAsync(new Enrollment
@@ -43,14 +43,14 @@ namespace IdentityNLayer.BLL.Services
             Db.Save();
         }
 
-        public void UnEnrol(string userId, int groupdId)
+        public async void UnEnrol(string userId, int groupdId)
         {
             Enrollment enrollment =
              Db.Enrollments.Find(en => en.UserID == userId && en.EntityID == groupdId && en.State == UserGroupStates.Applied)?.SingleOrDefault();
             if (enrollment != null)
             {
                 enrollment.State = UserGroupStates.Aborted;
-                Db.Enrollments.Update(enrollment);
+                Db.Enrollments.UpdateAsync(enrollment);
             }
             Db.Save();
         }

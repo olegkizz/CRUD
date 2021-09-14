@@ -25,7 +25,9 @@ namespace IdentityNLayer.DAL.EF.Context
         public DbSet<Enrollment> Enrollments { get; set; }
         public DbSet<Course> Courses { get; set; }
         public DbSet<Topic> Topics { get; set; }
-
+        public DbSet<Lesson> Lessons { get; set; }
+        public DbSet<File> Files { get; set; }
+        public DbSet<GroupLesson> GroupLessons { get; set; }
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             optionsBuilder.EnableSensitiveDataLogging();
@@ -35,6 +37,8 @@ namespace IdentityNLayer.DAL.EF.Context
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
+            modelBuilder.Entity<File>().HasKey(f => new { f.Name, f.Path });
+            modelBuilder.Entity<GroupLesson>().HasKey(lg => new { lg.StartDate, lg.GroupId, lg.LessonId });
             modelBuilder.Seed();
         }
     }

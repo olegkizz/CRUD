@@ -51,7 +51,7 @@ namespace IdentityNLayer.DAL.EF.Repositories
                 .SingleAsync();
         }
 
-        public void Update(Course item)
+        public void UpdateAsync(Course item)
         {
             _context.Courses.Update(item);
         }

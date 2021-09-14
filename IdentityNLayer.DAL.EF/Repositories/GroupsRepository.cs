@@ -27,10 +27,10 @@ namespace IdentityNLayer.DAL.EF.Repositories
                   .ToList();
         }
 
-        public void Update(Group item)
+        public void UpdateAsync(Group item)
         {
             _context.Entry(item).State = EntityState.Modified;
-            _context.Groups.Update(item);
+           _context.Groups.Update(item);
         }
 
         public void Delete(int id)

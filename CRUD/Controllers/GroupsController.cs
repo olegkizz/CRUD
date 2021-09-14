@@ -134,7 +134,7 @@ namespace IdentityNLayer.Controllers
                 {
                     Teacher currentTeacher = _groupService.GetCurrentTeacher(group.Id);
 
-                    _groupService.Update(_mapper.Map<Group>(group));
+                    _groupService.UpdateAsync(_mapper.Map<Group>(group));
 
                     if (group.StudentRequests != null) foreach (StudentRequestsModel studentRequest in group.StudentRequests)
                         {

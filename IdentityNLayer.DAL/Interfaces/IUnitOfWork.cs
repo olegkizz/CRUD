@@ -11,6 +11,9 @@ namespace IdentityNLayer.DAL.Interfaces
         IRepository<StudentToGroupAction> StudentToGroupActions { get; }
         IRepository<Enrollment> Enrollments { get; }
         IRepository<Course> Courses { get; }
+        IRepository<Lesson> Lessons { get; }
+        IRepository<File> Files { get; }
+        IRepository<GroupLesson> GroupLessons { get; }
         IRepository<Topic> Topics { get; }
 
         void Save();

@@ -110,7 +110,7 @@ namespace IdentityNLayer.Controllers
             {
                 try
                 {
-                    _courseService.Update(_mapper.Map<Course>(course));
+                    _courseService.UpdateAsync(_mapper.Map<Course>(course));
                 }
                 catch (DbUpdateConcurrencyException ex)
                 {

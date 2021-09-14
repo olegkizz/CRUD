@@ -23,9 +23,9 @@ namespace IdentityNLayer.BLL.Services
             throw new NotImplementedException();
         }
 
-        public void Update(Course entity)
+        public void UpdateAsync(Course entity)
         {
-            Db.Courses.Update(entity);
+            Db.Courses.UpdateAsync(entity);
             Db.Save();
         }
         public IEnumerable<Enrollment> GetStudentRequests(int id)

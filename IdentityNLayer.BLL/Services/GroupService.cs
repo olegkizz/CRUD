@@ -16,9 +16,9 @@ namespace IdentityNLayer.BLL.Services
             Db = db;
         }
 
-        public void Update(Group entity)
+        public void UpdateAsync(Group entity)
         {
-            Db.Groups.Update(entity);
+            Db.Groups.UpdateAsync(entity);
             Db.Save();
         }
 

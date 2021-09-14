@@ -24,9 +24,9 @@ namespace IdentityNLayer.DAL.EF.Repositories
             _context.StudentToGroupActions.Add(item);
         }
 
-        public void Update(StudentToGroupAction item)
+        public void UpdateAsync(StudentToGroupAction item)
         {
-            _context.Entry(item).State = EntityState.Modified;
+            _context.StudentToGroupActions.Update(item);
         }
 
         public void Delete(int id)
