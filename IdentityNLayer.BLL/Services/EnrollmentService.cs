@@ -19,7 +19,7 @@ namespace IdentityNLayer.BLL.Services
         //entityId - CourseId or GroupId, depends on #confirmed(true - groupId, false - courseId)
         public async void Enrol(string userId, int entityId, UserRoles role, bool confirmed = true)
         {
-            Group group = (await Db.Groups.FindAsync(gr => gr.Id == entityId))?.SingleOrDefault();
+            Group group = (Db.Groups.Find(gr => gr.Id == entityId))?.SingleOrDefault();
 
             Enrollment enrollment =
               Db.Enrollments.Find(en => en.UserID == userId && en.EntityID == (confirmed ? group?.CourseId : entityId)
