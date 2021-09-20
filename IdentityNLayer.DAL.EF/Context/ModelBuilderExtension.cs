@@ -220,6 +220,34 @@ namespace IdentityNLayer.DAL.EF.Context
                     {
                         course1, course2, course3
                     });
+            Lesson lesson1 = new Lesson()
+            {
+                Id = 1,
+                Name = "Lesson 1",
+                Theme = "Super Lesson 1",
+                CourseId = course1.Id
+            };
+            Lesson lesson2 = new Lesson()
+            {
+                Id = 2,
+                Name = "Lesson 2",
+                Theme = "Super Lesson 2",
+                CourseId = course1.Id
+            };
+            Lesson lesson3 = new Lesson()
+            {
+                Id = 3,
+                Name = "Lesson 3",
+                Theme = "Super Lesson 3",
+                CourseId = course1.Id
+            };
+            modelBuilder.Entity<Lesson>().Property(l => l.Updated).HasDefaultValueSql("getdate()");
+
+            modelBuilder.Entity<Lesson>().HasData(
+                    new Lesson[]
+                    {
+                        lesson1, lesson2, lesson3
+                    });
             /*      Group firstGroup = new Group
                   {
                       Id = 1,

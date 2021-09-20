@@ -1,4 +1,6 @@
-﻿using System;
+﻿using IdentityNLayer.Core.Entities;
+using Microsoft.EntityFrameworkCore.ChangeTracking;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -14,6 +16,6 @@ namespace IdentityNLayer.DAL
         Task<IEnumerable<T>> FindAsync(Func<T, Boolean> predicate);
         void CreateAsync(T item);
         void UpdateAsync(T item);
-        void Delete(int id);
+        Task<EntityEntry<T>> DeleteAsync(int id);
     }   
 }

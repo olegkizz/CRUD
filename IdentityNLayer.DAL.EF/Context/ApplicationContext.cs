@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
 using System.Collections.Generic;
+using System;
 
 namespace IdentityNLayer.DAL.EF.Context
 {
@@ -37,8 +38,13 @@ namespace IdentityNLayer.DAL.EF.Context
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
-            modelBuilder.Entity<File>().HasKey(f => new { f.Name, f.Path });
-            modelBuilder.Entity<GroupLesson>().HasKey(lg => new { lg.StartDate, lg.GroupId, lg.LessonId });
+            modelBuilder.Entity<Course>().HasOne(gl => gl.Topic).WithOne(t => t.Course).HasForeignKey<Topic>(t => t.CourseId);
+            modelBuilder
+                   .Entity<Course>()
+                   .HasMany(c => c.Lessons)
+                   .WithOne(l => l.Course)
+                   .OnDelete(DeleteBehavior.ClientCascade);
+
             modelBuilder.Seed();
         }
     }

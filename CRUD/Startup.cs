@@ -18,6 +18,8 @@ using IdentityNLayer.DAL.Interfaces;
 using IdentityNLayer.BLL.Interfaces;
 using IdentityNLayer.Mapper;
 using IdentityNLayer.Middleware;
+using IdentityNLayer.BLL;
+using IdentityNLayer.DAL.EF;
 
 namespace IdentityNLayer
 {
@@ -66,22 +68,7 @@ namespace IdentityNLayer
             services.AddScoped<IAuthorizationHandler,
                 ContactManagerAuthorizationHandler>();
 
-            services.AddTransient<IUnitOfWork,
-                EFUnitOfWork>();
-            services.AddTransient<IRepository<Student>,
-                StudentsRepository>();
-            services.AddTransient<IRepository<Group>,
-                GroupsRepository>();
-            services.AddTransient<IRepository<Teacher>,
-                TeachersRepository>();
-            services.AddTransient<IRepository<StudentToGroupAction>,
-                StudentToGroupActionsRepository>();
-            services.AddTransient<IRepository<Enrollment>,
-                EnrollmentsRepository>();
-            services.AddTransient<IRepository<Course>,
-                CoursesRepository>();
-            services.AddTransient<IRepository<Topic>,
-                TopicsRepository>();
+          
             var mapperConfig = new MapperConfiguration(mc =>
             {
                 mc.AddProfile(new MappingProfile());
@@ -89,19 +76,9 @@ namespace IdentityNLayer
 
             IMapper mapper = mapperConfig.CreateMapper();
             services.AddSingleton(mapper);
+            services.AddRepositories();
 
-            services.AddScoped<IStudentService,
-                StudentService>();
-            services.AddScoped<IGroupService,
-                GroupService>();
-            services.AddScoped<ITeacherService,
-                TeacherService>();
-            services.AddScoped<IEnrollmentService,
-              EnrollmentService>();
-            services.AddScoped<ICourseService,
-              CourseService>();
-            services.AddScoped<IStudentToGroupActionService,
-              StudentToGroupActionService>();
+            services.AddBusinessLogicServices();
 
         }
 

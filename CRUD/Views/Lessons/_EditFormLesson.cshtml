@@ -1,0 +1,34 @@
+﻿@model IdentityNLayer.Core.Entities.Lesson
+<span class="col-md-3">
+    <label asp-for="Name" class="control-label"></label>
+    <input asp-for="Name" />
+    <span asp-validation-for="Name" class="text-danger"></span>
+</span>
+<span class="col-md-3">
+    <label asp-for="Theme" class="control-label"></label>
+    <input asp-for="Theme" />
+    <span asp-validation-for="Theme" class="text-danger"></span>
+</span>
+<span class="col-md-3">
+    <label asp-for="File" class="control-label"></label>
+    @if (Model?.File != null)
+    {
+        <a class="file-href" href="@Model?.File.Path" target="_blank">@Model?.File.Name</a>
+        <button type="button" class="btn btn-warning btn-close">
+            <span class="action_text"></span>
+        </button>
+    }
+    else
+    {
+        <input type="File" accept=".doc,.docx,.xml,.pdf,.csv" />
+    }
+    <span asp-validation-for="File" class="text-danger"></span>
+</span>
+<button type="button" class="btn btn-success col-md-1">
+    <span class="action_text">Save</span>
+    <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true" style="display:none;"></span>
+</button>
+<button type="button" class="btn btn-danger col-md-1">
+    <span class="action_text">Delete</span>
+    <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true" style="display:none;"></span>
+</button>

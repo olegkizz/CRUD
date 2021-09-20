@@ -5,7 +5,7 @@ using IdentityNLayer.Core.Entities;
 using Microsoft.EntityFrameworkCore;
 using System.Linq;
 using System.Threading.Tasks;
-
+using Microsoft.EntityFrameworkCore.ChangeTracking;
 
 namespace IdentityNLayer.DAL.EF.Repositories
 {
@@ -41,7 +41,7 @@ namespace IdentityNLayer.DAL.EF.Repositories
             _context.Entry(item).Property(e => e.LinkToProfile).IsModified = true;*/
         }
 
-        public void Delete(int id)
+        public Task<EntityEntry<Teacher>> DeleteAsync(int id)
         {
             throw new NotImplementedException();
         }

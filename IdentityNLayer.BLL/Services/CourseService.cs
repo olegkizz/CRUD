@@ -1,6 +1,7 @@
 ﻿using IdentityNLayer.BLL.Interfaces;
 using IdentityNLayer.Core.Entities;
 using IdentityNLayer.DAL.Interfaces;
+using Microsoft.EntityFrameworkCore.ChangeTracking;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,7 +19,7 @@ namespace IdentityNLayer.BLL.Services
             Db = db;
         }
 
-        public void Delete(int id)
+        public Task<EntityEntry<Course>> Delete(int id)
         {
             throw new NotImplementedException();
         }
@@ -88,5 +89,6 @@ namespace IdentityNLayer.BLL.Services
         {
             return Db.Courses.GetAllAsync();
         }
+
     }
 }

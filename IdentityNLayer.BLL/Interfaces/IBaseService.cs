@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using Microsoft.EntityFrameworkCore.ChangeTracking;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace IdentityNLayer.BLL.Interfaces
@@ -9,6 +10,6 @@ namespace IdentityNLayer.BLL.Interfaces
         Task<T> GetByIdAsync(int id);
         Task<int> CreateAsync(T entity);
         void UpdateAsync(T entity);
-        void Delete(int id);
+        Task<EntityEntry<T>> Delete(int id);
     }
 }

@@ -1,6 +1,7 @@
 ﻿using IdentityNLayer.Core.Entities;
 using IdentityNLayer.DAL.EF.Context;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.ChangeTracking;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -32,11 +33,9 @@ namespace IdentityNLayer.DAL.EF.Repositories
             _context.Enrollments.Update(item);
         }
 
-        public void Delete(int id)
+        public async Task<EntityEntry<Enrollment>> DeleteAsync(int id)
         {
-            Enrollment enrol = _context.Enrollments.Find(id);
-            if (enrol != null)
-                _context.Enrollments.Remove(enrol);
+             return _context.Enrollments.Remove(await _context.Enrollments.FindAsync(id));
         }
 
         public async Task<IEnumerable<Enrollment>> FindAsync(Func<Enrollment, bool> predicate)

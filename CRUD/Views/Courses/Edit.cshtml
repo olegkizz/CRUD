@@ -14,7 +14,7 @@
     <div class="col-md-4">
         <form asp-action="Edit">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            @{ 
+            @{
                 var availableGroups = courseService.GetGroups(Model.Id, GroupStatus.Pending);
             }
             <input type="hidden" asp-for="Id" />
@@ -28,19 +28,32 @@
                 <input asp-for="Description" class="form-control" />
                 <span asp-validation-for="Description" class="text-danger"></span>
             </div>
-            <div class="form-group">
-                <label asp-for="Program" class="control-label"></label>
-                <input asp-for="Program" class="form-control" />
-                <span asp-validation-for="Program" class="text-danger"></span>
-            </div>
+            @*  <div class="form-group">
+                    <label asp-for="Program" class="control-label"></label>
+                    <input asp-for="Program" class="form-control" />
+                    <span asp-validation-for="Program" class="text-danger"></span>
+                </div>*@
             <div class="form-group">
                 <label class="control-label">Topic</label>
                 @Html.DropDownListFor(model => model.TopicId, new SelectList(courseService.GetAvailableTopics(Model.Id), "Id", "Title"))
             </div>
+            @*  <div class="form-group">
+                    <label asp-for="StartDate" class="control-label"></label>
+                    <input asp-for="StartDate" class="form-control" />
+                    <span asp-validation-for="StartDate" class="text-danger"></span>
+                </div>*@
             <div class="form-group">
-                <label asp-for="StartDate" class="control-label"></label>
-                <input asp-for="StartDate" class="form-control" />
-                <span asp-validation-for="StartDate" class="text-danger"></span>
+                <label asp-for="Lessons" class="control-label"></label>
+                <a asp-controller="Lessons" asp-action="Create" asp-route-id="@Model.Id" class="btn btn-primary">
+                    @if (Model.Lessons == null)
+                    {
+                        <span>Add Lessons</span>
+                    }
+                    else
+                    {
+                        <span>See All Lessons</span>
+                    }
+                </a>
             </div>
             <div class="form-group">
                 <label class="control-label">StudentRequests</label>
@@ -55,7 +68,7 @@
             </div>
             <div class="form-group">
                 @{ Dictionary<string, string> courseId = new Dictionary<string, string>() { { "courseId", Model.Id.ToString() } }; }
-                <a asp-controller="Groups" asp-action="Create" asp-all-route-data="courseId" class="btn btn-primary">Create Groups</a>
+                <a asp-controller="Groups" asp-action="Create" asp-all-route-data="courseId" class="btn btn-primary">Create Group</a>
             </div>
             @if (availableGroups.Any())
             {
@@ -75,8 +88,8 @@
 <div>
     <a asp-action="Index">Back to List</a>
 </div>
+<script src="~/js/editCourseScript.js"></script>
 
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
-    @{await Html.RenderPartialAsync("_EditCourseScript");}
 }

@@ -1,0 +1,71 @@
+﻿@model IdentityNLayer.Core.Entities.Lesson
+@inject IdentityNLayer.BLL.Interfaces.ICourseService courseService
+@using AutoMapper
+@using IdentityNLayer.Core.Entities
+@inject IMapper mapper
+@{
+    ViewData["Title"] = "Create";
+    string courseId = Context.Request.RouteValues["id"].ToString();
+}
+
+<h1>Create</h1>
+
+<h4>Lesson</h4>
+<hr />
+<div class="row">
+    <div>
+        <form asp-action="Create">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" asp-for="CourseId" value="@courseId"/>
+            <div class="accordion accordion-flush" id="flush-lessons">
+                @{
+                    CourseModel course = mapper.Map<CourseModel>(await courseService.GetByIdAsync(Convert.ToInt32(courseId)));
+                }
+                @if (course.Lessons != null) for (int i = 0; i < course.Lessons.Count() + 1; ++i)
+                    {
+                        string idBody = "lesson_" + (i + 1);
+                        string idFlushCollapse = "flush-collapse-" + i;
+                        string idFlushHeading = "flush-heading-" + i;
+                        string accordionHeader = "Create Lesson";
+                        Lesson lesson = null;
+
+                        if (course.Lessons.Count() == i)
+                        {
+                            idBody = "lesson_create";
+                            idFlushCollapse = "flush-collapse-create";
+                            idFlushHeading = "flush-heading-create";
+                        }
+                        else
+                        {
+                            lesson = course.Lessons.ToList()[i];
+                            accordionHeader = "Lesson " + (i + 1);
+                        }
+
+                        <div class="accordion-item" id="@idBody">
+                            <input type="hidden" id="lesson_id" value="@lesson?.Id" />
+                            <h2 class="accordion-header">
+                                <button class="accordion-button" type="button" data-bs-toggle="collapse"
+                                        data-bs-target="#@idFlushCollapse" aria-expanded="true" aria-controls="@idFlushCollapse">
+                                    <span class="span-header">@accordionHeader</span>
+                                </button>
+                            </h2>
+                            <div id="@idFlushCollapse" class="accordion-collapse collapse" aria-labelledby="@idFlushHeading" data-bs-parent="#flush-lessons">
+                                <div class="accordion-body">
+                                    @{await Html.RenderPartialAsync("_EditFormLesson", lesson);}
+                                </div>
+                            </div>
+                        </div>
+                    }
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
+<script src="~/js/createLesson.js"></script>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

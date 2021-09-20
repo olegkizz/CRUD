@@ -5,6 +5,7 @@ using IdentityNLayer.Core.Entities;
 using IdentityNLayer.DAL.Interfaces;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore.ChangeTracking;
 
 namespace IdentityNLayer.BLL.Services
 {
@@ -22,7 +23,7 @@ namespace IdentityNLayer.BLL.Services
             Db.Save();
         }
 
-        public void Delete(int id)
+        public Task<EntityEntry<Teacher>> Delete(int id)
         {
             throw new NotImplementedException();
         }

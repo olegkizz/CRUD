@@ -16,5 +16,6 @@ namespace IdentityNLayer.Core.Entities
         public virtual ICollection<Enrollment> Enrollments { get; set; }
         public int CourseId { get; set; }
         public Course Course { get; set; }
+
     }
 }

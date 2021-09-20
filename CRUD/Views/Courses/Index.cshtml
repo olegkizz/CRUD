@@ -27,7 +27,7 @@
                 @Html.DisplayNameFor(model => model.Description)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.StartDate)
+                Lessons
             </th>
             <th>
                 @if (User.IsInRole("Admin") || User.IsInRole("Manager"))
@@ -63,7 +63,16 @@
                     @Html.DisplayFor(modelItem => item.Description)
                 </td>
                 <td>
-                    @Html.DisplayFor(modelItem => item.StartDate)
+                    <a asp-controller="Lessons" asp-action="Create" asp-route-id="@item.Id">
+                        @if (item.Lessons?.Count() != 0)
+                        {
+                            <span>See All Lessons</span>
+                        }
+                        else
+                        {
+                            <span>Add Lessons</span>
+                        }
+                    </a>
                 </td>
                 <td>
                     @if (Context.User.IsInRole("Admin"))

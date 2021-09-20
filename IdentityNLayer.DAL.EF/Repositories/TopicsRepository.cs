@@ -5,6 +5,7 @@ using IdentityNLayer.Core.Entities;
 using Microsoft.EntityFrameworkCore;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore.ChangeTracking;
 
 namespace IdentityNLayer.DAL.EF.Repositories
 {
@@ -26,7 +27,7 @@ namespace IdentityNLayer.DAL.EF.Repositories
             throw new NotImplementedException();
         }
 
-        public void Delete(int id)
+        public Task<EntityEntry<Topic>> DeleteAsync(int id)
         {
             throw new NotImplementedException();
         }

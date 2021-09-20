@@ -6,6 +6,7 @@ using IdentityNLayer.BLL.Interfaces;
 using IdentityNLayer.Core.Entities;
 using IdentityNLayer.DAL.Interfaces;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore.ChangeTracking;
 
 namespace IdentityNLayer.BLL.Services
 {
@@ -59,10 +60,12 @@ namespace IdentityNLayer.BLL.Services
             Db.Save();
         }
 
-        public void Delete(int id)
+        public async Task<EntityEntry<Student>> Delete(int id)
         {
-            Db.Students.Delete(id);
+            EntityEntry<Student> entity = await Db.Students.DeleteAsync(id);
             Db.Save();
+            return entity;
+
         }
         public async Task<List<Group>> GetStudentGroupsAsync(int studentId)
         {

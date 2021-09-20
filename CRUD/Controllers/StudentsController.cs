@@ -216,7 +216,7 @@ namespace IdentityNLayer.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            _studentService.Delete((int)id);
+            await _studentService.Delete(id);
 
             return RedirectToAction(nameof(Index));
         }

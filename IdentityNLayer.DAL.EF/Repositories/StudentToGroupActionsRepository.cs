@@ -1,6 +1,7 @@
 ﻿using IdentityNLayer.Core.Entities;
 using IdentityNLayer.DAL.EF.Context;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.ChangeTracking;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -29,11 +30,9 @@ namespace IdentityNLayer.DAL.EF.Repositories
             _context.StudentToGroupActions.Update(item);
         }
 
-        public void Delete(int id)
+        public async Task<EntityEntry<StudentToGroupAction>> DeleteAsync(int id)
         {
-            StudentToGroupAction studentaction = _context.StudentToGroupActions.Find(id);
-            if (studentaction != null)
-                _context.StudentToGroupActions.Remove(studentaction);
+             return  _context.StudentToGroupActions.Remove(await _context.StudentToGroupActions.FindAsync(id));
         }
 
         public Task<IEnumerable<StudentToGroupAction>> FindAsync(Func<StudentToGroupAction, bool> predicate)

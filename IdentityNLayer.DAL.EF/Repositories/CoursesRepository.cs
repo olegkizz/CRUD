@@ -5,7 +5,7 @@ using IdentityNLayer.Core.Entities;
 using Microsoft.EntityFrameworkCore;
 using System.Linq;
 using System.Threading.Tasks;
-
+using Microsoft.EntityFrameworkCore.ChangeTracking;
 
 namespace IdentityNLayer.DAL.EF.Repositories
 {
@@ -23,7 +23,7 @@ namespace IdentityNLayer.DAL.EF.Repositories
             await _context.Courses.AddAsync(item);
         }
 
-        public void Delete(int id)
+        public Task<EntityEntry<Course>> DeleteAsync(int id)
         {
             throw new NotImplementedException();
         }
@@ -40,12 +40,17 @@ namespace IdentityNLayer.DAL.EF.Repositories
 
         public async Task<IEnumerable<Course>> GetAllAsync()
         {
-            return await _context.Courses.ToListAsync();
+            return await _context.Courses
+                .Include(c => c.Lessons)
+                .ThenInclude(l => l.File)
+                .ToListAsync();
         }
 
         public async Task<Course> GetAsync(int id)
         {
             return await _context.Courses
+                .Include(c => c.Lessons)
+                .ThenInclude(l => l.File)
                 .AsNoTracking()
                 .Where(crs => crs.Id == id)
                 .SingleAsync();

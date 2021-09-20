@@ -5,8 +5,7 @@ using IdentityNLayer.Core.Entities;
 using Microsoft.EntityFrameworkCore;
 using System.Linq;
 using System.Threading.Tasks;
-
-
+using Microsoft.EntityFrameworkCore.ChangeTracking;
 
 namespace IdentityNLayer.DAL.EF.Repositories
 {
@@ -33,11 +32,9 @@ namespace IdentityNLayer.DAL.EF.Repositories
          /*   _context.Students.Update(item));*/
         }
 
-        public async void Delete(int id)
+        public async Task<EntityEntry<Student>> DeleteAsync(int id)
         {
-            Student student = await _context.Students.FindAsync(id);
-            if (student != null)
-                _context.Students.Remove(student);
+            return _context.Students.Remove(await _context.Students.FindAsync(id));
         }
 
         public async Task<IEnumerable<Student>> FindAsync(Func<Student, bool> predicate)
