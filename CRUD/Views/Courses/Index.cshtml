@@ -63,16 +63,24 @@
                     @Html.DisplayFor(modelItem => item.Description)
                 </td>
                 <td>
-                    <a asp-controller="Lessons" asp-action="Create" asp-route-id="@item.Id">
-                        @if (item.Lessons?.Count() != 0)
-                        {
-                            <span>See All Lessons</span>
-                        }
-                        else
-                        {
-                            <span>Add Lessons</span>
-                        }
-                    </a>
+                    @if (User.IsInRole("Admin") || User.IsInRole("Manager"))
+                    {
+                        <a asp-controller="Lessons" asp-action="Create" asp-route-id="@item.Id">
+
+                            @if (item.Lessons?.Count() != 0)
+                            {
+                                <span>See All Lessons</span>
+                            }
+                            else
+                            {
+                                <span>Add Lessons</span>
+                            }
+                        </a>
+                    }
+                    else
+                    {
+                        <span>@item.Lessons.Count()</span>
+                    }
                 </td>
                 <td>
                     @if (Context.User.IsInRole("Admin"))
