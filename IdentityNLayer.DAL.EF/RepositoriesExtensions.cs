@@ -36,6 +36,10 @@ namespace IdentityNLayer.DAL.EF
                GroupLessonsRepository>();
             services.AddTransient<IRepository<File>,
                FilesRepository>();
+            services.AddTransient<IRepository<Topic>,
+               TopicsRepository>();
+            services.AddTransient<IRepository<StudentMark>,
+              StudentMarksRepository>();
 
             return services;
         }

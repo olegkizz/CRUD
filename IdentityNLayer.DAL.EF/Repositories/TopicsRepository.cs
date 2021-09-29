@@ -22,26 +22,31 @@ namespace IdentityNLayer.DAL.EF.Repositories
             throw new NotImplementedException();
         }
 
-        public void CreateAsync(Topic item)
+        public async void CreateAsync(Topic item)
         {
-            throw new NotImplementedException();
+            await _context.Topics.AddAsync(item);
         }
 
-        public Task<EntityEntry<Topic>> DeleteAsync(int id)
+        public async Task<EntityEntry<Topic>> DeleteAsync(int id)
         {
-            throw new NotImplementedException();
+            return _context.Topics.Remove(await _context.Topics.Where(t => t.Id == id)?.SingleOrDefaultAsync());
         }
 
         public IEnumerable<Topic> Find(Func<Topic, bool> predicate)
         {
             return _context.Topics
+                    .Include(t => t.Course)
                     .Where(predicate)
                     .ToList();
         }
 
         public async Task<IEnumerable<Topic>> FindAsync(Func<Topic, bool> predicate)
         {
-            throw new NotImplementedException();
+            return await _context.Topics
+                  .Include(t => t.Course)
+                  .Where(predicate)
+                  .AsQueryable()
+                  .ToListAsync();
         }
 
         public async Task<IEnumerable<Topic>> GetAllAsync()

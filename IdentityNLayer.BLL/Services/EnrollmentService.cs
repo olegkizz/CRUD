@@ -17,7 +17,7 @@ namespace IdentityNLayer.BLL.Services
         }
     
         //entityId - CourseId or GroupId, depends on #confirmed(true - groupId, false - courseId)
-        public async void Enrol(string userId, int entityId, UserRoles role, bool confirmed = true)
+        public void Enrol(string userId, int entityId, UserRoles role, bool confirmed = true)
         {
             Group group = (Db.Groups.Find(gr => gr.Id == entityId))?.SingleOrDefault();
 
@@ -43,7 +43,7 @@ namespace IdentityNLayer.BLL.Services
             Db.Save();
         }
 
-        public async void UnEnrol(string userId, int groupdId)
+        public void UnEnrol(string userId, int groupdId)
         {
             Enrollment enrollment =
              Db.Enrollments.Find(en => en.UserID == userId && en.EntityID == groupdId && en.State == UserGroupStates.Applied)?.SingleOrDefault();

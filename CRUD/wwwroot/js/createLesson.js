@@ -8,12 +8,15 @@
         let url = "Lessons/Edit";
         let inputFile = accordionItem.querySelector("input[type=File]");
         let buttons = accordionItem.querySelectorAll(".btn");
+        let spanErrorHeader = accordionItem.querySelector('.span-header-error');
         if (inputFile)
             formData.append('File', inputFile.files[0]);
         formData.append('Id', lessonId);
         formData.append('Name', accordionItem.querySelector("#Name").value);
         formData.append('Theme', accordionItem.querySelector("#Theme").value);
         formData.append('CourseId', document.querySelector("#CourseId").value);
+        formData.append('Duration', accordionItem.querySelector("#Duration").value == "" ? 0
+            : accordionItem.querySelector("#Duration").value);
 
         buttonToLoading(buttons);
        
@@ -23,8 +26,11 @@
             console.log(data);
             buttonFromLoadingToSuccess(buttons);
             if (data.statusCode != 200) {
-                return;
-            }
+                if (data.statusCode == 400) {
+                    spanErrorHeader.textContent = data.message;
+                    return;
+                }
+            } else if (spanErrorHeader.textContent.trim() != '') spanErrorHeader.textContent = '';
             if (inputFile)
                 if (inputFile.files[0]) {
                     inputFile.remove();

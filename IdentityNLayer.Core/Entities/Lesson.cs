@@ -1,5 +1,6 @@
 ﻿
 using System;
+using System.ComponentModel.DataAnnotations;
 
 namespace IdentityNLayer.Core.Entities
 {
@@ -8,6 +9,7 @@ namespace IdentityNLayer.Core.Entities
         public int Id { get; set; }
         public string Name { get; set; }
         public string Theme { get; set; }
+        public int Duration { get; set; }
         public int? FileId { get; set; }
         public File File { get; set; }
         public int CourseId { get; set; }

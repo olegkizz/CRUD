@@ -1,0 +1,136 @@
+﻿@model IEnumerable<IdentityNLayer.Models.GroupLessonModel>
+@inject IdentityNLayer.BLL.Interfaces.IGroupService groupService
+@using AutoMapper
+@using IdentityNLayer.Core.Entities
+@inject IMapper mapper
+@{
+    string groupId = Context.Request.Query["groupId"].SingleOrDefault();
+    if (groupId == null)
+        groupId = Context.Request.RouteValues["groupId"].ToString();
+    GroupModel group = mapper.Map<GroupModel>(await groupService.GetByIdAsync(Convert.ToInt32
+        (groupId)));
+}
+<h1>Lessons In Group @group.Number</h1>
+
+<form asp-action="SaveGroupLessons">
+    <input type="hidden" name="groupId" value="@group.Id" />
+    <table class="table form-group">
+        <thead>
+            <tr>
+                <th>
+                    Lesson
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Lesson.Name)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Lesson.Theme)
+
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Lesson.File)
+
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.StartDate)
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+            @{
+                bool flagCurrentLesson = false;
+                string colorTr = "";
+                bool disabledStartDate = false;
+            }
+            @{ int i = 0;}
+            @foreach (var item in Model)
+            {
+                @if (item.Group.Status == GroupStatus.Started && item.StartDate != null)
+                    @if (DateTime.Now.CompareTo(item.StartDate.Value.AddMinutes(item.Lesson.Duration)) >= 0)
+                    {
+                        colorTr = "darkgray";
+                        disabledStartDate = true;
+                    }
+                    else if (flagCurrentLesson)
+                    {
+                        colorTr = "";
+                        disabledStartDate = false;
+                    }
+                    else if (!flagCurrentLesson)
+                    {
+                        colorTr = "lightgreen";
+                        flagCurrentLesson = true;
+                        disabledStartDate = true;
+                    }
+                    <tr style="background:@colorTr" class="form-group">
+                        <td>
+                            @(i + 1)
+                        </td>
+                        <td style="display:none;">
+                            @{
+                                <input asp-for="@Model.ToList()[i].LessonId" type="hidden" />
+                                <input asp-for="@Model.ToList()[i].Lesson.Duration" type="hidden" />
+                                <input asp-for="@Model.ToList()[i].Lesson.CourseId" type="hidden" />
+                                <input asp-for="@Model.ToList()[i].Id" type="hidden" />
+                                <input asp-for="@Model.ToList()[i].GroupId" type="hidden" />
+                            }
+                        </td>
+                        <td>
+                            @if (User.IsInRole("Admin") || User.IsInRole("Manager"))
+                            {
+                                string acnhorLessonId = "lesson_" + item.Lesson.Id;
+                                <a asp-controller="Lessons" asp-action="Create" asp-fragment="@acnhorLessonId" asp-route-courseId="@group.CourseId"
+                                   target="_blank">@item.Lesson.Name</a>
+                            }
+                            else
+                            {
+                                @Html.DisplayFor(modelItem => item.Lesson.Name)
+                            }
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Lesson.Theme)
+                        </td>
+                        <td>
+                            @if (item.Lesson?.File != null)
+                            {
+                                <a class="file-href" href="@item.Lesson.File.Path" target="_blank">@item.Lesson.File.Name</a>
+                            }
+                            else
+                            {
+                                <span>File Doesnt Exist</span>
+                            }
+                        </td>
+                        <td>
+                            @if (User.IsInRole("Teacher") || User.IsInRole("Student"))
+                            {
+                                disabledStartDate = true;
+                            }
+                            @if (disabledStartDate)
+                            {
+                                <input asp-for="@Model.ToList()[i].StartDate" class="datetime-local" readonly />
+                            }
+                            else
+                            {
+                                <input asp-for="@Model.ToList()[i].StartDate" class="datetime-local" />
+                            }
+                            <ul>
+                                @if(Model.ToList()[i].Error != null) foreach (string error in Model.ToList()[i].Error)
+                                {
+                                    <li class="text-danger">@error</li>
+                                }
+                            </ul>
+                        </td>
+                    </tr>
+                    i++;
+                }
+        </tbody>
+    </table>
+    @if (User.IsInRole("Admin") || User.IsInRole("Manager"))
+    {
+        <div class="form-group">
+            <input type="submit" value="Save" class="btn btn-primary" />
+        </div>
+    }
+</form>
+
+

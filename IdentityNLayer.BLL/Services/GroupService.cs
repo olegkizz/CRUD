@@ -6,15 +6,20 @@ using IdentityNLayer.DAL.Interfaces;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace IdentityNLayer.BLL.Services
 {
     public class GroupService : IGroupService
     {
         private IUnitOfWork Db { get; set; }
-        public GroupService(IUnitOfWork db)
+        private IStudentMarkService _studentMarkService{ get; set; }
+        public GroupService(IUnitOfWork db,
+            IStudentMarkService studentMarkService)
         {
             Db = db;
+            _studentMarkService = studentMarkService;
         }
 
         public void UpdateAsync(Group entity)
@@ -48,7 +53,7 @@ namespace IdentityNLayer.BLL.Services
         {
             if (groupId == null)
                 return new List<Student>();
-            List<Student> students = new ();
+            List<Student> students = new();
             switch (state)
             {
                 case UserGroupStates.Applied:
@@ -96,8 +101,8 @@ namespace IdentityNLayer.BLL.Services
 
         public bool HasStudent(int groupId, string userId)
         {
-            return Db.Enrollments.Find(en => en.UserID == userId 
-            && en.Role == UserRoles.Student 
+            return Db.Enrollments.Find(en => en.UserID == userId
+            && en.Role == UserRoles.Student
             && en.EntityID == groupId
             && en.State == UserGroupStates.Applied)
                 .FirstOrDefault() != null
@@ -124,6 +129,57 @@ namespace IdentityNLayer.BLL.Services
         public Task<IEnumerable<Group>> GetAllAsync()
         {
             return Db.Groups.GetAllAsync();
+        }
+
+        public async Task<Group> CancelGroupAsync(int groupId)
+        {
+            Group group = await GetByIdAsync(groupId);
+            Enrollment[] enrollments = Array.Empty<Enrollment>();
+            foreach (Enrollment enrollment in Db.Enrollments.Find(en => en.EntityID == groupId && en.State == UserGroupStates.Applied))
+            {
+                enrollment.State = UserGroupStates.Requested;
+                enrollment.EntityID = group.CourseId;
+                Db.Enrollments.UpdateAsync(enrollment);
+            }
+            group.Status = GroupStatus.Pending;
+            group.Teacher = null;
+            group.TeacherId = null;
+
+            _studentMarkService.DeleteGroupMarksAsync(groupId);
+
+            return group;
+            //TO DO
+            //Delete All Student Marks In The Group
+        }
+
+        public async Task<Group> FinishGroupAsync(int groupId)
+        {
+            Group group = await GetByIdAsync(groupId);
+
+            foreach (Enrollment enrollment in Db.Enrollments.Find(en => en.EntityID == groupId 
+            && en.State == UserGroupStates.Applied && en.Role == UserRoles.Student))
+                await Db.Enrollments.DeleteAsync(enrollment.Id);
+            group.Status = GroupStatus.Pending;
+            //UpdateAsync(group);
+
+            return group;
+        }
+
+        public Task<List<SelectListItem>> GetAvailableStatusAsync(int groupId)
+        {
+            Group group = Db.Groups.Find(gr => gr.Id == groupId).SingleOrDefault();
+
+            List<SelectListItem> statusList = new() { new SelectListItem(group.Status.ToString(), group.Status.ToString()) };
+            if (group.Status == GroupStatus.Pending)
+                statusList.Add(new SelectListItem(GroupStatus.Started.ToString(), GroupStatus.Started.ToString()));
+            if(group.Status == GroupStatus.Started)
+            {
+                GroupLesson lastLesson = Db.GroupLessons.Find(gl => gl.GroupId == groupId).OrderBy(gl => gl.StartDate).LastOrDefault();
+                if (lastLesson.StartDate.Value.AddMinutes(lastLesson.Lesson.Duration) < DateTime.Now)
+                    statusList.Add(new SelectListItem(GroupStatus.Finished.ToString(), GroupStatus.Finished.ToString()));
+                else statusList.Add(new SelectListItem(GroupStatus.Cancelled.ToString(), GroupStatus.Cancelled.ToString()));
+            }
+            return Task.FromResult(statusList);
         }
     }
 }

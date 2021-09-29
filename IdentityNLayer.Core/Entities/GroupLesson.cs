@@ -8,7 +8,7 @@ namespace IdentityNLayer.Core.Entities
         public int GroupId { get; set; }
         public Group Group { get; set; }
         public int LessonId { get; set; }
-        public virtual Lesson Lesson { get; set; }
+        public Lesson Lesson { get; set; }
         public DateTime? StartDate { get; set; }
     }
 }

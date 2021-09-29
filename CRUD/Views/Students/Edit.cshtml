@@ -1,5 +1,6 @@
 ﻿@model IdentityNLayer.Models.StudentModel
 @inject IdentityNLayer.BLL.Interfaces.IStudentService studentService
+@inject IdentityNLayer.BLL.Interfaces.IStudentMarkService studentMarkService
 @using  IdentityNLayer.Core.Entities
 @{
     ViewData["Title"] = "Edit";
@@ -15,21 +16,6 @@
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <input type="hidden" asp-for="Id" />
             <input type="hidden" name="id" value="@Model.Id" />
-         @*   <div class="form-group">
-                <label asp-for="FirstName" class="control-label"></label>
-                <input asp-for="FirstName" class="form-control" />
-                <span asp-validation-for="FirstName" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="LastName" class="control-label"></label>
-                <input asp-for="LastName" class="form-control" />
-                <span asp-validation-for="LastName" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="BirthDate" class="control-label"></label>
-                <input asp-for="BirthDate" type="date" class="form-control" />
-                @Html.ValidationMessageFor(m => m.BirthDate, "", new { @class = "text-danger" })
-            </div>*@
             <div class="form-group">
                 <label asp-for="Type" class="control-label"></label>
                 <select asp-for="Type" class="form-control">
@@ -41,11 +27,27 @@
                 <span asp-validation-for="Type" class="text-danger"></span>
             </div>
             <div class="form-group">
+                @{
+                    List<Group> studentGroups = (await studentService.GetStudentGroupsAsync(Model.Id)).ToList();
+                }
                 <label class="control-label">Your Assign Groups Like Student</label>
-                @foreach (Group gr in await studentService.GetStudentGroupsAsync(Model.Id))
+                @foreach (Group gr in studentGroups)
                 {
-                    Dictionary<string, string> groupdId = new Dictionary<string, string> { { "id", gr.Id.ToString() } };
-                    <span class="form-control"><a asp-controller="Groups" asp-action="Details" asp-all-route-data="groupdId">@gr.Number </a></span>
+                    <span class="form-control"><a asp-controller="Groups" asp-action="Details" asp-route-id="@gr.Id">@gr.Number </a></span>
+                }
+                <label class="control-label">Your Finished Courses</label>
+                @foreach (Group gr in await studentMarkService.GetStudentGroupsAsync(Model.Id))
+                {
+                    if (studentGroups.Find(sg => sg.Id == gr.Id) == null)
+                    {
+                        <span class="form-control">
+                            <a asp-controller="Courses" asp-action="Details"
+                               asp-route-id="@gr.CourseId">
+                                @gr.Course.Title (Mark:
+                                @await studentMarkService.GetMarkByStudentAndGroupIdAsync(Model.Id, gr.Id))
+                            </a>
+                        </span>
+                    }
                 }
             </div>
             <div class="form-group">

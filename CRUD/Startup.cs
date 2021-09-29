@@ -6,18 +6,11 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using AutoMapper;
-using IdentityNLayer.BLL.Authorization;
-using IdentityNLayer.BLL.Services;
-using IdentityNLayer.DAL;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc.Authorization;
 using IdentityNLayer.DAL.EF.Context;
-using IdentityNLayer.DAL.EF.Repositories;
 using IdentityNLayer.Core.Entities;
-using IdentityNLayer.DAL.Interfaces;
-using IdentityNLayer.BLL.Interfaces;
 using IdentityNLayer.Mapper;
-using IdentityNLayer.Middleware;
 using IdentityNLayer.BLL;
 using IdentityNLayer.DAL.EF;
 
@@ -37,7 +30,12 @@ namespace IdentityNLayer
         {
             services.AddDbContext<ApplicationContext>(options =>
                 options.UseSqlServer(
-                    Configuration.GetConnectionString("DefaultConnection")));
+                    Configuration.GetConnectionString("DefaultConnection"),
+                      sqlServerOptionsAction: sqlOptions =>
+                      {
+                          sqlOptions.EnableRetryOnFailure();
+                      })
+                );
 
        
             services.AddDefaultIdentity<Person>(options => options.SignIn.RequireConfirmedAccount = true)
@@ -59,15 +57,6 @@ namespace IdentityNLayer
             services.AddLogging();
 
             // Authorization handlers.
-            services.AddScoped<IAuthorizationHandler,
-                ContactIsOwnerAuthorizationHandler>();
-
-            services.AddScoped<IAuthorizationHandler,
-                ContactAdministratorsAuthorizationHandler>();
-
-            services.AddScoped<IAuthorizationHandler,
-                ContactManagerAuthorizationHandler>();
-
           
             var mapperConfig = new MapperConfiguration(mc =>
             {

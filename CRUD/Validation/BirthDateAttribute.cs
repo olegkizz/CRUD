@@ -8,7 +8,6 @@ namespace IdentityNLayer.Validation
     {
         private readonly int minAge;
         private readonly int maxAge;
-
         public BirthDateAttribute(int minAge, int maxAge = 130)
         {
             this.minAge = minAge;
@@ -23,7 +22,7 @@ namespace IdentityNLayer.Validation
             }
 
             context.Attributes.Add("data-val", "true");
-            context.Attributes.Add("data-val-birthdate", "Must be older than 18");
+            context.Attributes.Add("data-val-birthdate", "StartDate need more than Now.");
         }
 
         public override bool IsValid(object value)

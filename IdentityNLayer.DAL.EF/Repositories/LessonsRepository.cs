@@ -64,6 +64,7 @@ namespace IdentityNLayer.DAL.EF.Repositories
             _context.Attach(item);
             _context.Entry(item).Property("Name").IsModified = true;
             _context.Entry(item).Property("Theme").IsModified = true;
+            _context.Entry(item).Property("Duration").IsModified = true;
             _context.Entry(item).Reference("File").IsModified = true;
             _context.Entry(item).Property("FileId").IsModified = true;
         }

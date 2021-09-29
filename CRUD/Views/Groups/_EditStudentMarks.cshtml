@@ -1,0 +1,71 @@
+﻿@model IEnumerable<IdentityNLayer.Core.Entities.Student>
+@using IdentityNLayer.Core.Entities
+@inject IdentityNLayer.BLL.Interfaces.IStudentMarkService studentMarkService
+@inject IdentityNLayer.BLL.Interfaces.IGroupService groupService
+@{
+    int groupId = Convert.ToInt32(Context.Request.RouteValues["id"]?.ToString());
+}
+
+<div class="col-xs-3">
+    <input type="hidden" id="group_id" value="@groupId" />
+    <div class="accordion accordion-flush" id="lesson-marks">
+
+        @if (Model.Any()) foreach (Student student in Model)
+            {
+                int i = 1;
+                string idFlushCollapse = "flush-collapse-" + i;
+                string idFlushHeading = "flush-heading-" + i;
+                IEnumerable<StudentMark> studentMarks = await studentMarkService.GetMarksByGroupAndStudentIdAsync(groupId, student.Id);
+
+                <div class="accordion-item">
+                    <input type="hidden" id="student_id" value="@student.Id" />
+                    <h2 class="accordion-header">
+                        <button class="accordion-button" type="button" data-bs-toggle="collapse"
+                                data-bs-target="#@idFlushCollapse" aria-expanded="true" aria-controls="@idFlushCollapse">
+                            <span class="span-header">@student.User.FirstName @student.User.LastName (@student.Type)</span>
+                            <span class="span-header-error" style="color: red; padding-left: 15px;"></span>
+                            <span class="span-header-success" style="color: green; padding-left: 15px;"></span>
+                        </button>
+                    </h2>
+
+                    <div id="@idFlushCollapse" class="accordion-collapse collapse" aria-labelledby="@idFlushHeading" data-bs-parent="#flush-lessons">
+                        <div class="accordion-body">
+                            @if ((await groupService.GetByIdAsync(groupId)).Status == GroupStatus.Started)
+                            {
+                                <form id="lesson_form">
+                                    @if (studentMarks.Any()) foreach (StudentMark studentMark in studentMarks)
+                                        {
+                                            <div class="student-mark">
+                                                <input type="hidden" asp-for="@studentMarks.ToList()[i - 1].LessonId" />
+                                                <input type="hidden" asp-for="@studentMarks.ToList()[i - 1].Id"/>
+                                                <input type="hidden" asp-for="@studentMarks.ToList()[i - 1].StudentId"/>
+
+                                                <label data-toggle="tooltip" data-placement="top" title="@studentMark.Lesson.Name
+                                                     @studentMark.Lesson.Theme " asp-for="@studentMark.Lesson.Name">L @i</label>
+                                                    @if (!User.IsInRole("Teacher"))
+                                                    {
+                                                        <input asp-for="@studentMarks.ToList()[i - 1].Mark" id="Mark" disabled>
+                                                    }
+                                                    else
+                                                    {
+                                                        <input asp-for="@studentMarks.ToList()[i - 1].Mark" id="Mark">
+                                                    }
+                                                </div>
+                                                i++;
+                                         }
+                                </form>
+                                @if (User.IsInRole("Teacher"))
+                                {
+                                    <button type="submit" class="btn btn-success">
+                                        <span class="action_text">Save</span>
+                                        <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true" style="display:none;"></span>
+                                    </button>
+                                }
+                            }
+                        </div>
+                    </div>
+                </div>
+            }
+    </div>
+</div>
+<script src="~/js/setStudentMarks.js"></script>

@@ -1,11 +1,12 @@
 ﻿@model IdentityNLayer.Models.GroupModel
 @inject IdentityNLayer.BLL.Interfaces.IGroupService groupService
+@inject IdentityNLayer.BLL.Interfaces.IGroupLessonService groupLessonService
 @using IdentityNLayer.Core.Entities
 @using System.Linq;
 
 <h1>Details @Model.Number group</h1>
 
-<div>
+<div class="col-xs-3">
     <h4>Group</h4>
     <hr />
     <dl class="row">
@@ -33,12 +34,39 @@
         <dd class="col-sm-10">
             @groupService.GetStudents(Model.Id, UserGroupStates.Applied).Count()
         </dd>
+        <dt class="col-sm-2">
+            Start Date
+        </dt>
+        <dd class="col-sm-10">
+            @if (Model.Status == GroupStatus.Started)
+            {
+                <span>@((await groupLessonService.GetLessonsByGroupIdAsync(Model.Id)).FirstOrDefault()?.StartDate)</span>
+            }
+        </dd>
+        <dt class="col-sm-2">
+            End Date
+        </dt>
+        <dd class="col-sm-10">
+            @if (Model.Status != GroupStatus.Started)
+            {
+                <span>Group Are Not Started</span>
+            }
+            else
+            {
+                <span>@((await groupLessonService.GetLessonsByGroupIdAsync(Model.Id)).LastOrDefault()?.StartDate)</span>
+            }
+        </dd>
     </dl>
 </div>
+@{ await Html.RenderPartialAsync("_EditStudentMarks", groupService.GetStudents(Model.Id, UserGroupStates.Applied)); }
 <div>
     @if (User.IsInRole("Admin") || User.IsInRole("Manager"))
     {
         <a asp-action="Edit" asp-route-id="@Model.Id">Edit</a>
     }
     <a asp-action="Index">Back to List</a>
+    @{ string actionName = "Manage Lessons";}
+    @if (User.IsInRole("Teacher")) actionName = "See Lessons";
+    <a asp-action="EditGroupLessons" asp-controller="Lessons" asp-route-groupId="@Model.Id" class="btn btn-primary">@actionName</a>
 </div>
+

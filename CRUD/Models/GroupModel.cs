@@ -1,5 +1,6 @@
 ﻿using IdentityNLayer.BLL.Interfaces;
 using IdentityNLayer.Core.Entities;
+using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -11,6 +12,7 @@ namespace IdentityNLayer.Models
         public int Id { get; set; }
         [Required]
         public string Number { get; set; }
+        [Remote(action: "VerifyStartGroup", controller: "Groups", AdditionalFields = nameof(Id))]
         public GroupStatus Status { get; set; }
         public int? TeacherId { get; set; }
         public Teacher Teacher { get; set; }

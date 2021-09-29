@@ -29,6 +29,7 @@ namespace IdentityNLayer.DAL.EF.Context
         public DbSet<Lesson> Lessons { get; set; }
         public DbSet<File> Files { get; set; }
         public DbSet<GroupLesson> GroupLessons { get; set; }
+        public DbSet<StudentMark> StudentMarks { get; set; }
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             optionsBuilder.EnableSensitiveDataLogging();

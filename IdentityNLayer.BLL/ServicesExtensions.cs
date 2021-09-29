@@ -27,9 +27,14 @@ namespace IdentityNLayer.BLL
               FileService>();
             services.AddScoped<ILessonService,
               LessonService>();
+            services.AddScoped<IGroupLessonService,
+              GroupLessonService>();
+            services.AddScoped<IStudentMarkService,
+             StudentMarkService>();
+            services.AddScoped<ITopicService,
+             TopicService>();
             services.AddScoped<IStudentToGroupActionService,
               StudentToGroupActionService>();
-
             return services;
         }
     }

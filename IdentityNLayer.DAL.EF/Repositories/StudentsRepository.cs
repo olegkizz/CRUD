@@ -29,7 +29,6 @@ namespace IdentityNLayer.DAL.EF.Repositories
         {
             _context.Attach(item);
             _context.Entry(item).Property("Type").IsModified = true;
-         /*   _context.Students.Update(item));*/
         }
 
         public async Task<EntityEntry<Student>> DeleteAsync(int id)

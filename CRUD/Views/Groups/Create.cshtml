@@ -1,5 +1,5 @@
 ﻿@model IdentityNLayer.Models.GroupModel
-@using IdentityNLayer.Core.Entities GroupStatus;
+@using IdentityNLayer.Core.Entities
 @using System.Linq;
 @inject IdentityNLayer.BLL.Interfaces.ICourseService courseService
 @inject IdentityNLayer.BLL.Interfaces.IGroupService groupService
@@ -25,7 +25,7 @@
             </div>
             <div class="form-group">
                 <label asp-for="Status" class="control-label"></label>
-                <select asp-for="Status" asp-items="Html.GetEnumSelectList<GroupStatus>()"></select>
+                <input asp-for="Status" class="form-control" value="@GroupStatus.Pending" readonly>
                 <span asp-validation-for="Status" class="text-danger"></span>
             </div>
             @if (groupService.GetCurrentTeacher(Model.Id) == null)

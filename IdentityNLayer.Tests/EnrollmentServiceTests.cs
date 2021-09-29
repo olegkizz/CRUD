@@ -61,7 +61,7 @@ namespace IdentityNLayer.Tests
             _underTest.UnEnrol(userId, entityId);
 
             //assert
-            _db.Verify(d => d.Enrollments.Update(It.Is<Enrollment>(x => x.UserID == enrollment.UserID
+            _db.Verify(d => d.Enrollments.UpdateAsync(It.Is<Enrollment>(x => x.UserID == enrollment.UserID
             && x.Role == enrollment.Role && x.State == enrollment.State && x.EntityID == enrollment.EntityID)), Times.Once);
         }
     }

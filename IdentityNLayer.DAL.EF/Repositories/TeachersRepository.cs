@@ -32,13 +32,6 @@ namespace IdentityNLayer.DAL.EF.Repositories
             _context.Attach(item);
             _context.Entry(item).Property(e => e.Bio).IsModified = true;
             _context.Entry(item).Property(e => e.LinkToProfile).IsModified = true;
-            /*_context.Teachers.Update(item));*/
-
-            /*_context.Entry(item).Property(e => e.FirstName).IsModified = true;
-            _context.Entry(item).Property(e => e.LastName).IsModified = true;
-            _context.Entry(item).Property(e => e.BirthDate).IsModified = true;*/
-            /*_context.Entry(item).Property(e => e.Bio).IsModified = true;
-            _context.Entry(item).Property(e => e.LinkToProfile).IsModified = true;*/
         }
 
         public Task<EntityEntry<Teacher>> DeleteAsync(int id)

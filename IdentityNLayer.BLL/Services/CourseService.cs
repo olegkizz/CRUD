@@ -45,9 +45,11 @@ namespace IdentityNLayer.BLL.Services
             }
             return teachers;
         }
-        public IEnumerable<Topic> GetAvailableTopics(int courseId = 0)
+        public Task<IEnumerable<Topic>> GetAvailableTopicsAsync(int courseId = 0)
         {
-            return Db.Topics.Find(c => c.CourseId == courseId);
+            if(courseId == 0)
+                return Db.Topics.GetAllAsync();
+            return Task.FromResult(Db.Topics.Find(c => c.CourseId == courseId));
         }
 
         public bool HasRequest(int courseId, string userId, UserRoles role)

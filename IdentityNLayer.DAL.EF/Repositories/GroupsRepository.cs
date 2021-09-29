@@ -30,10 +30,9 @@ namespace IdentityNLayer.DAL.EF.Repositories
 
         public void UpdateAsync(Group item)
         {
-            _context.Entry(item).State = EntityState.Modified;
+           _context.Entry(item).State = EntityState.Modified;
            _context.Groups.Update(item);
         }
-
         public Task<EntityEntry<Group>> DeleteAsync(int id)
         {
             throw new NotImplementedException();
@@ -59,6 +58,8 @@ namespace IdentityNLayer.DAL.EF.Repositories
         public Task<Group> GetAsync(int id)
         {
             return _context.Groups
+               .Include(g => g.Course)
+               .ThenInclude(c => c.Lessons)
                .Include(g => g.Enrollments)
                .Include(g => g.Teacher)
                .ThenInclude(tc => tc.User)

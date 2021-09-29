@@ -47,6 +47,11 @@ namespace IdentityNLayer.Controllers
             return View(_mapper.Map<IEnumerable<CourseModel>>(await _courseService.GetAllAsync()));
         }
 
+        // GET: Course
+        public async Task<IActionResult> Details(int id)
+        {
+            return View(_mapper.Map<CourseModel>(await _courseService.GetByIdAsync(id)));
+        }
 
         // GET: Courses/Create
         public IActionResult Create()
@@ -59,20 +64,22 @@ namespace IdentityNLayer.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
- /*       public async Task<IActionResult> Create([Bind("Id,Title,Description,Program,TopicId,StartDate,Updated")] Course course)
-        {
-            if (ModelState.IsValid)
-            {
-                _courseService.Create(course);
-                return RedirectToAction(nameof(Index));
-            }
-            return View(course);
-        } */
+        /*       public async Task<IActionResult> Create([Bind("Id,Title,Description,Program,TopicId,StartDate,Updated")] Course course)
+               {
+                   if (ModelState.IsValid)
+                   {
+                       _courseService.Create(course);
+                       return RedirectToAction(nameof(Index));
+                   }
+                   return View(course);
+               } */
+        [Authorize(Roles = "Admin, Manager")]
+
         public async Task<IActionResult> CreateAsync([Bind("Id,Title,Description,Program,TopicId,StartDate,Updated")] Course course)
         {
             if (ModelState.IsValid)
             {
-                _courseService.CreateAsync(course);
+                await _courseService.CreateAsync(course);
                 return RedirectToAction(nameof(Index));
             }
             return View(course);
@@ -127,8 +134,6 @@ namespace IdentityNLayer.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-     /*       ViewBag.Topics = _courseService.GetAvailableTopics();
-            ViewBag.Requests = _courseService.GetStudentRequests(id);*/
             return View(course);
         }
 

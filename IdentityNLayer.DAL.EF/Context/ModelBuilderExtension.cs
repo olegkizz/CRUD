@@ -200,18 +200,21 @@ namespace IdentityNLayer.DAL.EF.Context
                 Id = 1,
                 Title = "ASP",
                 Description = "Super MVC",
+                TopicId = 1
             };
             Course course2 = new Course()
             {
                 Id = 2,
                 Title = "Java",
                 Description = "Super Spring",
+                TopicId = 2
             };
             Course course3 = new Course()
             {
                 Id = 3,
                 Title = "JavaScript",
                 Description = "Super JavaScript",
+                TopicId = 3
             };
             modelBuilder.Entity<Course>().Property(en => en.Updated).HasDefaultValueSql("getdate()");
 
@@ -225,21 +228,24 @@ namespace IdentityNLayer.DAL.EF.Context
                 Id = 1,
                 Name = "Lesson 1",
                 Theme = "Super Lesson 1",
-                CourseId = course1.Id
+                CourseId = course1.Id,
+                Duration = 5
             };
             Lesson lesson2 = new Lesson()
             {
                 Id = 2,
                 Name = "Lesson 2",
                 Theme = "Super Lesson 2",
-                CourseId = course1.Id
+                CourseId = course1.Id,
+                Duration = 5
             };
             Lesson lesson3 = new Lesson()
             {
                 Id = 3,
                 Name = "Lesson 3",
                 Theme = "Super Lesson 3",
-                CourseId = course1.Id
+                CourseId = course1.Id,
+                Duration = 5
             };
             modelBuilder.Entity<Lesson>().Property(l => l.Updated).HasDefaultValueSql("getdate()");
 
