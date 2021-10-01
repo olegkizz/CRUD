@@ -5,8 +5,15 @@
 
 <h1 class="text-danger">Error.</h1>
 <h2 class="text-danger">An error occurred while processing your request.</h2>
-
-@if (Model.ShowRequestId)
+<h2>Error Info</h2>
+<p>
+    @{
+        var exception = ViewData["Exception"] as Exception;
+        var errorMessage = ViewData["ExceptionMessage"] ?? $"Message: {exception?.Message}, StackTrace: {exception?.StackTrace}";
+    }
+    @Html.Raw(errorMessage)
+</p>
+@if (Model != null)
 {
     <p>
         <strong>Request ID:</strong> <code>@Model.RequestId</code>

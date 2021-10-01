@@ -31,6 +31,7 @@ namespace IdentityNLayer.Filters
             result.ViewData = new ViewDataDictionary(_modelMetadataProvider,
                 context.ModelState);
             result.ViewData.Add("Exception", context.Exception);
+            result.ViewData.Add("ExceptionMessage", $"<b style='color:red;'>Message: {context.Exception} <br/><br/> StackTrace: {context.Exception}</b>");
             // TODO: Pass additional detailed data via ViewData
             context.Result = result;
         }

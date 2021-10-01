@@ -39,14 +39,14 @@ namespace IdentityNLayer.BLL.Services
             return Db.GroupLessons.GetAsync(id);
         }
 
-        public Task<GroupLesson> GetByLessonAndGroupIdAsync(int groupId, int lessonId)
+        public async Task<GroupLesson> GetByLessonAndGroupIdAsync(int groupId, int lessonId)
         {
-            return Task.FromResult(Db.GroupLessons.Find(gl => gl.GroupId == groupId && gl.LessonId == lessonId).FirstOrDefault());
+            return (await Db.GroupLessons.FindAsync(gl => gl.GroupId == groupId && gl.LessonId == lessonId)).SingleOrDefault();
         }
 
-        public Task<List<GroupLesson>> GetLessonsByGroupIdAsync(int groupId)
+        public async Task<List<GroupLesson>> GetLessonsByGroupIdAsync(int groupId)
         {
-            return Task.FromResult(Db.GroupLessons.Find(gl => gl.GroupId == groupId).OrderBy(gl => gl.StartDate).ToList());
+            return (await Db.GroupLessons.FindAsync(gl => gl.GroupId == groupId)).OrderBy(gl => gl.StartDate).ToList();
         }
 
         public void UpdateAsync(GroupLesson entity)

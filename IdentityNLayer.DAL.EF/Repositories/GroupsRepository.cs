@@ -6,6 +6,7 @@ using Microsoft.EntityFrameworkCore;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
+using System.Linq.Expressions;
 
 namespace IdentityNLayer.DAL.EF.Repositories
 {
@@ -17,28 +18,18 @@ namespace IdentityNLayer.DAL.EF.Repositories
         {
             _context = context;
         }
-        public IEnumerable<Group> Find(Func<Group, bool> predicate)
-        {
-            return _context.Groups
-                  .Include(gr => gr.Enrollments)
-                  .Include(gr => gr.Teacher)
-                  .ThenInclude(tc => tc.User)
-                  .AsNoTracking()
-                  .Where(predicate)
-                  .ToList();
-        }
 
         public void UpdateAsync(Group item)
         {
            _context.Entry(item).State = EntityState.Modified;
            _context.Groups.Update(item);
         }
-        public Task<EntityEntry<Group>> DeleteAsync(int id)
+        public async Task<EntityEntry<Group>> DeleteAsync(int id)
         {
-            throw new NotImplementedException();
+            return _context.Groups.Remove(await _context.Groups.Where(gr => gr.Id == id).SingleOrDefaultAsync());
         }
 
-        public async Task<IEnumerable<Group>> FindAsync(Func<Group, bool> predicate)
+        public async Task<IEnumerable<Group>> FindAsync(Expression<Func<Group, bool>> predicate)
         {
             return await _context.Groups
               .Include(gr => gr.Enrollments)
@@ -46,7 +37,6 @@ namespace IdentityNLayer.DAL.EF.Repositories
               .ThenInclude(tc => tc.User)
               .AsNoTracking()
               .Where(predicate)
-              .AsQueryable()
               .ToListAsync();
         }
 

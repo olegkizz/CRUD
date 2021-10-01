@@ -8,8 +8,10 @@ namespace IdentityNLayer.BLL.Interfaces
     {
         public Task<IEnumerable<StudentMark>> GetMarksByGroupAndStudentIdAsync(int courseId, int studentId);
         public Task<StudentMark> GetByStudentAndLessonIdAsync(int studentId, int lessonId);
-        public void DeleteGroupMarksAsync(int groupId);
-        public Task<List<Group>>GetStudentGroupsAsync(int studentId);
-        public Task<int> GetMarkByStudentAndGroupIdAsync(int studentId, int groupId);
+        public Task DeleteGroupMarksAsync(int groupId);
+        public Task<IEnumerable<StudentMark>> GetMarksOfCoursesAsync(int studentId);
+        public Task<int?> GetMarkByStudentAndGroupIdAsync(int studentId, int groupId);
+        public Task<int> SetFinalMarkToStudentForCourse(string userId, int courseId);
+        Task<IEnumerable<StudentMark>> GetByLessonIdAsync(int lessonId);
     }
 }

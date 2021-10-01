@@ -70,9 +70,9 @@ namespace IdentityNLayer.BLL.Services
             return Db.Files.GetAsync(id);
         }
 
-        public Task<File> GetByPathAsync(string path)
+        public async Task<File> GetByPathAsync(string path)
         {
-            return Task.FromResult(Db.Files.Find(f => f.Path == path).SingleOrDefault());
+            return (await Db.Files.FindAsync(f => f.Path == path)).SingleOrDefault();
         }
 
         public void UpdateAsync(File entity)

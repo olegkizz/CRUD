@@ -10,9 +10,12 @@ namespace IdentityNLayer.Controllers
     public class TopicsController : Controller
     {
         private readonly ITopicService _topicService;
-        public TopicsController(ITopicService topicService)
+        private readonly ICourseService _courseService;
+        public TopicsController(ITopicService topicService,
+            ICourseService courseService)
         {
             _topicService = topicService;
+            _courseService = courseService;
         }
 
         // GET: Topics
@@ -41,7 +44,7 @@ namespace IdentityNLayer.Controllers
         // GET: Topics/Create
         public async Task<IActionResult> Create()
         {
-            ViewData["Parent"] = new SelectList(await _topicService.GetAllAsync(), "Id", "Title");
+            ViewData["Parent"] = await _topicService.GetAllAsync();
             return View();
         }
 
@@ -50,14 +53,14 @@ namespace IdentityNLayer.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Title,Description,CourseId,ParentId")] Topic topic)
+        public async Task<IActionResult> Create([Bind("Id,Title,Description,ParentId")] Topic topic)
         {
             if (ModelState.IsValid)
             {
                 await _topicService.CreateAsync(topic);
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["Parent"] = new SelectList(await _topicService.GetAllAsync(), "Id", "Title");
+            ViewData["Parent"] = await _topicService.GetAllAsync();
             return View(topic);
         }
 
@@ -74,7 +77,7 @@ namespace IdentityNLayer.Controllers
             {
                 return NotFound();
             }
-            ViewData["Parent"] = new SelectList(await _topicService.GetAllAsync(), "Id", "Title", topic.ParentId);
+            ViewData["Parent"] = await _topicService.GetAllAsync();
             return View(topic);
         }
 
@@ -83,7 +86,7 @@ namespace IdentityNLayer.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Title,Description,CourseId,ParentId")] Topic topic)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,Title,Description,ParentId")] Topic topic)
         {
             if (id != topic.Id)
             {

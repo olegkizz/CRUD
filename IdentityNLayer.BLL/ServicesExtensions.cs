@@ -33,8 +33,6 @@ namespace IdentityNLayer.BLL
              StudentMarkService>();
             services.AddScoped<ITopicService,
              TopicService>();
-            services.AddScoped<IStudentToGroupActionService,
-              StudentToGroupActionService>();
             return services;
         }
     }

@@ -11,7 +11,6 @@ namespace IdentityNLayer.DAL.EF.Repositories
         private IRepository<Student> _studentRepository;
         private IRepository<Group> _groupRepository;
         private IRepository<Teacher> _teacherRepository;
-        private IRepository<StudentToGroupAction> _studentToGroupActionsRepository;
         private IRepository<Enrollment> _enrollmentsRepository;
         private IRepository<Course> _coursesRepository;
         private IRepository<Topic> _topicsRepository;
@@ -23,7 +22,6 @@ namespace IdentityNLayer.DAL.EF.Repositories
             IRepository<Student> studentRepository,
             IRepository<Group> groupRepository,
             IRepository<Teacher> teacherRepository,
-            IRepository<StudentToGroupAction> studentToGroupActionsRepository,
             IRepository<Enrollment> enrollmentsRepository,
             IRepository<Course> coursesRepository,
             IRepository<Topic> topicsRepository,
@@ -36,7 +34,6 @@ namespace IdentityNLayer.DAL.EF.Repositories
             _studentRepository = studentRepository;
             _groupRepository = groupRepository;
             _teacherRepository = teacherRepository;
-            _studentToGroupActionsRepository = studentToGroupActionsRepository;
             _enrollmentsRepository = enrollmentsRepository;
             _coursesRepository = coursesRepository;
             _topicsRepository = topicsRepository;
@@ -49,7 +46,6 @@ namespace IdentityNLayer.DAL.EF.Repositories
         public IRepository<Student> Students => _studentRepository;
         public IRepository<Group> Groups => _groupRepository;
         public IRepository<Teacher> Teachers => _teacherRepository;
-        public IRepository<StudentToGroupAction> StudentToGroupActions => _studentToGroupActionsRepository;
         public IRepository<Enrollment> Enrollments => _enrollmentsRepository;
         public IRepository<Course> Courses => _coursesRepository;
         public IRepository<Topic> Topics => _topicsRepository;

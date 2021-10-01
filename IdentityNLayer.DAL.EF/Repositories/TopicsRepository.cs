@@ -6,6 +6,7 @@ using Microsoft.EntityFrameworkCore;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
+using System.Linq.Expressions;
 
 namespace IdentityNLayer.DAL.EF.Repositories
 {
@@ -16,10 +17,6 @@ namespace IdentityNLayer.DAL.EF.Repositories
         public TopicsRepository(ApplicationContext context)
         {
             _context = context;
-        }
-        public void Create(Topic item)
-        {
-            throw new NotImplementedException();
         }
 
         public async void CreateAsync(Topic item)
@@ -32,31 +29,23 @@ namespace IdentityNLayer.DAL.EF.Repositories
             return _context.Topics.Remove(await _context.Topics.Where(t => t.Id == id)?.SingleOrDefaultAsync());
         }
 
-        public IEnumerable<Topic> Find(Func<Topic, bool> predicate)
-        {
-            return _context.Topics
-                    .Include(t => t.Course)
-                    .Where(predicate)
-                    .ToList();
-        }
-
-        public async Task<IEnumerable<Topic>> FindAsync(Func<Topic, bool> predicate)
+        public async Task<IEnumerable<Topic>> FindAsync(Expression<Func<Topic, bool>> predicate)
         {
             return await _context.Topics
-                  .Include(t => t.Course)
                   .Where(predicate)
-                  .AsQueryable()
                   .ToListAsync();
         }
 
         public async Task<IEnumerable<Topic>> GetAllAsync()
         {
-            return await  _context.Topics.ToListAsync();
+            return await _context.Topics
+                .ToListAsync();
         }
 
         public async Task<Topic> GetAsync(int id)
         {
-            return await _context.Topics.SingleAsync(t => t.Id == id);
+            return await _context.Topics
+                .SingleAsync(t => t.Id == id);
         }
 
         public void UpdateAsync(Topic item)

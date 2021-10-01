@@ -21,16 +21,7 @@
         buttonToLoading(buttons);
        
         sendAJAXRequestEditLesson(formData, url, (data) => {
-            if (!lessonId && data.statusCode == 200)
-                location.reload();
-            console.log(data);
-            buttonFromLoadingToSuccess(buttons);
-            if (data.statusCode != 200) {
-                if (data.statusCode == 400) {
-                    spanErrorHeader.textContent = data.message;
-                    return;
-                }
-            } else if (spanErrorHeader.textContent.trim() != '') spanErrorHeader.textContent = '';
+            logicShowMessageFromController(data, accordionItem);
             if (inputFile)
                 if (inputFile.files[0]) {
                     inputFile.remove();
@@ -54,8 +45,11 @@
         let accordionItem = e.target.parentElement.parentElement.parentElement;
         let formData = new FormData();
         formData.append('Id', accordionItem.querySelector("#lesson_id").value);
+
         buttonToLoading(accordionItem.querySelectorAll(".btn"));
+
         sendAJAXRequestEditLesson(formData, "Lessons/Delete", (data) => {
+            logicShowMessageFromController(data, accordionItem, true);
             if (data.statusCode == 200) {
                 accordionItem.remove();
             }
@@ -101,7 +95,8 @@
             button.forEach((btn) => setLoading(btn));
         else setLoading(button);
         function setLoading(btn) {
-            btn.querySelector(".spinner-border").setAttribute("style", "inline-block");
+            if (btn.querySelector(".spinner-border"))
+                btn.querySelector(".spinner-border").setAttribute("style", "inline-block");
             btn.querySelector(".action_text").setAttribute("style", "display:none");
             btn.classList.add("btn-light");
             btn.setAttribute("disabled", "disabled");
@@ -122,5 +117,29 @@
             console.log(data)
         },
             (fail) => console.log(fail));
+    }
+
+    function logicShowMessageFromController(data, accordionItem, deleteAccordionItem) {
+        let lessonId = accordionItem.querySelector("#lesson_id").value;
+        let buttons = accordionItem.querySelectorAll(".btn");
+        let spanErrorHeader = accordionItem.querySelector('.span-header-error');
+        let spanSuccessHeader = accordionItem.querySelector('.span-header-success');
+        if (!lessonId && data.statusCode == 200)
+            location.reload();
+        console.log(data);
+        buttonFromLoadingToSuccess(buttons);
+        if (data.statusCode != 200) {
+            if (data.statusCode == 400) {
+                spanErrorHeader.textContent = data.message;
+                return;
+            }
+        } else {
+            if (spanErrorHeader.textContent.trim() != '')
+                spanErrorHeader.textContent = '';
+            if (deleteAccordionItem)
+                accordionItem.remove();
+            spanSuccessHeader.textContent = data.message;
+            setTimeout(() => { spanSuccessHeader.textContent = '' }, 2500);
+        };
     }
 }

@@ -28,20 +28,23 @@ namespace IdentityNLayer.BLL.Services
             Db.Save();
         }
 
-        public Task<EntityEntry<Group>> Delete(int id)
+        public async Task<EntityEntry<Group>> Delete(int id)
         {
-            throw new NotImplementedException();
+            await CancelGroupAsync(id);
+            EntityEntry<Group> entry = await Db.Groups.DeleteAsync(id);
+            Db.Save();
+            return entry;
         }
 
-        public Teacher GetCurrentTeacher(int groupId)
+        public async Task<Teacher> GetCurrentTeacher(int groupId)
         {
-            return Db.Groups.Find(gr => gr.Id == groupId).FirstOrDefault()?.Teacher;
+            return (await Db.Groups.FindAsync(gr => gr.Id == groupId)).SingleOrDefault()?.Teacher;
         }
 
         public async Task<IEnumerable<Group>> GetGroupsByUserIdAsync(string userId)
         {
             List<Group> groups = new();
-            foreach (Enrollment en in Db.Enrollments.Find(en => en.UserID == userId && en.State == UserGroupStates.Applied))
+            foreach (Enrollment en in await Db.Enrollments.FindAsync(en => en.UserID == userId && en.State == UserGroupStates.Applied))
             {
                 if (en.State != UserGroupStates.Requested && en.State != UserGroupStates.Aborted)
                     groups.Add(await Db.Groups.GetAsync(en.EntityID));
@@ -49,32 +52,36 @@ namespace IdentityNLayer.BLL.Services
             return groups;
         }
 
-        public IEnumerable<Student> GetStudents(int? groupId, UserGroupStates? state = null)
+        public async Task<IEnumerable<Student>> GetStudents(int? groupId, UserGroupStates? state = null)
         {
             if (groupId == null)
                 return new List<Student>();
             List<Student> students = new();
+
             switch (state)
             {
                 case UserGroupStates.Applied:
-                    foreach (Enrollment en in Db.Enrollments.Find(en => en.EntityID == groupId && en.State == state && en.Role == UserRoles.Student))
+                    foreach (Enrollment en in await Db.Enrollments.FindAsync(en => en.EntityID == groupId 
+                            && en.State == state && en.Role == UserRoles.Student))
                     {
-                        students.Add(Db.Students.Find(st => st.UserId == en.UserID).SingleOrDefault());
+                        students.Add((await Db.Students.FindAsync(st => st.UserId == en.UserID)).SingleOrDefault());
                     }
                     return students;
                 case UserGroupStates.Requested:
-                    foreach (Enrollment en in Db.Enrollments.Find(en => en.EntityID == Db.Groups.Find(gr => gr.Id == groupId).FirstOrDefault()?.CourseId
+                    int courseId = (await Db.Groups.FindAsync(gr => gr.Id == groupId)).SingleOrDefault()?.CourseId ?? 0;
+                    
+                    foreach (Enrollment en in await Db.Enrollments.FindAsync(en => en.EntityID == courseId
                     && en.State == state && en.Role == UserRoles.Student))
                     {
-                        students.Add(Db.Students.Find(st => st.UserId == en.UserID).SingleOrDefault());
+                        students.Add((await Db.Students.FindAsync(st => st.UserId == en.UserID)).SingleOrDefault());
                     }
                     return students;
                 default:
-                    return GetStudents(groupId, UserGroupStates.Applied).Concat(GetStudents(groupId, UserGroupStates.Requested));
+                    return (await GetStudents(groupId, UserGroupStates.Applied)).Concat(await GetStudents(groupId, UserGroupStates.Requested));
             }
         }
 
-        public IEnumerable<Teacher> GetTeachers(int? groupId, UserGroupStates? state = null)
+        public async Task<IEnumerable<Teacher>> GetTeachers(int? groupId, UserGroupStates? state = null)
         {
             if (groupId == null)
                 return new List<Teacher>();
@@ -82,29 +89,30 @@ namespace IdentityNLayer.BLL.Services
             switch (state)
             {
                 case UserGroupStates.Applied:
-                    foreach (Enrollment en in Db.Enrollments.Find(en => en.EntityID == groupId && en.State == state && en.Role == UserRoles.Teacher))
+                    foreach (Enrollment en in (await Db.Enrollments.FindAsync(en => en.EntityID == groupId && en.State == state && en.Role == UserRoles.Teacher)))
                     {
-                        teachers.Add(Db.Teachers.Find(tc => tc.UserId == en.UserID).SingleOrDefault());
+                        teachers.Add((await Db.Teachers.FindAsync(tc => tc.UserId == en.UserID)).SingleOrDefault());
                     }
                     return teachers;
                 case UserGroupStates.Requested:
-                    foreach (Enrollment en in Db.Enrollments.Find(en => en.EntityID == Db.Groups.Find(gr => gr.Id == groupId).FirstOrDefault()?.CourseId
-                    && en.State == state && en.Role == UserRoles.Teacher))
+                    int courseId = (await Db.Groups.FindAsync(gr => gr.Id == groupId)).SingleOrDefault()?.CourseId ?? 0;
+                    foreach (Enrollment en in await Db.Enrollments.FindAsync(en => en.EntityID == courseId
+                        && en.State == state && en.Role == UserRoles.Teacher))
                     {
-                        teachers.Add(Db.Teachers.Find(tc => tc.UserId == en.UserID).SingleOrDefault());
+                        teachers.Add((await Db.Teachers.FindAsync(tc => tc.UserId == en.UserID)).SingleOrDefault());
                     }
                     return teachers;
                 default:
-                    return GetTeachers(groupId, UserGroupStates.Applied).Concat(GetTeachers(groupId, UserGroupStates.Requested));
+                    return (await GetTeachers(groupId, UserGroupStates.Applied)).Concat(await GetTeachers(groupId, UserGroupStates.Requested));
             }
         }
 
-        public bool HasStudent(int groupId, string userId)
+        public async Task<bool> HasStudent(int groupId, string userId)
         {
-            return Db.Enrollments.Find(en => en.UserID == userId
+            return (await Db.Enrollments.FindAsync(en => en.UserID == userId
             && en.Role == UserRoles.Student
             && en.EntityID == groupId
-            && en.State == UserGroupStates.Applied)
+            && en.State == UserGroupStates.Applied))
                 .FirstOrDefault() != null
                 ? true : false;
         }
@@ -135,7 +143,8 @@ namespace IdentityNLayer.BLL.Services
         {
             Group group = await GetByIdAsync(groupId);
             Enrollment[] enrollments = Array.Empty<Enrollment>();
-            foreach (Enrollment enrollment in Db.Enrollments.Find(en => en.EntityID == groupId && en.State == UserGroupStates.Applied))
+            foreach (Enrollment enrollment in await Db.Enrollments.FindAsync(en => en.EntityID == groupId 
+                    && en.State == UserGroupStates.Applied))
             {
                 enrollment.State = UserGroupStates.Requested;
                 enrollment.EntityID = group.CourseId;
@@ -144,42 +153,47 @@ namespace IdentityNLayer.BLL.Services
             group.Status = GroupStatus.Pending;
             group.Teacher = null;
             group.TeacherId = null;
-
-            _studentMarkService.DeleteGroupMarksAsync(groupId);
+            await _studentMarkService.DeleteGroupMarksAsync(groupId);
+            
+            UpdateAsync(group);
 
             return group;
-            //TO DO
-            //Delete All Student Marks In The Group
         }
 
         public async Task<Group> FinishGroupAsync(int groupId)
         {
             Group group = await GetByIdAsync(groupId);
 
-            foreach (Enrollment enrollment in Db.Enrollments.Find(en => en.EntityID == groupId 
+            foreach (Enrollment enrollment in await Db.Enrollments.FindAsync(en => en.EntityID == groupId 
             && en.State == UserGroupStates.Applied && en.Role == UserRoles.Student))
+            {
+                await _studentMarkService.SetFinalMarkToStudentForCourse(enrollment.UserID, enrollment.EntityID);
                 await Db.Enrollments.DeleteAsync(enrollment.Id);
+            }
+                
             group.Status = GroupStatus.Pending;
-            //UpdateAsync(group);
+
+
+            UpdateAsync(group);
 
             return group;
         }
 
-        public Task<List<SelectListItem>> GetAvailableStatusAsync(int groupId)
+        public async Task<List<SelectListItem>> GetAvailableStatusAsync(int groupId)
         {
-            Group group = Db.Groups.Find(gr => gr.Id == groupId).SingleOrDefault();
+            Group group = (await Db.Groups.FindAsync(gr => gr.Id == groupId)).SingleOrDefault();
 
             List<SelectListItem> statusList = new() { new SelectListItem(group.Status.ToString(), group.Status.ToString()) };
             if (group.Status == GroupStatus.Pending)
                 statusList.Add(new SelectListItem(GroupStatus.Started.ToString(), GroupStatus.Started.ToString()));
             if(group.Status == GroupStatus.Started)
             {
-                GroupLesson lastLesson = Db.GroupLessons.Find(gl => gl.GroupId == groupId).OrderBy(gl => gl.StartDate).LastOrDefault();
+                GroupLesson lastLesson = (await Db.GroupLessons.FindAsync(gl => gl.GroupId == groupId)).OrderBy(gl => gl.StartDate).LastOrDefault();
                 if (lastLesson.StartDate.Value.AddMinutes(lastLesson.Lesson.Duration) < DateTime.Now)
                     statusList.Add(new SelectListItem(GroupStatus.Finished.ToString(), GroupStatus.Finished.ToString()));
                 else statusList.Add(new SelectListItem(GroupStatus.Cancelled.ToString(), GroupStatus.Cancelled.ToString()));
             }
-            return Task.FromResult(statusList);
+            return statusList;
         }
     }
 }

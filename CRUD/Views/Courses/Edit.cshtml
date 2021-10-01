@@ -1,6 +1,7 @@
 ﻿@model IdentityNLayer.Models.CourseModel
 @inject IdentityNLayer.BLL.Interfaces.ICourseService courseService
 @inject IdentityNLayer.BLL.Interfaces.IGroupService groupService
+@inject IdentityNLayer.BLL.Interfaces.ITopicService topicService
 @using IdentityNLayer.Core.Entities
 @{
     ViewData["Title"] = "Edit";
@@ -15,7 +16,7 @@
         <form asp-action="Edit">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             @{
-                var availableGroups = courseService.GetGroups(Model.Id, GroupStatus.Pending);
+                var availableGroups = await courseService.GetGroups(Model.Id, GroupStatus.Pending);
             }
             <input type="hidden" asp-for="Id" />
             <div class="form-group">
@@ -30,11 +31,12 @@
             </div>
             <div class="form-group">
                 <label class="control-label">Topic</label>
-                @Html.DropDownListFor(model => model.TopicId, new SelectList(await courseService.GetAvailableTopicsAsync(Model.Id), "Id", "Title"))
-            </div>
+                @Html.DropDownListFor(model => model.TopicId, new SelectList(await topicService.GetAllAsync(),
+                        "Id", "Title", "Select Topic..."))
+            </div>  
             <div class="form-group">
                 <label asp-for="Lessons" class="control-label"></label>
-                <a asp-controller="Lessons" asp-action="Create" asp-route-id="@Model.Id" class="btn btn-primary">
+                <a asp-controller="Lessons" asp-action="Create" asp-route-courseId="@Model.Id" class="btn btn-primary">
                     @if (Model.Lessons == null)
                     {
                         <span>Add Lessons</span>
@@ -47,18 +49,17 @@
             </div>
             <div class="form-group">
                 <label class="control-label">StudentRequests</label>
-                <span class="text-danger">@courseService.GetStudentRequests(Model.Id).Count()</span>
+                <span class="text-danger">@((await courseService.GetStudentRequests(Model.Id)).Count())</span>
             </div>
             <div class="form-group">
                 <label class="control-label">TeacherRequests</label>
-                <span class="text-danger">@courseService.GetTeacherRequests(Model.Id).Count()</span>
+                <span class="text-danger">@((await courseService.GetTeacherRequests(Model.Id)).Count())</span>
             </div>
             <div class="form-group">
                 <input type="submit" value="Save" class="btn btn-primary" />
             </div>
             <div class="form-group">
-                @{ Dictionary<string, string> courseId = new Dictionary<string, string>() { { "courseId", Model.Id.ToString() } }; }
-                <a asp-controller="Groups" asp-action="Create" asp-all-route-data="courseId" class="btn btn-primary">Create Group</a>
+                <a asp-controller="Groups" asp-action="Create" asp-route-courseId="@Model.Id.ToString()" class="btn btn-primary">Create Group</a>
             </div>
             @if (availableGroups.Any())
             {
@@ -67,8 +68,7 @@
              availableGroups.First().Id), new { @id = "SelectedGroup" })
                 </div>
                 <div class="form-group">
-                    @{ Dictionary<string, string> groupId = new Dictionary<string, string>() { { "id", availableGroups.First().Id.ToString() } }; }
-                    <a id="editGroupButton" asp-controller="Groups" asp-action="Edit" asp-all-route-data="groupId" class="btn btn-primary">Adding to Selected Group</a>
+                    <a id="editGroupButton" asp-controller="Groups" asp-action="Edit" asp-route-id="@availableGroups.First().Id.ToString()" class="btn btn-primary">Adding to Selected Group</a>
                 </div>
             }
         </form>

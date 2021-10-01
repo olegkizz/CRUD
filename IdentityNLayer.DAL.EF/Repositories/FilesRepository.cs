@@ -5,6 +5,7 @@ using Microsoft.EntityFrameworkCore.ChangeTracking;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -18,9 +19,9 @@ namespace IdentityNLayer.DAL.EF.Repositories
         {
             _context = context;
         }
-        public void CreateAsync(File item)
+        public async void CreateAsync(File item)
         {
-            _context.Files.AddAsync(item);
+            await _context.Files.AddAsync(item);
         }
 
         public async Task<EntityEntry<File>> DeleteAsync(int id)
@@ -28,17 +29,12 @@ namespace IdentityNLayer.DAL.EF.Repositories
             return _context.Files.Remove(await _context.Files.FindAsync(id));
         }
 
-        public IEnumerable<File> Find(Func<File, bool> predicate)
+        public async Task<IEnumerable<File>> FindAsync(Expression<Func<File, bool>> predicate)
         {
-            return _context.Files
-                .AsNoTracking()
-                .Where(predicate)
-                .ToList();
-        }
-
-        public Task<IEnumerable<File>> FindAsync(Func<File, bool> predicate)
-        {
-            throw new NotImplementedException();
+            return await _context.Files
+                  .AsNoTracking()
+                  .Where(predicate)
+                  .ToListAsync();
         }
 
         public Task<IEnumerable<File>> GetAllAsync()

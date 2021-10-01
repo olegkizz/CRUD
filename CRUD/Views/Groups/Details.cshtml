@@ -32,7 +32,7 @@
             Number Of Students
         </dt>
         <dd class="col-sm-10">
-            @groupService.GetStudents(Model.Id, UserGroupStates.Applied).Count()
+            @((await groupService.GetStudents(Model.Id, UserGroupStates.Applied)).Count())
         </dd>
         <dt class="col-sm-2">
             Start Date
@@ -53,12 +53,15 @@
             }
             else
             {
-                <span>@((await groupLessonService.GetLessonsByGroupIdAsync(Model.Id)).LastOrDefault()?.StartDate)</span>
+                GroupLesson groupLastLesson = (await groupLessonService.GetLessonsByGroupIdAsync(Model.Id)).LastOrDefault();
+                DateTime? endDate = groupLastLesson?.StartDate.Value.AddMinutes(groupLastLesson.Lesson.Duration);
+                
+                <span>@endDate</span>
             }
         </dd>
     </dl>
 </div>
-@{ await Html.RenderPartialAsync("_EditStudentMarks", groupService.GetStudents(Model.Id, UserGroupStates.Applied)); }
+@{ await Html.RenderPartialAsync("_EditStudentMarks", await groupService.GetStudents(Model.Id, UserGroupStates.Applied)); }
 <div>
     @if (User.IsInRole("Admin") || User.IsInRole("Manager"))
     {

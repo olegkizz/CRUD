@@ -18,7 +18,6 @@
     <None Include="Views\Teachers\Details.cshtml" />
     <None Include="Views\Teachers\Edit.cshtml" />
     <None Include="Views\Teachers\Index.cshtml" />
-    <None Include="wwwroot\files\lessons\1\познавательный.doc" />
     <None Include="wwwroot\lib\bootstrap\dist\css\bootstrap-grid.css.map" />
     <None Include="wwwroot\lib\bootstrap\dist\css\bootstrap-grid.min.css.map" />
     <None Include="wwwroot\lib\bootstrap\dist\css\bootstrap-grid.rtl.css.map" />
@@ -68,6 +67,10 @@
   <ItemGroup>
     <ProjectReference Include="..\IdentityNLayer.BLL\IdentityNLayer.BLL.csproj" />
     <ProjectReference Include="..\IdentityNLayer.DAL.EF\IdentityNLayer.DAL.EF.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="wwwroot\files\lessons\1\" />
   </ItemGroup>
 
 </Project>

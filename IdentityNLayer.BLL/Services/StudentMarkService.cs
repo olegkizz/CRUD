@@ -13,12 +13,15 @@ namespace IdentityNLayer.BLL.Services
     {
         private IUnitOfWork Db { get; set; }
         private IGroupLessonService _groupLessonService { get; set; }
+        private IStudentService _studentService { get; set; }
 
         public StudentMarkService(IUnitOfWork db,
-            IGroupLessonService groupLessonService)
+            IGroupLessonService groupLessonService,
+            IStudentService studentService)
         {
             Db = db;
             _groupLessonService = groupLessonService;
+            _studentService = studentService;
         }
         public Task<int> CreateAsync(StudentMark entity)
         {
@@ -54,15 +57,15 @@ namespace IdentityNLayer.BLL.Services
         {
             List<StudentMark> studentMarks = new();
             foreach (GroupLesson lesson in (await _groupLessonService.GetLessonsByGroupIdAsync(groupId)).Where(
-                gl => gl.StartDate.Value.AddMinutes(gl.Lesson.Duration) < DateTime.Now))
+                gl => gl.StartDate.Value.AddMinutes(gl.Lesson.Duration) < DateTime.Now).ToList())
             {
-                StudentMark studentMark = Db.StudentMarks.Find(sm => sm.LessonId == lesson.Id
-                 && sm.StudentId == studentId)?.SingleOrDefault();
+                StudentMark studentMark = (await Db.StudentMarks.FindAsync(sm => sm.LessonId == lesson.LessonId
+                 && sm.StudentId == studentId)).SingleOrDefault();
                 if (studentMark == null)
                     studentMark = await GetByIdAsync(await CreateAsync(new StudentMark
                     {
                         StudentId = studentId,
-                        LessonId = lesson.Id,
+                        LessonId = lesson.LessonId,
                         Mark = null
                     }));
                 studentMarks.Add(studentMark);
@@ -70,49 +73,68 @@ namespace IdentityNLayer.BLL.Services
             return studentMarks;
         }
 
-        public Task<StudentMark> GetByStudentAndLessonIdAsync(int studentId, int lessonId)
+        public async Task<StudentMark> GetByStudentAndLessonIdAsync(int studentId, int lessonId)
         {
-            return Task.FromResult(Db.StudentMarks.Find(sm => sm.StudentId == studentId && sm.LessonId == lessonId)?.SingleOrDefault());
+            return (await Db.StudentMarks.FindAsync(sm => sm.StudentId == studentId && sm.LessonId == lessonId)).SingleOrDefault();
         }
 
-        public async void DeleteGroupMarksAsync(int groupId)
+        public async Task DeleteGroupMarksAsync(int groupId)
         {
             List<Student> students = new();
+            List<StudentMark> studentMarks = new();
 
-            foreach (Enrollment en in Db.Enrollments.Find(en => en.EntityID == groupId && en.State == UserGroupStates.Applied && en.Role == UserRoles.Student))
+            foreach (Enrollment en in await Db.Enrollments.FindAsync(en => en.EntityID == groupId 
+                && en.State == UserGroupStates.Applied && en.Role == UserRoles.Student))
             {
-                students.Add(Db.Students.Find(st => st.UserId == en.UserID).SingleOrDefault());
+                students.Add((await Db.Students.FindAsync(st => st.UserId == en.UserID)).SingleOrDefault());
             }
             foreach (Student student in students)
             {
                 foreach (GroupLesson groupLesson in await _groupLessonService.GetLessonsByGroupIdAsync(groupId))
-                    await Delete((await GetByStudentAndLessonIdAsync(student.Id, groupLesson.LessonId)).Id);
+                {
+                    StudentMark studentMark = await GetByStudentAndLessonIdAsync(student.Id, groupLesson.LessonId);
+                    if (studentMark != null)
+                        await Delete(studentMark.Id);
+                }
             }
         }
 
-        public Task<List<Group>> GetStudentGroupsAsync(int studentId)
+        public async Task<int?> GetMarkByStudentAndGroupIdAsync(int studentId, int courseId)
         {
-            List<Group> groups = new();
-            foreach (StudentMark studentMark in Db.StudentMarks.Find(sm => sm.StudentId == studentId))
-            {
-                Group group = Db.GroupLessons.Find(gl => gl.LessonId == studentMark.LessonId)?.FirstOrDefault()?.Group;
-                if (groups.Find(gr => gr.Id == group.Id) == null)
-                    groups.Add(group);
-            }
-            return Task.FromResult(groups);
+            return (await Db.StudentMarks.FindAsync(sm => sm.StudentId == studentId && sm.CourseId == courseId))
+                .Select(StudentMark => StudentMark.Mark).SingleOrDefault();
         }
 
-        public Task<int> GetMarkByStudentAndGroupIdAsync(int studentId, int groupId)
+        public async Task<int> SetFinalMarkToStudentForCourse(string userId, int courseId)
         {
-            int mark = 0;
+            Student student = (await Db.Students.FindAsync(s => s.UserId == userId)).SingleOrDefault();
+            int groupId = (await _studentService.GetGroupByCourseIdAsync(student.Id, courseId)).Id;
             int i = 0;
-            foreach (GroupLesson groupLesson in Db.GroupLessons.Find(gl => gl.GroupId == groupId).ToList())
+            int mark = 0;
+            foreach (GroupLesson groupLesson in (await Db.GroupLessons.FindAsync
+                (gl => gl.GroupId == groupId)).ToList())
             {
                 i++;
-                mark += Db.StudentMarks.Find(sm => sm.StudentId == studentId
-                        && sm.LessonId == groupLesson.LessonId)?.Select(sm => sm.Mark)?.SingleOrDefault() ?? 0;
+                mark += (await Db.StudentMarks.FindAsync(sm => sm.StudentId == student.Id
+                        && sm.LessonId == groupLesson.LessonId))?.Select(sm => sm.Mark)?.SingleOrDefault() ?? 0;
             }
-            return Task.FromResult(mark / (i == 0 ? 1 : i));
+            await CreateAsync(new StudentMark
+            {
+                Mark = mark / (i == 0 ? 1 : i),
+                StudentId = student.Id,
+                CourseId = courseId
+            });
+            return mark;
+        }
+
+        public async Task<IEnumerable<StudentMark>> GetByLessonIdAsync(int lessonId)
+        {
+            return await Db.StudentMarks.FindAsync(sm => sm.LessonId == lessonId);
+        }
+
+        public async Task<IEnumerable<StudentMark>> GetMarksOfCoursesAsync(int studentId)
+        {
+            return await Db.StudentMarks.FindAsync(sm => sm.LessonId == null && sm.StudentId == studentId);
         }
     }
 }

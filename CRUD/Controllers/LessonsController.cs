@@ -23,6 +23,7 @@ namespace IdentityNLayer.Controllers
         private readonly IGroupLessonService _groupLessonService;
         private readonly IGroupService _groupService;
         private readonly ICourseService _courseService;
+        private readonly IStudentMarkService _studentMarkService;
         private readonly IConfiguration _config;
         private readonly ILogger _logger;
         private readonly IMapper _mapper;
@@ -34,12 +35,14 @@ namespace IdentityNLayer.Controllers
             ILogger<LessonsController> logger,
             IGroupLessonService groupLessonService,
             ICourseService courseService,
+            IStudentMarkService studentMarkService,
             IGroupService groupService,
             IMapper mapper)
         {
             _lessonService = lessonService;
             _fileService = fileService;
             _groupLessonService = groupLessonService;
+            _studentMarkService = studentMarkService;
             _courseService = courseService;
             _groupService = groupService;
             _config = config;
@@ -80,7 +83,7 @@ namespace IdentityNLayer.Controllers
         {
             if (!groupLessons.Any())
                 return RedirectToAction("Details", "Groups", new { id = groupId });
-            if (!ModelState.IsValid)
+            if (groupLessons.Where(gl => gl.Error.Count() > 0).Any())
             {
                 Request.RouteValues["groupId"] = groupId;
                 Group group = await _groupService.GetByIdAsync(groupId);
@@ -127,7 +130,7 @@ namespace IdentityNLayer.Controllers
                 var errors = ModelState.Values.SelectMany(v => v.Errors);
                 foreach (string errorInValues in ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage))
                     error += " * " + errorInValues;
-                
+
                 return Json(new { Message = error, StatusCode = 400 });
             }
             try
@@ -191,8 +194,19 @@ namespace IdentityNLayer.Controllers
             try
             {
                 if (lesson == null)
-                    return Json(new { Message = "Lesson Not Found", StatusCode = 400 });
+                    return Json(new { Message = "Lesson Not Found.", StatusCode = 400 });
 
+                foreach (Group group in await _courseService.GetGroups(lesson.CourseId))
+                {
+                    GroupLesson groupLesson = await _groupLessonService.GetByLessonAndGroupIdAsync(group.Id, lesson.Id);
+                    if(groupLesson != null && group.Status == GroupStatus.Started)
+                        if (groupLesson.StartDate < DateTime.Now && 
+                                groupLesson.StartDate.Value.AddMinutes(lesson.Duration) > DateTime.Now)
+                            return Json(new { Message = "The lesson is now on " + group.Number 
+                                + " Group", StatusCode = 400 });
+                }
+                foreach (StudentMark studentMark in await _studentMarkService.GetByLessonIdAsync(id))
+                    await _studentMarkService.Delete(studentMark.Id);
                 if ((await _lessonService.Delete(id)).State != EntityState.Detached)
                     throw new DbUpdateConcurrencyException();
                 if (lesson.File != null)

@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore.ChangeTracking;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
+using System.Linq.Expressions;
 using System.Threading.Tasks;
 
 namespace IdentityNLayer.DAL.EF.Repositories
@@ -17,14 +17,6 @@ namespace IdentityNLayer.DAL.EF.Repositories
         public EnrollmentsRepository(ApplicationContext context)
         {
             _context = context;
-        }
-        public IEnumerable<Enrollment> Find(Func<Enrollment, bool> predicate)
-        {
-            return _context.Enrollments
-                .Include(en => en.User)
-                .AsNoTracking()
-                .Where(predicate)
-                .ToList();
         }
 
         public void UpdateAsync(Enrollment item)
@@ -38,18 +30,17 @@ namespace IdentityNLayer.DAL.EF.Repositories
              return _context.Enrollments.Remove(await _context.Enrollments.FindAsync(id));
         }
 
-        public async Task<IEnumerable<Enrollment>> FindAsync(Func<Enrollment, bool> predicate)
+        public async Task<IEnumerable<Enrollment>> FindAsync(Expression<Func<Enrollment, bool>> predicate)
         {
             return await _context.Enrollments
                 .Include(en => en.User)
                 .Where(predicate)
-                .AsQueryable()
                 .ToListAsync();
         }
 
-        public void CreateAsync(Enrollment item)
+        public async void CreateAsync(Enrollment item)
         {
-            _context.Enrollments.AddAsync(item);
+            await _context.Enrollments.AddAsync(item);
         }
 
         public async Task<Enrollment> GetAsync(int id)

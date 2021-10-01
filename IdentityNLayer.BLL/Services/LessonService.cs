@@ -31,9 +31,9 @@ namespace IdentityNLayer.BLL.Services
             return entry;
         }
 
-        public Task<bool> FileUseAsync(int fileId)
+        public async Task<bool> FileUseAsync(int fileId)
         {
-            return Task.FromResult(Db.Lessons.Find(l => l.FileId == fileId).Any());
+            return (await Db.Lessons.FindAsync(l => l.FileId == fileId)).Any();
         }
 
         public Task<IEnumerable<Lesson>> GetAllAsync()

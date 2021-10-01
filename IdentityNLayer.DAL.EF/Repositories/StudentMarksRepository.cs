@@ -6,6 +6,7 @@ using Microsoft.EntityFrameworkCore;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
+using System.Linq.Expressions;
 
 namespace IdentityNLayer.DAL.EF.Repositories
 {
@@ -24,23 +25,12 @@ namespace IdentityNLayer.DAL.EF.Repositories
         }
 
 
-        public IEnumerable<StudentMark> Find(Func<StudentMark, bool> predicate)
-        {
-            return _context.StudentMarks
-                 .Include(en => en.Lesson)
-                 .Include(en => en.Student)
-                 .Where(predicate)
-                 .AsQueryable()
-                 .ToList();
-        }
-
-        public async Task<IEnumerable<StudentMark>> FindAsync(Func<StudentMark, bool> predicate)
+        public async Task<IEnumerable<StudentMark>> FindAsync(Expression<Func<StudentMark, bool>> predicate)
         {
             return await _context.StudentMarks
               .Include(en => en.Lesson)
               .Include(en => en.Student)
               .Where(predicate)
-              .AsQueryable()
               .ToListAsync();
         }
 

@@ -28,32 +28,30 @@ namespace IdentityNLayer.BLL.Services
             throw new NotImplementedException();
         }
 
-        public bool HasAccount(string userId)
+        public async Task<bool> HasAccount(string userId)
         {
-            return Db.Teachers.Find(tc => tc.UserId == userId).Any();
+            return (await Db.Teachers.FindAsync(tc => tc.UserId == userId)).Any();
         }
 
-        public Teacher GetByUserId(string userId)
+        public async Task<Teacher> GetByUserId(string userId)
         {
-            return Db.Teachers.Find(tc => tc.UserId == userId).SingleOrDefault();
+            return (await Db.Teachers.FindAsync(tc => tc.UserId == userId)).SingleOrDefault();
         }
 
-        public IEnumerable<Group> GetTeacherGroups(int teacherId)
+        public async Task<IEnumerable<Group>> GetTeacherGroups(int teacherId)
         {
             List<Group> groups = new();
 
-            Task.Factory.StartNew(async () =>
+            Teacher teacher = await Db.Teachers.GetAsync(teacherId);
+            foreach (Enrollment en in await Db.Enrollments.FindAsync(en => en.UserID == teacher.UserId))
             {
-                Teacher teacher = await Db.Teachers.GetAsync(teacherId);
-                foreach (Enrollment en in Db.Enrollments.Find(en => en.UserID == teacher.UserId))
+                if (en.State != UserGroupStates.Aborted && en.State != UserGroupStates.Requested)
                 {
-                    if (en.State != UserGroupStates.Aborted && en.State != UserGroupStates.Requested)
-                    {
-                        Group group = await Db.Groups.GetAsync(en.EntityID);
-                        groups.Add(group);
-                    }
+                    Group group = await Db.Groups.GetAsync(en.EntityID);
+                    groups.Add(group);
                 }
-            });
+            }
+
             return groups;
         }
 

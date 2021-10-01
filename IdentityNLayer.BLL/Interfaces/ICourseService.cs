@@ -7,10 +7,9 @@ namespace IdentityNLayer.BLL.Interfaces
 {
     public interface ICourseService : IBaseService<Course>
     {
-        public IEnumerable<Enrollment> GetStudentRequests(int id);
-        public IEnumerable<Teacher> GetTeacherRequests(int id);
-        public Task<IEnumerable<Topic>> GetAvailableTopicsAsync(int courseId = 0);
-        public IEnumerable<Group> GetGroups(int courseId, GroupStatus? status = null);
-        public bool HasRequest(int courseId, string userId, UserRoles role);
+        public Task<IEnumerable<Enrollment>> GetStudentRequests(int id);
+        public Task<IEnumerable<Teacher>> GetTeacherRequests(int id);
+        public Task<IEnumerable<Group>> GetGroups(int courseId, GroupStatus? status = null);
+        public Task<bool> HasRequest(int courseId, string userId, UserRoles role);
     }
 }

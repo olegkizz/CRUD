@@ -25,13 +25,9 @@
                 <span asp-validation-for="Description" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label class="control-label">Course</label>
-                @Html.DropDownListFor(model => model.CourseId, new SelectList(await courseService.GetAllAsync(), "Id", "Title"))
-                <span asp-validation-for="Course.Title" class="text-danger"></span>
-            </div>
-            <div class="form-group">
                 <label class="control-label">Parent Topic</label>
-                <select asp-for="Parent.Title" class="form-control" asp-items="ViewBag.Parent"></select>
+                @Html.DropDownListFor(model => model.ParentId, new SelectList(ViewBag.Parent,
+                   "Id", "Title", Model.ParentId), "Select Parent...")
                 <span asp-validation-for="Parent.Title" class="text-danger"></span>
             </div>
             <div class="form-group">

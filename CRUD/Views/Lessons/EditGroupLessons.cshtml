@@ -37,16 +37,19 @@
             </tr>
         </thead>
         <tbody>
+
             @{
+                int i = 0;
                 bool flagCurrentLesson = false;
                 string colorTr = "";
                 bool disabledStartDate = false;
             }
-            @{ int i = 0;}
             @foreach (var item in Model)
             {
+
+                DateTime itemDateEndLesson = item.StartDate.Value.AddMinutes(item.Lesson.Duration);
                 @if (item.Group.Status == GroupStatus.Started && item.StartDate != null)
-                    @if (DateTime.Now.CompareTo(item.StartDate.Value.AddMinutes(item.Lesson.Duration)) >= 0)
+                    @if (DateTime.Now.CompareTo(itemDateEndLesson) >= 0)
                     {
                         colorTr = "darkgray";
                         disabledStartDate = true;
@@ -60,7 +63,9 @@
                     {
                         colorTr = "lightgreen";
                         flagCurrentLesson = true;
-                        disabledStartDate = true;
+
+                        if (DateTime.Now < itemDateEndLesson && DateTime.Now > item.StartDate)
+                            disabledStartDate = true;
                     }
                     <tr style="background:@colorTr" class="form-group">
                         <td>
@@ -114,10 +119,10 @@
                                 <input asp-for="@Model.ToList()[i].StartDate" class="datetime-local" />
                             }
                             <ul>
-                                @if(Model.ToList()[i].Error != null) foreach (string error in Model.ToList()[i].Error)
-                                {
-                                    <li class="text-danger">@error</li>
-                                }
+                                @if (Model.ToList()[i].Error != null) foreach (string error in Model.ToList()[i].Error)
+                                    {
+                                        <li class="text-danger">@error</li>
+                                    }
                             </ul>
                         </td>
                     </tr>

@@ -22,8 +22,6 @@ namespace IdentityNLayer.DAL.EF
                 GroupsRepository>();
             services.AddTransient<IRepository<Teacher>,
                 TeachersRepository>();
-            services.AddTransient<IRepository<StudentToGroupAction>,
-                StudentToGroupActionsRepository>();
             services.AddTransient<IRepository<Enrollment>,
                 EnrollmentsRepository>();
             services.AddTransient<IRepository<Course>,

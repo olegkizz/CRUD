@@ -6,6 +6,7 @@ using Microsoft.EntityFrameworkCore;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
+using System.Linq.Expressions;
 
 namespace IdentityNLayer.DAL.EF.Repositories
 {
@@ -27,21 +28,16 @@ namespace IdentityNLayer.DAL.EF.Repositories
             throw new NotImplementedException();
         }
 
-        public IEnumerable<GroupLesson> Find(Func<GroupLesson, bool> predicate)
+        public async Task<IEnumerable<GroupLesson>> FindAsync(Expression<Func<GroupLesson, bool>> predicate)
         {
-            return _context.GroupLessons
+            return await _context.GroupLessons
                .Include(gl => gl.Group)
                .ThenInclude(gl => gl.Course)
                .Include(gl => gl.Lesson)
                .ThenInclude(gl => gl.File)
                .AsNoTracking()
                .Where(predicate)
-               .ToList();
-        }
-
-        public Task<IEnumerable<GroupLesson>> FindAsync(Func<GroupLesson, bool> predicate)
-        {
-            throw new NotImplementedException();
+               .ToListAsync();
         }
 
         public Task<IEnumerable<GroupLesson>> GetAllAsync()

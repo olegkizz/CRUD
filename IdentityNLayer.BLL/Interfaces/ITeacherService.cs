@@ -1,13 +1,14 @@
 ﻿using IdentityNLayer.Core.Entities;
 using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace IdentityNLayer.BLL.Interfaces
 {
     public interface ITeacherService : IBaseService<Teacher>
     {
-        public bool HasAccount(string userId);
-        public Teacher GetByUserId(string userId);
-        public IEnumerable<Group> GetTeacherGroups(int teacherId);
+        public Task<bool> HasAccount(string userId);
+        public Task<Teacher> GetByUserId(string userId);
+        public Task<IEnumerable<Group>> GetTeacherGroups(int teacherId);
     }
 }

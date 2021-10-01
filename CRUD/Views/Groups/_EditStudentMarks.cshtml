@@ -54,7 +54,7 @@
                                                 i++;
                                          }
                                 </form>
-                                @if (User.IsInRole("Teacher"))
+                                @if (User.IsInRole("Teacher") && studentMarks.Any())
                                 {
                                     <button type="submit" class="btn btn-success">
                                         <span class="action_text">Save</span>

@@ -16,21 +16,6 @@
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <input type="hidden" asp-for="Id" />
             <input type="hidden" name="id" value="@Model.Id" />
-            @*     <div class="form-group">
-            <label asp-for="FirstName" class="control-label"></label>
-            <input asp-for="FirstName" class="form-control" />
-            <span asp-validation-for="FirstName" class="text-danger"></span>
-        </div>
-        <div class="form-group">
-            <label asp-for="LastName" class="control-label"></label>
-            <input asp-for="LastName" class="form-control" />
-            <span asp-validation-for="LastName" class="text-danger"></span>
-        </div>
-        <div class="form-group">
-            <label asp-for="BirthDate" class="control-label"></label>
-            <input asp-for="BirthDate" type="date" class="form-control" />
-            <span asp-validation-for="BirthDate" class="text-danger"></span>
-        </div>*@
             <div class="form-group">
                 <label asp-for="Bio" class="control-label"></label>
                 <input asp-for="Bio" class="form-control" />
@@ -43,10 +28,12 @@
             </div>
             <div class="form-group">
                 <label class="control-label">Your Assign Groups Like Teacher</label>
-                @if (teacherService.GetTeacherGroups(Model.Id) != null) foreach (Group gr in teacherService.GetTeacherGroups(Model.Id))
+                @{
+                    IEnumerable<Group> teacherGroups = await teacherService.GetTeacherGroups(Model.Id);
+                 }
+                @if (teacherGroups != null) foreach (Group gr in teacherGroups)
                     {
-                        Dictionary<string, string> groupdId = new Dictionary<string, string> { { "id", gr.Id.ToString() } };
-                        <span class="form-control"><a asp-controller="Groups" asp-action="Details" asp-all-route-data="groupdId">@gr.Number </a></span>
+                        <span class="form-control"><a asp-controller="Groups" asp-action="Details" asp-route-id="@gr.Id.ToString()">@gr.Number </a></span>
                     }
                 else
                 {

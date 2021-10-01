@@ -11,7 +11,7 @@ namespace IdentityNLayer.Core.Entities
         public DateTime Updated { get; set; }
         public int EntityID { get; set; }
         public string UserID { get; set; }
-        public virtual Person User { get; set; }
+        public Person User { get; set; }
         public UserGroupStates State{ get; set; }
         public UserRoles Role{ get; set; }
     }

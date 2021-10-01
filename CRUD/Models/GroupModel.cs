@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.Threading.Tasks;
 
 namespace IdentityNLayer.Models
 {
@@ -21,7 +22,7 @@ namespace IdentityNLayer.Models
         public DateTime? StartDate { get; set; }
 
         public List<StudentRequestsModel> StudentRequests { get; set; }
-        public void SetStudents(IEnumerable<StudentModel> students, IGroupService _groupService)
+        public async Task<IEnumerable<StudentRequestsModel>> SetStudents(IEnumerable<StudentModel> students, IGroupService _groupService)
         {
             List<StudentRequestsModel> studentRequests = new();
             if (students != null)
@@ -32,10 +33,11 @@ namespace IdentityNLayer.Models
                         {
                             UserName = student.Name,
                             UserId = student.UserId,
-                            Applied = _groupService.HasStudent(Id, student.UserId) ? true : false
+                            Applied = await _groupService.HasStudent(Id, student.UserId) ? true : false
                         });
                 }
             StudentRequests = studentRequests;
+            return studentRequests;
         }
     }
 }

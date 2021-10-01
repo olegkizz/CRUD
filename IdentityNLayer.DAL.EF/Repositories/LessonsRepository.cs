@@ -6,6 +6,7 @@ using Microsoft.EntityFrameworkCore;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
+using System.Linq.Expressions;
 
 namespace IdentityNLayer.DAL.EF.Repositories
 {
@@ -17,9 +18,9 @@ namespace IdentityNLayer.DAL.EF.Repositories
         {
             _context = context;
         }
-        public void CreateAsync(Lesson item)
+        public async void CreateAsync(Lesson item)
         {
-            _context.Lessons.AddAsync(item);
+            await _context.Lessons.AddAsync(item);
         }
 
         public async Task<EntityEntry<Lesson>> DeleteAsync(int id)
@@ -35,12 +36,12 @@ namespace IdentityNLayer.DAL.EF.Repositories
               .ToList();
         }
 
-        public async Task<IEnumerable<Lesson>> FindAsync(Func<Lesson, bool> predicate)
+        public async Task<IEnumerable<Lesson>> FindAsync(Expression<Func<Lesson, bool>> predicate)
         {
             return await _context.Lessons
+              .Include(l => l.Course)
               .AsNoTracking()
               .Where(predicate)
-              .AsQueryable()
               .ToListAsync();
         }
 

@@ -1,5 +1,5 @@
 ﻿@model IdentityNLayer.Models.GroupModel
-
+@using IdentityNLayer.Core.Entities
 
 @{
     ViewData["Title"] = "Delete";
@@ -25,16 +25,24 @@
             @Html.DisplayFor(model => model.Status)
         </dd>
         <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.TeacherId)
+            Teacher Link To Profile
         </dt>
         <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.TeacherId)
+            @Html.RouteLink(Model.Teacher?.User.FirstName + " " + Model.Teacher?.User.LastName, Model.Teacher?.LinkToProfile)
         </dd>
     </dl>
 
-    <form asp-action="Delete">
-        <input type="hidden" asp-for="Id" />
-        <input type="submit" value="Delete" class="btn btn-danger" /> |
-        <a asp-action="Index">Back to List</a>
-    </form>
+    @if (Model.Status == GroupStatus.Started)
+    {
+        <span style="color:crimson">To Delete Group Cancel Or Finish Group.</span>
+    }
+    else
+    {
+        <form asp-action="Delete">
+            <input type="hidden" asp-for="Id" />
+            <input type="submit" value="Delete" class="btn btn-danger" /> |
+            <a asp-action="Index">Back to List</a>
+        </form>
+    }
+
 </div>

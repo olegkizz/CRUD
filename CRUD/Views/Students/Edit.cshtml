@@ -1,6 +1,7 @@
 ﻿@model IdentityNLayer.Models.StudentModel
 @inject IdentityNLayer.BLL.Interfaces.IStudentService studentService
 @inject IdentityNLayer.BLL.Interfaces.IStudentMarkService studentMarkService
+@inject IdentityNLayer.BLL.Interfaces.ICourseService courseService
 @using  IdentityNLayer.Core.Entities
 @{
     ViewData["Title"] = "Edit";
@@ -36,18 +37,15 @@
                     <span class="form-control"><a asp-controller="Groups" asp-action="Details" asp-route-id="@gr.Id">@gr.Number </a></span>
                 }
                 <label class="control-label">Your Finished Courses</label>
-                @foreach (Group gr in await studentMarkService.GetStudentGroupsAsync(Model.Id))
+                @foreach (StudentMark studentMark in await studentMarkService.GetMarksOfCoursesAsync(Model.Id))
                 {
-                    if (studentGroups.Find(sg => sg.Id == gr.Id) == null)
-                    {
-                        <span class="form-control">
-                            <a asp-controller="Courses" asp-action="Details"
-                               asp-route-id="@gr.CourseId">
-                                @gr.Course.Title (Mark:
-                                @await studentMarkService.GetMarkByStudentAndGroupIdAsync(Model.Id, gr.Id))
-                            </a>
-                        </span>
-                    }
+                    <span class="form-control">
+                        <a asp-controller="Courses" asp-action="Details"
+                           asp-route-id="@studentMark.CourseId">
+                            @((await courseService.GetByIdAsync(studentMark.CourseId ?? 0)).Title) (Mark:
+                            @studentMark.Mark )
+                        </a>
+                    </span>
                 }
             </div>
             <div class="form-group">

@@ -32,13 +32,13 @@ namespace IdentityNLayer.Middleware
                 {
                     if (context.Request.Path.Value.Contains("/Students/SendRequest"))
                     {
-                        if (!studentService.HasAccount(userManager.GetUserAsync(context.User).Result.Id))
+                        if (!(await studentService.HasAccount(userManager.GetUserAsync(context.User).Result.Id))) 
                             context.Response.Redirect("/Students/Create?courseId=" + courseId);
                         else await _next.Invoke(context);
                     }
                     else if (context.Request.Path.Value.Contains("/Teachers/SendRequest"))
                     {
-                        if (!teacherService.HasAccount(userManager.GetUserAsync(context.User).Result.Id))
+                        if (!(await teacherService.HasAccount(userManager.GetUserAsync(context.User).Result.Id))) 
                             context.Response.Redirect("/Teachers/Create?courseId=" + courseId);
                         else await _next.Invoke(context);
                     }

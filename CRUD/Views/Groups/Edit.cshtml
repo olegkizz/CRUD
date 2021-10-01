@@ -1,17 +1,15 @@
 ﻿@model IdentityNLayer.Models.GroupModel
-@inject IdentityNLayer.BLL.Interfaces.ICourseService courseService
 @inject IdentityNLayer.BLL.Interfaces.IGroupService groupService
 @inject IdentityNLayer.BLL.Interfaces.IStudentService studentService
 @inject IdentityNLayer.BLL.Interfaces.IGroupLessonService groupLessonService
 @using AutoMapper
 @inject IMapper mapper
-@using IdentityNLayer.Core.Entities
 @{
     ViewData["Title"] = "Edit";
 }
 
 <h1>Edit</h1>
-<a asp-controller="Groups" asp-action="Delete" value="" asp-route-groupId="@Model.Id" class="btn btn-">
+<a asp-controller="Groups" asp-action="Delete" asp-route-id="@Model.Id" class="btn btn-warning">
     Delete Group 
 </a>
 <h4>Group</h4>
@@ -34,12 +32,12 @@
             </div>
             <div class="form-group">
                 <label class="control-label">TeacherRequests</label>
-                @if (groupService.GetTeachers(Model.Id) != null)
+                @if ((await groupService.GetTeachers(Model.Id)).Any())
                 {
-                    SelectList list = new(mapper.Map<IEnumerable<TeacherModel>>(groupService.GetTeachers(Model.Id)), "Id", "Name");
-                    if (groupService.GetCurrentTeacher(Model.Id) != null)
-                        list = new(mapper.Map<IEnumerable<TeacherModel>>(groupService.GetTeachers(Model.Id)),
-                            "Id", "Name", groupService.GetCurrentTeacher(Model.Id).Id);
+                    SelectList list = new(mapper.Map<IEnumerable<TeacherModel>>(await groupService.GetTeachers(Model.Id)), "Id", "Name");
+                    if ((await groupService.GetCurrentTeacher(Model.Id)) != null)
+                        list = new(mapper.Map<IEnumerable<TeacherModel>>(await groupService.GetTeachers(Model.Id)),
+                            "Id", "Name", (await groupService.GetCurrentTeacher(Model.Id)).Id);
                     @Html.DropDownListFor(model => model.TeacherId, list, "Teacher is not selected...");
                 }
                 else
@@ -49,13 +47,13 @@
             </div>
             <div class="form-group">
                 <label asp-for="StudentRequests" class="control-label"></label>
-                @for (int i = 0; i < groupService.GetStudents(Model.Id).Count(); ++i)
+                @for (int i = 0; i < (await groupService.GetStudents(Model.Id)).Count(); ++i)
                 {
                     <input type="hidden" asp-for="@Model.StudentRequests[i].UserId" />
                     <input type="hidden" asp-for="@Model.StudentRequests[i].UserName" />
                     <span>
                         @Html.CheckBoxFor(m => m.StudentRequests[i].Applied)
-                        <a asp-controller="Students" asp-action="Edit" asp-route-id = "@studentService.GetByUserId(Model.StudentRequests[i].UserId).Id">
+                        <a asp-controller="Students" asp-action="Edit" asp-route-id = "@((await studentService.GetByUserId(Model.StudentRequests[i].UserId)).Id)">
                             @Model.StudentRequests[i].UserName
                         </a>
                     </span>

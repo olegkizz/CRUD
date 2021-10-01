@@ -6,6 +6,7 @@ using Microsoft.EntityFrameworkCore;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
+using System.Linq.Expressions;
 
 namespace IdentityNLayer.DAL.EF.Repositories
 {
@@ -16,14 +17,6 @@ namespace IdentityNLayer.DAL.EF.Repositories
         public TeachersRepository(ApplicationContext context)
         {
             _context = context;
-        }
-
-        public IEnumerable<Teacher> Find(Func<Teacher, bool> predicate)
-        {
-            return _context.Teachers
-                .Include(tc => tc.User)
-                .Where(predicate)
-                .ToList();
         }
 
         public void UpdateAsync(Teacher item)
@@ -39,9 +32,12 @@ namespace IdentityNLayer.DAL.EF.Repositories
             throw new NotImplementedException();
         }
 
-        public Task<IEnumerable<Teacher>> FindAsync(Func<Teacher, bool> predicate)
+        public async Task<IEnumerable<Teacher>> FindAsync(Expression<Func<Teacher, bool>> predicate)
         {
-            throw new NotImplementedException();
+            return await _context.Teachers
+               .Include(tc => tc.User)
+               .Where(predicate)
+               .ToListAsync();
         }
 
         public async void CreateAsync(Teacher item)

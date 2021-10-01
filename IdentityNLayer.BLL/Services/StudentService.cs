@@ -19,35 +19,6 @@ namespace IdentityNLayer.BLL.Services
             Db = db;
            
         }
- /*       public async Task<int> CreateAsync(Student student)
-        {
-            IdentityRole identityRole = new IdentityRole();
-            identityRole.Name = UserRoles.Student.ToString();
-            await _roleManager.CreateAsync(identityRole);
-
-            IdentityResult chkUser = await _userManager.CreateAsync(student.User, student.User.PasswordHash);
-
-            //Add default User to Role Admin    
-            if (chkUser.Succeeded)
-            {
-                await _userManager.AddToRoleAsync(student.User, identityRole.Name);
-            }
-            return Create(student);
-        }*/
-        /*     public void Create(Student student, int[] selectedGroups = null)
-             {
-                 *//*.ForMember("Group", opt
-                     => opt.MapFrom(st => Db.Students.Get(st.GroupId)))*//*
-                 foreach(int groupId in selectedGroups)
-                 {
-                     Db.Enrollments.Create(new Enrollment()
-                     {
-
-                     });
-                 }
-                 Create(student);
-                 Db.Save();
-             }*/
 
         public Array GetStudentTypes()
         {
@@ -72,7 +43,7 @@ namespace IdentityNLayer.BLL.Services
             List<Group> groups = new();
             
             Student student = await Db.Students.GetAsync(studentId);
-            foreach (Enrollment en in Db.Enrollments.Find(en => en.UserID == student.UserId))
+            foreach (Enrollment en in await Db.Enrollments.FindAsync(en => en.UserID == student.UserId))
             {
                 if (en.State != UserGroupStates.Aborted && en.State != UserGroupStates.Requested)
                     groups.Add(await Db.Groups.GetAsync(en.EntityID));
@@ -80,14 +51,14 @@ namespace IdentityNLayer.BLL.Services
             return groups;
         }
 
-        public bool HasAccount(string userId)
+        public async Task<bool> HasAccount(string userId)
         {
-            return Db.Students.Find(st => st.UserId == userId).Any();
+            return (await Db.Students.FindAsync(st => st.UserId == userId)).Any();
         }
 
-        public Student GetByUserId(string userId)
+        public async Task<Student> GetByUserId(string userId)
         {
-            return Db.Students.Find(st => st.UserId == userId).SingleOrDefault();
+            return (await Db.Students.FindAsync(st => st.UserId == userId)).SingleOrDefault();
         }
 
         public async Task<Group> GetGroupByCourseIdAsync(int studentId, int courseId)

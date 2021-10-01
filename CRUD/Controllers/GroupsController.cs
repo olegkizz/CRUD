@@ -90,10 +90,10 @@ namespace IdentityNLayer.Controllers
                     foreach (StudentRequestsModel studentRequest in group.StudentRequests)
                     {
                         if (studentRequest.Applied)
-                            _enrollmentService.Enrol(studentRequest.UserId, groupId, UserRoles.Student);
+                            await _enrollmentService.EnrolInGroup(studentRequest.UserId, groupId, UserRoles.Student);
                     }
                 if (group.TeacherId != null)
-                    _enrollmentService.Enrol((await _teacherService.GetByIdAsync((int)group.TeacherId)).UserId, groupId, UserRoles.Teacher);
+                    await _enrollmentService.EnrolInGroup((await _teacherService.GetByIdAsync((int)group.TeacherId)).UserId, groupId, UserRoles.Teacher);
                 return RedirectToAction(nameof(Index));
             }
             return View();
@@ -109,8 +109,8 @@ namespace IdentityNLayer.Controllers
             }
 
             GroupModel group = _mapper.Map<GroupModel>(await _groupService.GetByIdAsync((int)id));
-            IEnumerable<Student> students = _groupService.GetStudents(group.Id);
-            group.SetStudents(_mapper.Map<IEnumerable<StudentModel>>(students), _groupService);
+            IEnumerable<Student> students = await _groupService.GetStudents(group.Id);
+            await group.SetStudents(_mapper.Map<IEnumerable<StudentModel>>(students), _groupService);
             ViewBag.CountStudentRequest = students.Count();
             if (group == null)
             {
@@ -136,7 +136,7 @@ namespace IdentityNLayer.Controllers
             {
                 try
                 {
-                    Teacher currentTeacher = _groupService.GetCurrentTeacher(group.Id);
+                    Teacher currentTeacher = await _groupService.GetCurrentTeacher(group.Id);
 
                     switch (group.Status)
                     {
@@ -146,15 +146,17 @@ namespace IdentityNLayer.Controllers
                         case GroupStatus.Finished:
                             group = _mapper.Map<GroupModel>(await _groupService.FinishGroupAsync(group.Id));
                             break;
+                        default:
+                            _groupService.UpdateAsync(_mapper.Map<Group>(group));
+                            break;
                     }
-                    _groupService.UpdateAsync(_mapper.Map<Group>(group));
 
                     if (group.StudentRequests != null) foreach (StudentRequestsModel studentRequest in group.StudentRequests)
                         {
                             if (studentRequest.Applied)
                             {
-                                if (!_groupService.HasStudent(group.Id, studentRequest.UserId))
-                                    _enrollmentService.Enrol(studentRequest.UserId, group.Id, UserRoles.Student);
+                                if (!(await _groupService.HasStudent(group.Id, studentRequest.UserId)))
+                                    await _enrollmentService.EnrolInGroup(studentRequest.UserId, group.Id, UserRoles.Student);
                             }
                             else _enrollmentService.UnEnrol(studentRequest.UserId, group.Id);
                         }
@@ -167,10 +169,10 @@ namespace IdentityNLayer.Controllers
                             if (currentTeacher.Id != group.TeacherId)
                             {
                                 _enrollmentService.UnEnrol(currentTeacher.UserId, group.Id);
-                                _enrollmentService.Enrol(newTeacher.UserId, group.Id, UserRoles.Teacher);
+                                await _enrollmentService.EnrolInGroup(newTeacher.UserId, group.Id, UserRoles.Teacher);
                             }
                         }
-                        else _enrollmentService.Enrol(newTeacher.UserId, group.Id, UserRoles.Teacher);
+                        else await _enrollmentService.EnrolInGroup(newTeacher.UserId, group.Id, UserRoles.Teacher);
                     }
                     else if (currentTeacher != null)
                         _enrollmentService.UnEnrol(currentTeacher.UserId, group.Id);
@@ -199,48 +201,9 @@ namespace IdentityNLayer.Controllers
             }
             return View();
         }
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        [Authorize(Roles = "Admin, Manager")]
-/*        public async Task<IActionResult> StartGroup(int groupId)
-        {
-            Group group = await _groupService.GetByIdAsync(groupId);
-            if (group == null)
-                return NotFound();
+        [HttpGet]
+        [Authorize(Roles = "Admin")]
 
-            group.Status = GroupStatus.Started;
-            _groupService.UpdateAsync(group);
-
-            return RedirectToAction("Details", new { id = groupId });
-        }
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        [Authorize(Roles = "Admin, Manager")]
-        public async Task<IActionResult> CancelGroup(int groupId)
-        {
-            Group group = await _groupService.GetByIdAsync(groupId);
-            if (group == null)
-                return NotFound();
-            if (group.Status != GroupStatus.Started)
-                return BadRequest();
-            _groupService.CancelGroupAsync(groupId);
-
-            return RedirectToAction("Details", new { id = groupId });
-        }
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        [Authorize(Roles = "Admin, Manager")]
-        public async Task<IActionResult> FinishGroup(int groupId)
-        {
-            GroupModel group = _mapper.Map<GroupModel>(await _groupService.GetByIdAsync(groupId));
-            if (group == null)
-                return NotFound();
-            if (group.Status != GroupStatus.Started)
-                return BadRequest();
-            _groupService.FinishGroupAsync(groupId);
-
-            return RedirectToAction("Details", new { id = groupId });
-        }*/
         // GET: Groups/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
@@ -249,13 +212,33 @@ namespace IdentityNLayer.Controllers
                 return NotFound();
             }
 
-            GroupModel teacher = _mapper.Map<GroupModel>(await _groupService.GetByIdAsync((int)id));
-            if (teacher == null)
+            GroupModel group = _mapper.Map<GroupModel>(await _groupService.GetByIdAsync((int)id));
+            if (group == null)
             {
                 return NotFound();
             }
 
-            return View();
+            return View(group);
+        }
+        [HttpPost]
+        [ActionName("Delete")]
+        public async Task<IActionResult> DeleteGroup(int? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+            GroupModel group = _mapper.Map<GroupModel>(await _groupService.GetByIdAsync((int)id));
+            if (group == null)
+            {
+                return NotFound();
+            }
+            if (group.Status == GroupStatus.Started)
+                return BadRequest();
+
+            await _groupService.Delete((int)id);
+
+            return RedirectToAction(nameof(Index));
         }
 
         private bool GroupExists(int id)
@@ -275,8 +258,11 @@ namespace IdentityNLayer.Controllers
                 if (groupLesson.StartDate < DateTime.Now && status == GroupStatus.Started && group.Status != GroupStatus.Started)
                     return Json("One Or More Of The Lessons Have StartDate Less Than Now.");
             }
+            if((await _groupService.GetCurrentTeacher(id)) == null && status == GroupStatus.Started && group.Status == GroupStatus.Pending)
+                return Json("Add Teacher To The Group.");
+
             return !(await _groupLessonService.GetLessonsByGroupIdAsync(id)).Any()
-                && status == GroupStatus.Started ? Json("To Start Group Please Add Lessons.")
+                && status == GroupStatus.Started ? Json("To Start Group Please Add Or Manage StartDate Of Lessons.")
                 : Json(true);
         }
     }

@@ -56,13 +56,13 @@ namespace IdentityNLayer.Controllers
         }
         
         [HttpPost]
-        public IActionResult SendRequest(int courseId, string request)
+        public async Task<IActionResult> SendRequest(int courseId, string request)
         {
             if (request == "Yes")
             {
-                if (!_studentService.HasAccount(_userManager.GetUserId(User)))
+                if (!(await _studentService.HasAccount(_userManager.GetUserId(User))))
                     return RedirectToAction("Create", new { courseId });
-                _enrollmentService.Enrol(_userManager.GetUserId(User), courseId, UserRoles.Student, false);
+                await _enrollmentService.EnrolInCourse(_userManager.GetUserId(User), courseId, UserRoles.Student);
             }
 
             return Redirect("/Courses/Index");
@@ -124,13 +124,13 @@ namespace IdentityNLayer.Controllers
             if (id == null)
             {
                 if (!User.IsInRole("Admin") && !User.IsInRole("Manager"))
-                    id = _studentService.GetByUserId(_userManager.GetUserId(User)).Id;
+                    id = (await _studentService.GetByUserId(_userManager.GetUserId(User))).Id;
                 else return BadRequest();
             } else
             {
                 if(!User.IsInRole("Admin") && !User.IsInRole("Manager"))
                 {
-                    int currentStudentId = _studentService.GetByUserId(_userManager.GetUserId(User)).Id;
+                    int currentStudentId = (await _studentService.GetByUserId(_userManager.GetUserId(User))).Id;
                     if (id != currentStudentId)
                         return RedirectToAction("Edit", new { currentStudentId });
                 }
@@ -142,7 +142,6 @@ namespace IdentityNLayer.Controllers
             }
 
             StudentModel student = _mapper.Map<StudentModel>(await _studentService.GetByIdAsync((int)id));
-
 
             if (student == null)
             {

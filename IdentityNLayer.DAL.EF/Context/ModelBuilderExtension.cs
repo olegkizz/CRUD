@@ -159,36 +159,31 @@ namespace IdentityNLayer.DAL.EF.Context
             {
                 Id = 1,
                 Title = ".NET",
-                Description = "Super MVC",
-                CourseId = 1
+                Description = "Super MVC"
             };
             Topic topic2 = new Topic()
             {
                 Id = 2,
                 Title = "Spring",
-                Description = "Super Spring",
-                CourseId = 2
+                Description = "Super Spring"
             };
             Topic topic3 = new Topic()
             {
                 Id = 3,
                 Title = "ReactJS",
-                Description = "Super ReactJS",
-                CourseId = 3
+                Description = "Super ReactJS"
             };    
             Topic topic4 = new Topic()
             {
                 Id = 4,
                 Title = "AngularJS",
-                Description = "Super AngularJS",
-                CourseId = 3
+                Description = "Super AngularJS"
             };  
             Topic topic5 = new Topic()
             {
                 Id = 5,
-                Title = "NodeJS",
-                Description = "Super NodeJS",
-                CourseId = 3
+                Title = "PythonBackend",
+                Description = "Super PythonBackend"
             };
             modelBuilder.Entity<Topic>().HasData(
              new Topic[]
@@ -216,12 +211,19 @@ namespace IdentityNLayer.DAL.EF.Context
                 Description = "Super JavaScript",
                 TopicId = 3
             };
+            Course course4 = new Course()
+            {
+                Id = 4,
+                Title = "Python",
+                Description = "Super Python",
+                TopicId = 5
+            };
             modelBuilder.Entity<Course>().Property(en => en.Updated).HasDefaultValueSql("getdate()");
 
             modelBuilder.Entity<Course>().HasData(
                     new Course[]
                     {
-                        course1, course2, course3
+                        course1, course2, course3, course4
                     });
             Lesson lesson1 = new Lesson()
             {

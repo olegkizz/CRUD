@@ -28,14 +28,14 @@
                 <input asp-for="Status" class="form-control" value="@GroupStatus.Pending" readonly>
                 <span asp-validation-for="Status" class="text-danger"></span>
             </div>
-            @if (groupService.GetCurrentTeacher(Model.Id) == null)
+            @if (await groupService.GetCurrentTeacher(Model.Id) == null)
             {
                 <div class="form-group">
                     <label class="control-label">TeacherRequests</label>
-                    @if (courseService.GetTeacherRequests(Model.CourseId) != null)
+                    @if (await courseService.GetTeacherRequests(Model.CourseId) != null)
                     {
                         @Html.DropDownListFor(model => model.TeacherId,
-                 new SelectList(mapper.Map<IEnumerable<TeacherModel>>(courseService.GetTeacherRequests(Model.CourseId)), "Id", "Name"),
+                 new SelectList(mapper.Map<IEnumerable<TeacherModel>>(await courseService.GetTeacherRequests(Model.CourseId)), "Id", "Name"),
                             "Teacher is not selected...")
                     }
                     else
@@ -47,7 +47,7 @@
             <div class="form-group">
                 <label asp-for="StudentRequests" class="control-label"></label>
                 @{
-                    var studentRequests = courseService.GetStudentRequests(Convert.ToInt32(Model.CourseId)).ToList();
+                    var studentRequests = (await courseService.GetStudentRequests(Convert.ToInt32(Model.CourseId))).ToList();
                     Model.StudentRequests = new();
                     for (int i = 0; i < studentRequests.Count(); ++i)
                     {

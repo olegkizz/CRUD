@@ -45,7 +45,7 @@ namespace IdentityNLayer.Controllers
             if (studentMarks.Any())
             {
                 if (studentMarks.First().StudentId == 0 || (await _userManager.GetUserAsync(User)).Id
-                          != _groupService.GetCurrentTeacher(groupId).User.Id)
+                          != (await _groupService.GetCurrentTeacher(groupId)).User.Id)
                     return Json(new { Message = "Bad Request.", StatusCode = 400 });
             }
             else return Json(new { Message = "Student Marks Empty.", StatusCode = 200 });

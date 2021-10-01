@@ -42,13 +42,13 @@ namespace IdentityNLayer.Controllers
             return View();
         }
         [HttpPost]
-        public IActionResult SendRequest(int courseId, string request)
+        public async Task<IActionResult> SendRequest(int courseId, string request)
         {
             if (request == "Yes")
             {
-                if (!_teacherService.HasAccount(_userManager.GetUserId(User)))
+                if (!await _teacherService.HasAccount(_userManager.GetUserId(User)))
                     return RedirectToAction("Create", new { courseId });
-                _enrollmentService.Enrol(_userManager.GetUserId(User), courseId, UserRoles.Teacher, false);
+                await _enrollmentService.EnrolInCourse(_userManager.GetUserId(User), courseId, UserRoles.Teacher);
             }
 
             return Redirect("/Courses/Index");
@@ -113,21 +113,18 @@ namespace IdentityNLayer.Controllers
             if (id == null)
             {
                 if (!User.IsInRole("Admin") && !User.IsInRole("Manager"))
-                    id = _teacherService.GetByUserId(_userManager.GetUserId(User)).Id;
+                    id = (await _teacherService.GetByUserId(_userManager.GetUserId(User))).Id;
                 else return BadRequest();
             }
             else
             {
                 if (!User.IsInRole("Admin") && !User.IsInRole("Manager"))
                 {
-                    int currentStudentId = _teacherService.GetByUserId(_userManager.GetUserId(User)).Id;
+                    int currentStudentId = (await _teacherService.GetByUserId(_userManager.GetUserId(User))).Id;
                     if (id != currentStudentId)
                         return RedirectToAction("Edit", new { currentStudentId });
                 }
             }
-  /*          if ((await _teacherService.GetByIdAsync((int)id)).UserId != _userManager.GetUserId(User)
-                && !User.IsInRole("Admin") && !User.IsInRole("Manager"))
-                return LocalRedirect("Edit/" + id);*/
 
             if (id == null)
             {

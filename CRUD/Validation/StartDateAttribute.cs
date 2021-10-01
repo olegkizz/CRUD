@@ -1,4 +1,6 @@
-﻿using IdentityNLayer.Models;
+﻿using IdentityNLayer.BLL.Interfaces;
+using IdentityNLayer.Core.Entities;
+using IdentityNLayer.Models;
 using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
 using System;
 using System.Collections.Generic;
@@ -21,39 +23,61 @@ namespace IdentityNLayer.Validation
             }
         }
 
-        public override bool IsValid(object value)
+        protected override ValidationResult IsValid(object value, ValidationContext validateContext)
         {
             if (value == null)
-                return true;
+                return ValidationResult.Success;
+
+            IGroupLessonService _groupLessonService = (IGroupLessonService)
+                validateContext.GetService(typeof(IGroupLessonService));
+
+            IGroupService _groupService = (IGroupService)
+            validateContext.GetService(typeof(IGroupService));
+
             List<GroupLessonModel> groupLessons = (List<GroupLessonModel>)value;
+            Group group = _groupService.GetByIdAsync(((List<GroupLessonModel>)value).FirstOrDefault().GroupId).Result;
             int i = 0;
-            bool isValid = true;
-            foreach(GroupLessonModel groupLesson in groupLessons)
+            ValidationResult isValid = ValidationResult.Success;
+            foreach (GroupLessonModel groupLesson in groupLessons)
             {
-                if (groupLesson.StartDate < DateTime.Now)
+                for (int j = i; j < groupLessons.Count(); ++j)
                 {
-                    groupLesson.Error.Add($"StartDate Less Than Now.");
-                    groupLesson.StartDate = DateTime.Now;
-                    isValid = false;
-                }
-                for(int j = i; j < groupLessons.Count(); ++j)
-                {
-                    if(groupLesson.StartDate < groupLessons[j].StartDate?.AddMinutes(groupLessons[j].Lesson.Duration) 
+                    if (groupLesson.StartDate < groupLessons[j].StartDate?.AddMinutes(groupLessons[j].Lesson.Duration)
                         && groupLesson.StartDate > groupLessons[j].StartDate)
                     {
                         groupLesson.Error.Add($"StartDate entry in Duration of Lesson {j + 1}.");
-                        isValid = false;
+                        isValid = null;
                     }
-                    else if(groupLessons[j].StartDate < groupLesson.StartDate?.AddMinutes(groupLessons[j].Lesson.Duration)
+                    else if (groupLessons[j].StartDate < groupLesson.StartDate?.AddMinutes(groupLesson.Lesson.Duration)
                         && groupLessons[j].StartDate > groupLesson.StartDate)
                     {
                         groupLessons[j].Error.Add($"StartDate entry in Duration of Lesson {i + 1}.");
-                        isValid = false;
+                        isValid = null;
                     }
                 }
                 i++;
+                if (groupLesson.StartDate < DateTime.Now)
+                {
+                    if (group.Status == GroupStatus.Started)
+                    {
+                        DateTime? endCurrentLesson = _groupLessonService.GetByIdAsync(groupLesson.Id)
+                                .Result.StartDate;
+                        if (endCurrentLesson > DateTime.Now)
+                        {
+                            groupLesson.Error.Add($"StartDate Less Than Now.");
+                            groupLesson.StartDate = DateTime.Now.AddDays(1);
+                            isValid = null;
+                        }
+                    }
+                    else
+                    {
+                        groupLesson.Error.Add($"StartDate Less Than Now.");
+                        groupLesson.StartDate = DateTime.Now.AddDays(1);
+                        isValid = null;
+                    }
+                }
             }
             return isValid;
         }
     }
-}    
+}

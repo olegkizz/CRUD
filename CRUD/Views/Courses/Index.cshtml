@@ -91,33 +91,31 @@
             <td>
                 @if (Context.User.IsInRole("Admin"))
                 {
-                    <span>@courseService.GetStudentRequests(item.Id).Count()</span>
-                    <span>|</span> <span>@courseService.GetTeacherRequests(item.Id).Count()</span>
+                <span>@((await courseService.GetStudentRequests(item.Id)).Count())</span>
+                    <span>|</span> <span>@((await courseService.GetTeacherRequests(item.Id)).Count())</span>
                 }
                 else
                 {
-                    Dictionary<string, string> courseId = new Dictionary<string, string> { { "courseId", item.Id.ToString() } };
-                    @if (!courseService.HasRequest(item.Id, userManager.GetUserAsync(Context.User).Result.Id, UserRoles.Student))
+                    @if (!(await courseService.HasRequest(item.Id, (await userManager.GetUserAsync(Context.User)).Id, UserRoles.Student)))
                     {
-                        @if (!courseService.HasRequest(item.Id, userManager.GetUserAsync(Context.User).Result.Id, UserRoles.Teacher))
+                        @if (!(await courseService.HasRequest(item.Id, (await userManager.GetUserAsync(Context.User)).Id, UserRoles.Teacher)))
                         {
                             Group yourGroup = null;
-                            foreach (Group gr in courseService.GetGroups(item.Id, GroupStatus.Pending))
+                            foreach (Group gr in await courseService.GetGroups(item.Id, GroupStatus.Pending))
                             {
-                                if (groupService.GetCurrentTeacher(gr.Id)?.UserId == userManager.GetUserId(User))
+                                if ((await groupService.GetCurrentTeacher(gr.Id))?.UserId == userManager.GetUserId(User))
                                     yourGroup = gr;
                             }
                             if (yourGroup != null)
                             {
-                                Dictionary<string, string> groupdId = new Dictionary<string, string> { { "id", yourGroup.Id.ToString() } };
                                 <span>
-                                    You are already in the <a asp-controller="Groups" asp-action="Details" asp-all-route-data="groupdId">@yourGroup.Number</a>
+                                    You are already in the <a asp-controller="Groups" asp-action="Details" asp-route-id="@yourGroup.Id.ToString()">@yourGroup.Number</a>
                                     group like a Teacher
                                 </span>
                             }
                             else
                             {
-                                foreach (Student st in groupService.GetStudents(item.Id, UserGroupStates.Applied))
+                                foreach (Student st in await groupService.GetStudents(item.Id, UserGroupStates.Applied))
                                 {
                                     if (st != null)
                                         if (st.UserId == userManager.GetUserId(User))
@@ -125,17 +123,16 @@
                                 }
                                 if (yourGroup != null)
                                 {
-                                    Dictionary<string, string> groupdId = new Dictionary<string, string> { { "id", yourGroup.Id.ToString() } };
                                     <span>
-                                        You are already in the <a asp-controller="Groups" asp-action="Details" asp-all-route-data="groupdId">@yourGroup.Number</a>
+                                        You are already in the <a asp-controller="Groups" asp-action="Details" asp-route-id="@yourGroup.Id.ToString()">@yourGroup.Number</a>
                                         group like a Student
                                     </span>
                                 }
                                 else
                                 {
-                                    <a asp-controller="Teachers" asp-all-route-data="courseId"
+                                    <a asp-controller="Teachers" asp-route-courseId="@item.Id.ToString()"
                                        asp-action="SendRequest">Teacher Request</a>
-                                    <a asp-controller="Students" asp-all-route-data="courseId"
+                                    <a asp-controller="Students" asp-route-courseId="@item.Id.ToString()"
                                        asp-action="SendRequest">Student Request</a>
                                 }
                             }

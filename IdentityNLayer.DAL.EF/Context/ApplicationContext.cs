@@ -39,13 +39,12 @@ namespace IdentityNLayer.DAL.EF.Context
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
-            modelBuilder.Entity<Course>().HasOne(gl => gl.Topic).WithOne(t => t.Course).HasForeignKey<Topic>(t => t.CourseId);
             modelBuilder
                    .Entity<Course>()
                    .HasMany(c => c.Lessons)
                    .WithOne(l => l.Course)
                    .OnDelete(DeleteBehavior.ClientCascade);
-
+            
             modelBuilder.Seed();
         }
     }

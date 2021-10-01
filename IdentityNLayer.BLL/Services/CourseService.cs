@@ -29,47 +29,46 @@ namespace IdentityNLayer.BLL.Services
             Db.Courses.UpdateAsync(entity);
             Db.Save();
         }
-        public IEnumerable<Enrollment> GetStudentRequests(int id)
+        public async Task<IEnumerable<Enrollment>> GetStudentRequests(int id)
         {
-            return Db.Enrollments.Find(en => en.EntityID == id && en.State == UserGroupStates.Requested && en.Role == UserRoles.Student);
+            return await Db.Enrollments.FindAsync(en => en.EntityID == id && en.State == UserGroupStates.Requested && en.Role == UserRoles.Student);
         }
-        public IEnumerable<Teacher> GetTeacherRequests(int id)
+        public async Task<IEnumerable<Teacher>> GetTeacherRequests(int id)
         {
             List<Teacher> teachers = new();
             foreach (Enrollment en
-                in Db.Enrollments.Find(en => en.EntityID == id && en.State == UserGroupStates.Requested && en.Role == UserRoles.Teacher))
+                in await Db.Enrollments.FindAsync(en => en.EntityID == id 
+                    && en.State == UserGroupStates.Requested && en.Role == UserRoles.Teacher))
             {
-                Teacher teacher = Db.Teachers.Find(tc => tc.UserId == en.UserID).SingleOrDefault();
+                Teacher teacher = (await Db.Teachers.FindAsync(tc => tc.UserId == en.UserID)).SingleOrDefault();
                 if (teacher != null)
                     teachers.Add(teacher);
             }
             return teachers;
         }
-        public Task<IEnumerable<Topic>> GetAvailableTopicsAsync(int courseId = 0)
-        {
-            if(courseId == 0)
-                return Db.Topics.GetAllAsync();
-            return Task.FromResult(Db.Topics.Find(c => c.CourseId == courseId));
-        }
 
-        public bool HasRequest(int courseId, string userId, UserRoles role)
+        public async Task<bool> HasRequest(int courseId, string userId, UserRoles role)
         {
-            return Db.Enrollments.Find(en => en.EntityID == courseId 
+            return (await Db.Enrollments.FindAsync(en => en.EntityID == courseId 
             && en.UserID == userId 
             && en.Role == role 
-            && en.State == UserGroupStates.Requested)
+            && en.State == UserGroupStates.Requested))
                 .Any();
         }
 
-        public IEnumerable<Group> GetGroups(int courseId, GroupStatus? status = null)
+        public async Task<IEnumerable<Group>> GetGroups(int courseId, GroupStatus? status = null)
         {
             List<Group> groups = new();
             if (status != null)
-                groups = Db.Groups.Find(gr => gr.CourseId == courseId && gr.Status == status).ToList();
+                groups = (await Db.Groups.FindAsync(gr => gr.CourseId == courseId && gr.Status == status)).ToList();
             else
             {
                 foreach(GroupStatus statusTemp in Enum.GetValues<GroupStatus>())
-                    groups.Concat(GetGroups(courseId, statusTemp));
+                {
+                    List<Group> group = (await Db.Groups.FindAsync(gr => gr.CourseId == courseId
+                            && gr.Status == statusTemp)).ToList();
+                    groups = groups.Concat(group).ToList();
+                }
             }
             return groups;
         }

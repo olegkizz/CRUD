@@ -9,8 +9,8 @@ namespace IdentityNLayer.BLL.Interfaces
     {
         public Array GetStudentTypes();
         public Task<List<Group>> GetStudentGroupsAsync(int studentId);
-        public bool HasAccount(string userId);
-        public Student GetByUserId(string userId);
+        public Task<bool> HasAccount(string userId);
+        public Task<Student> GetByUserId(string userId);
         public Task<Group> GetGroupByCourseIdAsync(int studentId, int courseId);
     }
 }
