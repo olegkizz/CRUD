@@ -64,7 +64,7 @@ namespace IdentityNLayer.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        [Authorize(Roles = "Admin, Manager")]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Create([Bind("Id,Title,Description,TopicId")] Course course)
         {
             if (ModelState.IsValid)
@@ -74,7 +74,7 @@ namespace IdentityNLayer.Controllers
             }
             return View(course);
         }
-        [Authorize(Roles="Admin, Manager")]
+        [Authorize(Roles="Admin")]
         // GET: Courses/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
@@ -126,35 +126,5 @@ namespace IdentityNLayer.Controllers
             }
             return View(course);
         }
-
-        // GET: Courses/Delete/5
-        /*        public async Task<IActionResult> Delete(int? id)
-                {
-                    if (id == null)
-                    {
-                        return NotFound();
-                    }
-
-                    var course = await _context.Courses
-                        .Include(c => c.Topic)
-                        .FirstOrDefaultAsync(m => m.Id == id);
-                    if (course == null)
-                    {
-                        return NotFound();
-                    }
-
-                    return View(course);
-                }*/
-
-        // POST: Courses/Delete/5
-   /*     [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
-        {
-            var course = await _context.Courses.FindAsync(id);
-            _context.Courses.Remove(course);
-            await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
-        }*/
     }
 }

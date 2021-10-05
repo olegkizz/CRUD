@@ -28,7 +28,7 @@ namespace IdentityNLayer.Validation
         {
             if (value == null)
                 return ValidationResult.Success;
-            ManagerModel manager = (ManagerModel)value;
+            MethodistModel methodist = (MethodistModel)value;
             UserManager<Person> _userManager = (UserManager<Person>)
                 validateContext.GetService(typeof(UserManager<Person>));
             return null;

@@ -1,7 +1,7 @@
 ﻿
 namespace IdentityNLayer.Core.Entities
 {
-    public class Manager
+    public class Methodist
     {
         public int Id { get; set; }
         public string LinkToContact { get; set; }

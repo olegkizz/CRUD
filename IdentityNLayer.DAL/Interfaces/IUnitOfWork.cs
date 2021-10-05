@@ -16,7 +16,7 @@ namespace IdentityNLayer.DAL.Interfaces
         IRepository<GroupLesson> GroupLessons { get; }
         IRepository<Topic> Topics { get; }
         IRepository<StudentMark> StudentMarks { get; }
-        IRepository<Manager> Managers { get; }
+        IRepository<Methodist> Methodists { get; }
 
         Task Save();
     }

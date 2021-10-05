@@ -11,51 +11,51 @@ using System.Threading.Tasks;
 
 namespace IdentityNLayer.BLL.Services
 {
-    public class ManagerService : IManagerService
+    public class MethodistService : IMethodistService
     {
         private IUnitOfWork Db { get; set; }
         private UserManager<Person> _userManager { get; set; }
 
-        public ManagerService(IUnitOfWork db,
+        public MethodistService(IUnitOfWork db,
             UserManager<Person> userManager)
         {
             Db = db;
             _userManager = userManager;
         }
 
-        public async Task<IEnumerable<Manager>> GetAllAsync()
+        public async Task<IEnumerable<Methodist>> GetAllAsync()
         {
-            return await Db.Managers.GetAllAsync();
+            return await Db.Methodists.GetAllAsync();
         }
 
-        public async Task<Manager> GetByIdAsync(int id)
+        public async Task<Methodist> GetByIdAsync(int id)
         {
-            return (await Db.Managers.FindAsync(m => m.Id == id)).SingleOrDefault();
+            return (await Db.Methodists.FindAsync(m => m.Id == id)).SingleOrDefault();
 
         }
 
-        public async Task<int> CreateAsync(Manager entity)
+        public async Task<int> CreateAsync(Methodist entity)
         {
-            await Db.Managers.CreateAsync(entity);
+            await Db.Methodists.CreateAsync(entity);
             await Db.Save();
             return entity.Id;
         }
 
-        public async Task UpdateAsync(Manager entity)
+        public async Task UpdateAsync(Methodist entity)
         {
-            Db.Managers.Update(entity);
+            Db.Methodists.Update(entity);
             await Db.Save();
         }
 
         public async Task Delete(int id)
         {
-            await Db.Managers.DeleteAsync(id);
+            await Db.Methodists.DeleteAsync(id);
             await Db.Save();
         }
 
-        public async Task<Manager> GetByUserId(string userId)
+        public async Task<Methodist> GetByUserId(string userId)
         {
-            return (await Db.Managers.FindAsync(m => m.UserId == userId)).SingleOrDefault();
+            return (await Db.Methodists.FindAsync(m => m.UserId == userId)).SingleOrDefault();
         }
     }
 }

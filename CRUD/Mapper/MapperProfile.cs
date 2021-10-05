@@ -22,7 +22,7 @@ namespace IdentityNLayer.Mapper
                 .ReverseMap();
             CreateMap<Lesson, LessonModel>()
                .ReverseMap();
-            CreateMap<Manager, ManagerModel>()
+            CreateMap<Methodist, MethodistModel>()
                 .ReverseMap();
         }
     }

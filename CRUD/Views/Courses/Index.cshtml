@@ -33,7 +33,7 @@
                 Lessons
             </th>
             <th>
-                @if (User.IsInRole("Admin") || User.IsInRole("Manager"))
+                @if (User.IsInRole("Admin"))
                 {
 
                     <span>Requests(Students | Teachers)</span>
@@ -54,7 +54,7 @@
                     @{
                         string action = "Details";
                     }
-                    @if (Context.User.IsInRole("Admin") || Context.User.IsInRole("Manager"))
+                    @if (Context.User.IsInRole("Admin"))
                     {
                         action = "Edit";
                     }
@@ -69,7 +69,7 @@
                     @Html.DisplayFor(modelItem => item.Topic.Title)
                 </td>
                 <td>
-                    @if (User.IsInRole("Admin") || User.IsInRole("Manager"))
+                    @if (User.IsInRole("Admin"))
                     {
                         <a asp-controller="Lessons" asp-action="Create" asp-route-courseId="@item.Id">
 
@@ -89,7 +89,7 @@
                     }
                 </td>
                 <td>
-                    @if (Context.User.IsInRole("Admin") || Context.User.IsInRole("Manager"))
+                    @if (Context.User.IsInRole("Admin") || Context.User.IsInRole("Methodist"))
                     {
                         <span>@((await courseService.GetStudentRequests(item.Id)).Count())</span>
                         <span>|</span> <span>@((await courseService.GetTeacherRequests(item.Id)).Count())</span>

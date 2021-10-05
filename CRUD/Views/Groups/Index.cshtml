@@ -19,8 +19,8 @@
                 Link To Teacher Profile
             </th>
             <th>
-                Link To Manager Contact
-            </th>
+                Link To Methodist Contact
+            </th>   
             <th></th>
         </tr>
     </thead>
@@ -28,8 +28,15 @@
         @foreach (var item in Model)
         {
         <tr>
+            @{ 
+                string action = "Details";
+            }
+            @if (User.IsInRole("Admin") || User.IsInRole("Methodist"))
+            {
+                action = "Edit";
+            }
             <td>
-                <a asp-controller="Groups" asp-action="Details" asp-route-id="@item.Id.ToString()">@Html.DisplayFor(modelItem => item.Number)</a>
+                <a asp-controller="Groups" asp-action="@action" asp-route-id="@item.Id.ToString()">@Html.DisplayFor(modelItem => item.Number)</a>
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.Status)
@@ -38,17 +45,13 @@
                 <a href="@item.Teacher?.LinkToProfile">@item.Teacher?.User.FirstName @item.Teacher?.User.LastName</a>
             </td>
             <td>
-                <a href="@item.Manager?.LinkToContact">@item.Manager?.User.FirstName @item.Manager?.User.LastName</a>
+                <a href="@item.Methodist?.LinkToContact">@item.Methodist?.User.FirstName @item.Methodist?.User.LastName</a>
             </td>
             <td>
-                @if (User.IsInRole("Admin") || User.IsInRole("Manager"))
-                {
-                    <a asp-action="Edit" asp-route-id="@item.Id">Edit |</a>
-                    <a asp-action="Details" asp-route-id="@item.Id">Details |</a>
-                }
+                <a asp-action="Details" asp-route-id="@item.Id">Details </a>
                 @if (User.IsInRole("Admin"))
                 {
-                    <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+                    <a asp-action="Delete" asp-route-id="@item.Id"> | Delete</a>
                 }
             </td>
         </tr>

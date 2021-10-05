@@ -19,7 +19,7 @@ namespace IdentityNLayer.DAL.EF.Repositories
         private IRepository<File> _filesRepository;
         private IRepository<GroupLesson> _groupLessonsRepository;
         private IRepository<StudentMark> _studentMarksRepository;
-        private IRepository<Manager> _managersRepository;
+        private IRepository<Methodist> _methodistsRepository;
         public EFUnitOfWork(ApplicationContext context,
             IRepository<Student> studentRepository,
             IRepository<Group> groupRepository,
@@ -30,7 +30,7 @@ namespace IdentityNLayer.DAL.EF.Repositories
             IRepository<Lesson> lessonsRepository,
             IRepository<File> filesRepository,
             IRepository<GroupLesson> groupLessonsRepository,
-            IRepository<Manager> managersRepository,
+            IRepository<Methodist> methodistsRepository,
             IRepository<StudentMark> studentMarksRepository)
         {
             _context = context;
@@ -44,7 +44,7 @@ namespace IdentityNLayer.DAL.EF.Repositories
             _filesRepository = filesRepository;
             _groupLessonsRepository = groupLessonsRepository;
             _studentMarksRepository = studentMarksRepository;
-            _managersRepository = managersRepository;
+            _methodistsRepository = methodistsRepository;
 
         }
         public IRepository<Student> Students => _studentRepository;
@@ -57,7 +57,7 @@ namespace IdentityNLayer.DAL.EF.Repositories
         public IRepository<File> Files => _filesRepository;
         public IRepository<GroupLesson> GroupLessons => _groupLessonsRepository;
         public IRepository<StudentMark> StudentMarks => _studentMarksRepository;
-        public IRepository<Manager> Managers => _managersRepository;
+        public IRepository<Methodist> Methodists => _methodistsRepository;
 
         public async Task Save()
         {

@@ -12,7 +12,7 @@ namespace IdentityNLayer.DAL.EF.Context
         {
             var userManager = modelBuilder.Entity<Person>();
             var roleManager = modelBuilder.Entity<IdentityRole>();
-            string[] roles = { "Admin", "Manager",
+            string[] roles = { "Admin", "Methodist",
                 "Student", "Teacher"
             };
             /*    RoleManager<IdentityRole> roleManager = new ();
@@ -43,13 +43,13 @@ namespace IdentityNLayer.DAL.EF.Context
                 },
                 new Person
                 {
-                        UserName = "manager@manager.com",
-                        NormalizedUserName = "manager@manager.com".ToUpper(),
+                        UserName = "methodist@methodist.com",
+                        NormalizedUserName = "methodist@methodist.com".ToUpper(),
                         EmailConfirmed = true,
-                        Email = "manager@manager.com",
+                        Email = "methodist@methodist.com",
                         BirthDate = new DateTime(2000, 9, 21),
-                        FirstName = "manager",
-                        LastName = "manager"
+                        FirstName = "methodist",
+                        LastName = "methodist"
                 },
                /* new IdentityUser
                     {

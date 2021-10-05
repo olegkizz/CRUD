@@ -20,37 +20,37 @@ namespace IdentityNLayer.Controllers
 {
     [TypeFilter(typeof(GlobalExceptionFilter))]
 
-    public class ManagersController : Controller
+    public class MethodistsController : Controller
     {
         private readonly ApplicationContext _context;
         private readonly UserManager<Person> _userManager;
-        private readonly IManagerService _managerService;
+        private readonly IMethodistService _methodistService;
         private readonly IEmailService _emailService;
         private readonly ILogger _logger;
         private readonly IMapper _mapper;
 
-        public ManagersController(ApplicationContext context,
+        public MethodistsController(ApplicationContext context,
             UserManager<Person> userManager,
             IEmailService emailService,
-            IManagerService managerService,
+            IMethodistService methodistService,
             IMapper mapper,
-            ILogger<ManagersController> logger)
+            ILogger<MethodistsController> logger)
         {
             _context = context;
             _userManager = userManager;
             _emailService = emailService;
-            _managerService = managerService;
+            _methodistService = methodistService;
             _logger = logger;
             _mapper = mapper;
         }
 
         [Authorize(Roles = "Admin")]
-        // GET: Managers
+        // GET: Methodists
         public async Task<IActionResult> Index()
         {
-            return View(_mapper.Map<IEnumerable<ManagerModel>>(await _managerService.GetAllAsync()));
+            return View(_mapper.Map<IEnumerable<MethodistModel>>(await _methodistService.GetAllAsync()));
         }
-        // GET: Managers/Details/5
+        // GET: Methodists/Details/5
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
@@ -58,42 +58,42 @@ namespace IdentityNLayer.Controllers
                 return NotFound();
             }
 
-            var manager = await _managerService.GetByIdAsync((int)id);
-            if (manager == null)
+            var Methodist = await _methodistService.GetByIdAsync((int)id);
+            if (Methodist == null)
             {
                 return NotFound();
             }
 
-            return View(manager);
+            return View(Methodist);
         }
 
         [Authorize(Roles = "Admin")]
 
-        // GET: Managers/Create
+        // GET: Methodists/Create
         public IActionResult Create()
         {
             return View();
         }
 
-        // POST: Managers/Create
+        // POST: Methodists/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize(Roles = "Admin")]
-        public async Task<IActionResult> Create(ManagerModel manager)
+        public async Task<IActionResult> Create(MethodistModel methodist)
         {
             try
             {
                 if (ModelState.IsValid)
                 {
-                    if (await _userManager.FindByEmailAsync(manager.Email) != null)
+                    if (await _userManager.FindByEmailAsync(methodist.Email) != null)
                     {
                         ModelState.AddModelError("Email", "Email Already Use.");
-                        return View(manager);
+                        return View(methodist);
                     }
 
-                    Person user = new() { Email = manager.Email, UserName = manager.Email };
+                    Person user = new() { Email = methodist.Email, UserName = methodist.Email };
                     // добавляем пользователя
                     var result = await _userManager.CreateAsync(user);
 
@@ -102,17 +102,17 @@ namespace IdentityNLayer.Controllers
                         // генерация токена для пользователя
                         var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
                         var callbackUrl = Url.Action(
-                            "SetManagerAccount",
-                            "Managers",
+                            "SetMethodistAccount",
+                            "Methodists",
                             new { userId = user.Id, code = code },
                             protocol: HttpContext.Request.Scheme);
-                        await _emailService.SendEmailAsync(manager.Email, "SetManagerAccount",
+                        await _emailService.SendEmailAsync(methodist.Email, "SetMethodistAccount",
                             $"To Create Your Password Go To: <a href='{callbackUrl}'>link</a>");
 
                         return RedirectToAction(nameof(Index));
                     }
                 }
-                return View(manager);
+                return View(methodist);
             }
             catch (Exception e)
             {
@@ -124,7 +124,7 @@ namespace IdentityNLayer.Controllers
 
         [HttpGet]
         [AllowAnonymous]
-        public async Task<IActionResult> SetManagerAccount(string userId, string code)
+        public async Task<IActionResult> SetMethodistAccount(string userId, string code)
         {
             ViewData["UserId"] = userId;
             ViewData["Code"] = code;
@@ -132,9 +132,9 @@ namespace IdentityNLayer.Controllers
         }
 
         [HttpPost]
-        [ActionName("SetManagerAccount")]
+        [ActionName("SetMethodistAccount")]
         [AllowAnonymous]
-        public async Task<IActionResult> SetManagerAccountPost(string userId, string code, ManagerRegisterModel manager)
+        public async Task<IActionResult> SetMethodistAccountPost(string userId, string code, MethodistRegisterModel methodist)
         {
             try
             {
@@ -150,20 +150,20 @@ namespace IdentityNLayer.Controllers
                         return View("Error");
                     }
                     if ((await _userManager.ConfirmEmailAsync(user, code)).Succeeded &&
-                        (await _userManager.AddToRoleAsync(user, UserRoles.Manager.ToString())).Succeeded)
+                        (await _userManager.AddToRoleAsync(user, UserRoles.Methodist.ToString())).Succeeded)
                     {
-                        user.FirstName = manager.FirstName;
-                        user.LastName = manager.LastName;
+                        user.FirstName = methodist.FirstName;
+                        user.LastName = methodist.LastName;
 
-                        manager.User = user;
+                        methodist.User = user;
 
 
                         var token = await _userManager.GeneratePasswordResetTokenAsync(user);
 
-                        if ((await _userManager.ResetPasswordAsync(user, token, manager.Password)).Succeeded &&
+                        if ((await _userManager.ResetPasswordAsync(user, token, methodist.Password)).Succeeded &&
                                 (await _userManager.UpdateAsync(user)).Succeeded)
-                            await _managerService.CreateAsync(_mapper.Map<Manager>(manager));
-                        else return View("SetManagerAccount", manager.Error =
+                            await _methodistService.CreateAsync(_mapper.Map<Methodist>(methodist));
+                        else return View("SetMethodistAccount", methodist.Error =
                             "Cannot Update User Or Reset User Password.");
                     }
                     return RedirectToAction("Index", "Home");
@@ -175,42 +175,47 @@ namespace IdentityNLayer.Controllers
                 ViewData["Exception"] = e;
                 return View("Error");
             }
-            return View(manager);
+            return View(methodist);
         }
 
-        // GET: Managers/Edit/5
+        // GET: Methodists/Edit/5
+        [Authorize(Roles = "Admin, Methodist")]
         public async Task<IActionResult> Edit(int? id)
         {
-            if (id == null && User.IsInRole("Manager"))
-                id = (await _managerService.GetByUserId(_userManager.GetUserId(User))).Id;
-            else
+            Methodist currentMethodist = await _methodistService.GetByUserId(_userManager.GetUserId(User));
+
+            if (currentMethodist != null)
             {
-                int currentManagerId = (await _managerService.GetByUserId(_userManager.GetUserId(User))).Id;
-                if (id != currentManagerId && !User.IsInRole("Admin"))
-                    id = currentManagerId;
+                if (id == null)
+                    id = currentMethodist.Id;
+                else
+                {
+                    if (id != currentMethodist.Id)
+                        id = currentMethodist.Id;
+                }
             }
 
-            var manager = await _managerService.GetByIdAsync((int)id);
-            if (manager == null)
+            var methodist = await _methodistService.GetByIdAsync((int)id);
+            if (methodist == null)
             {
                 return NotFound();
             }
-            return View(manager);
+            return View(methodist);
         }
 
-        // POST: Managers/Edit/5
+        // POST: Methodists/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-
-        public async Task<IActionResult> Edit(int id, [Bind("Id,LinkToContact")] ManagerModel manager)
+        [Authorize(Roles = "Admin, Methodist")]
+        public async Task<IActionResult> Edit(int id, [Bind("Id,LinkToContact")] MethodistModel methodist)
         {
-            if ((await _managerService.GetByIdAsync(id)).UserId != _userManager.GetUserId(User)
+            if ((await _methodistService.GetByIdAsync(id)).UserId != _userManager.GetUserId(User)
                 && !User.IsInRole("Admin"))
                 return BadRequest();
 
-            if (id != manager.Id)
+            if (id != methodist.Id)
             {
                 return NotFound();
             }
@@ -219,11 +224,11 @@ namespace IdentityNLayer.Controllers
             {
                 try
                 {
-                    await _managerService.UpdateAsync(_mapper.Map<Manager>(manager));
+                    await _methodistService.UpdateAsync(_mapper.Map<Methodist>(methodist));
                 }
                 catch (Exception e)
                 {
-                    if (!await ManagerExists(manager.Id))
+                    if (!await MethodistExists(methodist.Id))
                     {
                         return NotFound();
                     }
@@ -237,7 +242,7 @@ namespace IdentityNLayer.Controllers
                     return RedirectToAction(nameof(Index));
                 else return RedirectToAction("Index", "Courses");
             }
-            return View(manager);
+            return View(methodist);
         }
         [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Delete(int? id)
@@ -247,15 +252,15 @@ namespace IdentityNLayer.Controllers
                 return NotFound();
             }
 
-            var manager = await _managerService.GetByIdAsync((int)id);
-            if (manager == null)
+            var methodist = await _methodistService.GetByIdAsync((int)id);
+            if (methodist == null)
             {
                 return NotFound();
             }
 
-            return View(manager);
+            return View(methodist);
         }
-        // POST: Managers/Delete/5
+        // POST: Methodists/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         [Authorize(Roles = "Admin")]
@@ -263,14 +268,15 @@ namespace IdentityNLayer.Controllers
         {
             try
             {
-                Manager manager = await _managerService.GetByIdAsync(id);
-                Person user = await _userManager.FindByIdAsync(manager.UserId);
+                Methodist methodist = await _methodistService.GetByIdAsync(id);
+                Person user = await _userManager.FindByIdAsync(methodist.UserId);
                 await _userManager.RemoveFromRoleAsync(user,
-                    UserRoles.Manager.ToString());
-                await _managerService.Delete(id);
+                    UserRoles.Methodist.ToString());
+                await _methodistService.Delete(id);
 
                 await _userManager.DeleteAsync(user);
-            } catch(Exception e)
+            }
+            catch (Exception e)
             {
                 _logger.LogError(e.Message);
                 ViewData["Exception"] = e;
@@ -279,9 +285,9 @@ namespace IdentityNLayer.Controllers
             return RedirectToAction(nameof(Index));
         }
 
-        private async Task<bool> ManagerExists(int id)
+        private async Task<bool> MethodistExists(int id)
         {
-            return await _managerService.GetByIdAsync(id) != null;
+            return await _methodistService.GetByIdAsync(id) != null;
         }
     }
 }

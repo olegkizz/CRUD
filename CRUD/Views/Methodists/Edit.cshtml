@@ -1,5 +1,6 @@
-﻿@model IdentityNLayer.Core.Entities.Manager
-
+﻿@model IdentityNLayer.Core.Entities.Methodist
+@inject IdentityNLayer.BLL.Interfaces.IGroupService groupService
+@using IdentityNLayer.Core.Entities
 @{
     ViewData["Title"] = "Edit";
 }
@@ -18,6 +19,18 @@
                 <input asp-for="LinkToContact" class="form-control" />
                 <span asp-validation-for="LinkToContact" class="text-danger"></span>
             </div>
+            <label class="control-label">Assign Groups Like Methodist</label>
+            @{
+                IEnumerable<Group> methodistGroups = await groupService.GetMethodistGroups(Model.UserId);
+            }
+            @if (methodistGroups.Any()) foreach (Group gr in methodistGroups)
+                {
+                    <span class="form-control"><a asp-controller="Groups" asp-action="Edit" asp-route-id="@gr.Id.ToString()">@gr.Number </a></span>
+                }
+            else
+            {
+                <span class="form-control">Not assigned into some group.</span>
+            }
             <div class="form-group">
                 <input type="submit" value="Save" class="btn btn-primary" />
             </div>

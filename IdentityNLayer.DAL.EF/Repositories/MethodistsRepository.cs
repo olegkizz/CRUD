@@ -9,52 +9,52 @@ using System.Linq.Expressions;
 
 namespace IdentityNLayer.DAL.EF.Repositories
 {
-    public class ManagersRepository : IRepository<Manager>
+    public class MethodistsRepository : IRepository<Methodist>
     {
         private ApplicationContext _context;
 
-        public ManagersRepository(ApplicationContext context)
+        public MethodistsRepository(ApplicationContext context)
         {
             _context = context;
         }
 
-        public async Task CreateAsync(Manager item)
+        public async Task CreateAsync(Methodist item)
         {
-            await _context.Managers.AddAsync(item);
+            await _context.Methodists.AddAsync(item);
         }
 
         public async Task DeleteAsync(int id)
         {
-            _context.Managers.Remove(await _context.Managers.FindAsync(id));
+            _context.Methodists.Remove(await _context.Methodists.FindAsync(id));
         }
 
-        public async Task<IEnumerable<Manager>> FindAsync(Expression<Func<Manager, bool>> predicate)
+        public async Task<IEnumerable<Methodist>> FindAsync(Expression<Func<Methodist, bool>> predicate)
         {
-            return await _context.Managers
+            return await _context.Methodists
                 .Include(m => m.User)
                 .Where(predicate)
                 .AsNoTracking()
                 .ToListAsync();
         }
 
-        public async Task<IEnumerable<Manager>> GetAllAsync()
+        public async Task<IEnumerable<Methodist>> GetAllAsync()
         {
-            return await _context.Managers
+            return await _context.Methodists
                 .Include(c => c.User)
                 .AsNoTracking()
                 .ToListAsync();
         }
 
-        public async Task<Manager> GetAsync(int id)
+        public async Task<Methodist> GetAsync(int id)
         {
-            return await _context.Managers
+            return await _context.Methodists
                 .Include(c => c.User)
                 .Where(m => m.Id == id)
                 .AsNoTracking()
                 .SingleAsync();
         }
 
-        public void Update(Manager item)
+        public void Update(Methodist item)
         {
             _context.Attach(item);
             _context.Entry(item).Property(e => e.LinkToContact).IsModified = true;

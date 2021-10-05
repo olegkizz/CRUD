@@ -33,8 +33,8 @@ namespace IdentityNLayer.BLL
              StudentMarkService>();
             services.AddScoped<ITopicService,
              TopicService>();
-            services.AddScoped<IManagerService,
-             ManagerService>();
+            services.AddScoped<IMethodistService,
+             MethodistService>();
             services.AddScoped<IEmailService,
              EmailService>();
             return services;

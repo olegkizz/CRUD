@@ -30,7 +30,7 @@ namespace IdentityNLayer.DAL.EF.Context
         public DbSet<File> Files { get; set; }
         public DbSet<GroupLesson> GroupLessons { get; set; }
         public DbSet<StudentMark> StudentMarks { get; set; }
-        public DbSet<Manager> Managers { get; set; }
+        public DbSet<Methodist> Methodists { get; set; }
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             optionsBuilder.EnableSensitiveDataLogging();
@@ -53,9 +53,9 @@ namespace IdentityNLayer.DAL.EF.Context
             .OnDelete(DeleteBehavior.SetNull);
 
             modelBuilder.Entity<Group>()
-             .HasOne(v => v.Manager)
+             .HasOne(g => g.Methodist)
              .WithMany()
-             .HasForeignKey(v => v.ManagerId)
+             .HasForeignKey(v => v.MethodistId)
              .OnDelete(DeleteBehavior.SetNull);
             modelBuilder.Seed();
         }

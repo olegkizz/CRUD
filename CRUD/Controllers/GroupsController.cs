@@ -23,7 +23,7 @@ namespace IdentityNLayer.Controllers
         private readonly ICourseService _courseService;
         private readonly ITeacherService _teacherService;
         private readonly IGroupLessonService _groupLessonService;
-        private readonly IManagerService _managerService;
+        private readonly IMethodistService _methodistService;
         private readonly IMapper _mapper;
         private readonly ILogger _logger;
         private readonly UserManager<Person> _userManager;
@@ -36,7 +36,7 @@ namespace IdentityNLayer.Controllers
             UserManager<Person> userManager,
             ILogger<CoursesController> logger,
             IGroupLessonService groupLessonService,
-            IManagerService managerService)
+            IMethodistService methodistService)
         {
             _groupService = groupService;
             _mapper = mapper;
@@ -44,7 +44,7 @@ namespace IdentityNLayer.Controllers
             _courseService = courseService;
             _teacherService = teacherService;
             _groupLessonService = groupLessonService;
-            _managerService = managerService;
+            _methodistService = methodistService;
             _userManager = userManager;
             _logger = logger;
         }
@@ -54,8 +54,8 @@ namespace IdentityNLayer.Controllers
         {
             if (User.IsInRole("Admin"))
                 return View(_mapper.Map<IEnumerable<GroupModel>>(await _groupService.GetAllAsync()));
-            if (User.IsInRole("Manager"))
-                return View(_mapper.Map<IEnumerable<GroupModel>>(await _groupService.GetManagerGroups(_userManager.GetUserId(User))));
+            if (User.IsInRole("Methodist"))
+                return View(_mapper.Map<IEnumerable<GroupModel>>(await _groupService.GetMethodistGroups(_userManager.GetUserId(User))));
             return View(_mapper.Map<IEnumerable<GroupModel>>(await _groupService.GetGroupsByUserIdAsync
                 (_userManager.GetUserId(User))));
         }
@@ -88,7 +88,7 @@ namespace IdentityNLayer.Controllers
         [ValidateAntiForgeryToken]
         [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Create([Bind("Id,Number,Status,StudentRequests,CourseId," +
-            "TeacherId,ManagerId")] GroupModel group)
+            "TeacherId,MethodistId")] GroupModel group)
         {
             if (ModelState.IsValid)
             {
@@ -107,7 +107,7 @@ namespace IdentityNLayer.Controllers
         }
 
         // GET: Groups/Edit/5
-        [Authorize(Roles = "Admin, Manager")]
+        [Authorize(Roles = "Admin, Methodist")]
         public async Task<IActionResult> Edit(int? id)
         {
        
@@ -118,8 +118,8 @@ namespace IdentityNLayer.Controllers
 
             GroupModel group = _mapper.Map<GroupModel>(await _groupService.GetByIdAsync((int)id));
 
-            if (User.IsInRole("Manager"))
-                if (group.ManagerId != (await _managerService.GetByUserId(_userManager.GetUserId(User))).Id)
+            if (User.IsInRole("Methodist"))
+                if (group.MethodistId != (await _methodistService.GetByUserId(_userManager.GetUserId(User))).Id)
                     return View("Identity/Account/AccessDenied");
 
             IEnumerable <Student> students = await _groupService.GetStudents(group.Id);
@@ -137,9 +137,9 @@ namespace IdentityNLayer.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        [Authorize(Roles = "Admin, Manager")]
+        [Authorize(Roles = "Admin, Methodist")]
         public async Task<IActionResult> Edit(int id, [Bind("Id,Number,StudentRequests," +
-            "Status,TeacherId,CourseId,ManagerId")] GroupModel group)
+            "Status,TeacherId,CourseId,MethodistId")] GroupModel group)
         {
             if (id != group.Id)
             {

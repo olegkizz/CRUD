@@ -194,15 +194,15 @@ namespace IdentityNLayer.BLL.Services
             return statusList;
         }
 
-        public async Task<Manager> GetCurrentManager(int groupId)
+        public async Task<Methodist> GetCurrentMethodist(int groupId)
         {
-            return (await Db.Groups.FindAsync(gr => gr.Id == groupId)).SingleOrDefault()?.Manager;
+            return (await Db.Groups.FindAsync(gr => gr.Id == groupId)).SingleOrDefault()?.Methodist;
         }
 
-        public async Task<IEnumerable<Group>> GetManagerGroups(string userId)
+        public async Task<IEnumerable<Group>> GetMethodistGroups(string userId)
         {
-            Manager manager = (await Db.Managers.FindAsync(m => m.UserId == userId)).SingleOrDefault();
-            return await Db.Groups.FindAsync(gr => gr.ManagerId == manager.Id);
+            Methodist methodist = (await Db.Methodists.FindAsync(m => m.UserId == userId)).SingleOrDefault();
+            return await Db.Groups.FindAsync(gr => gr.MethodistId == methodist.Id);
         }
     }
 }

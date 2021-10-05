@@ -13,6 +13,7 @@ using System.Collections.Generic;
 using AutoMapper;
 using IdentityNLayer.Models;
 using IdentityNLayer.Validation;
+using Microsoft.AspNetCore.Identity;
 
 namespace IdentityNLayer.Controllers
 {
@@ -24,6 +25,8 @@ namespace IdentityNLayer.Controllers
         private readonly IGroupService _groupService;
         private readonly ICourseService _courseService;
         private readonly IStudentMarkService _studentMarkService;
+        private readonly IMethodistService _methodistService;
+        private readonly UserManager<Person> _userManager;
         private readonly IConfiguration _config;
         private readonly ILogger _logger;
         private readonly IMapper _mapper;
@@ -36,7 +39,9 @@ namespace IdentityNLayer.Controllers
             IGroupLessonService groupLessonService,
             ICourseService courseService,
             IStudentMarkService studentMarkService,
+            IMethodistService methodistService,
             IGroupService groupService,
+            UserManager<Person> userManager,
             IMapper mapper)
         {
             _lessonService = lessonService;
@@ -45,6 +50,8 @@ namespace IdentityNLayer.Controllers
             _studentMarkService = studentMarkService;
             _courseService = courseService;
             _groupService = groupService;
+            _methodistService = methodistService;
+            _userManager = userManager;
             _config = config;
             _logger = logger;
             _mapper = mapper;
@@ -60,6 +67,11 @@ namespace IdentityNLayer.Controllers
 
             Group group = await _groupService.GetByIdAsync((int)groupId);
             Course course = await _courseService.GetByIdAsync(group.CourseId);
+
+            if (User.IsInRole("Methodist"))
+                if (group.MethodistId != (await _methodistService.GetByUserId(_userManager.GetUserId(User))).Id)
+                    return Redirect("~/Identity/Account/AccessDenied");
+
             foreach (Lesson lesson in course.Lessons)
             {
                 GroupLesson groupLesson = await _groupLessonService.GetByLessonAndGroupIdAsync((int)groupId, lesson.Id);
@@ -77,8 +89,8 @@ namespace IdentityNLayer.Controllers
             }
             return View(groupLessons);
         }
-
-        [Authorize(Roles = "Admin, Manager")]
+        [HttpPost]
+        [Authorize(Roles = "Admin, Methodist")]
         public async Task<ActionResult> SaveGroupLessons(int groupId, [StartDate] IEnumerable<GroupLessonModel> groupLessons)
         {
             if (!groupLessons.Any())

@@ -12,8 +12,8 @@ namespace IdentityNLayer.Core.Entities
         public GroupStatus Status { get; set; }
         public int? TeacherId { get; set; }
         public Teacher Teacher{ get; set; }
-        public int? ManagerId { get; set; }
-        public Manager Manager { get; set; }
+        public int? MethodistId { get; set; }
+        public Methodist Methodist { get; set; }
         public DateTime StartDate { get; set; }
         public virtual ICollection<Enrollment> Enrollments { get; set; }
         public int CourseId { get; set; }

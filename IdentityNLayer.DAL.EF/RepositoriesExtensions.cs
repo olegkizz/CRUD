@@ -38,8 +38,8 @@ namespace IdentityNLayer.DAL.EF
                TopicsRepository>();
             services.AddTransient<IRepository<StudentMark>,
               StudentMarksRepository>();
-            services.AddTransient<IRepository<Manager>,
-              ManagersRepository>();
+            services.AddTransient<IRepository<Methodist>,
+              MethodistsRepository>();
 
             return services;
         }

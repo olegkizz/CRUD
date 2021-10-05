@@ -3,8 +3,8 @@ using System.Threading.Tasks;
 
 namespace IdentityNLayer.BLL.Interfaces
 {
-    public interface IManagerService : IBaseService<Manager>
+    public interface IMethodistService : IBaseService<Methodist>
     {
-        Task<Manager> GetByUserId(string userId);
+        Task<Methodist> GetByUserId(string userId);
     }
 }
