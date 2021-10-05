@@ -11,7 +11,7 @@ using Microsoft.AspNetCore.Mvc.Authorization;
 using IdentityNLayer.DAL.EF.Context;
 using IdentityNLayer.Core.Entities;
 using IdentityNLayer.Mapper;
-using IdentityNLayer.BLL;
+using IdentityNLayer.BLL.Extensions;
 using IdentityNLayer.DAL.EF;
 using System;
 
@@ -72,7 +72,6 @@ namespace IdentityNLayer
             services.AddRepositories();
 
             services.AddBusinessLogicServices();
-
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

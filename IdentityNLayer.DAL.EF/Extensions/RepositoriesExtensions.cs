@@ -1,4 +1,5 @@
 ﻿using IdentityNLayer.Core.Entities;
+using IdentityNLayer.Core.Filters;
 using IdentityNLayer.DAL.EF.Repositories;
 using IdentityNLayer.DAL.Interfaces;
 using Microsoft.Extensions.DependencyInjection;
@@ -24,8 +25,6 @@ namespace IdentityNLayer.DAL.EF
                 TeachersRepository>();
             services.AddTransient<IRepository<Enrollment>,
                 EnrollmentsRepository>();
-            services.AddTransient<IRepository<Course>,
-                CoursesRepository>();
             services.AddTransient<IRepository<Topic>,
                 TopicsRepository>();
             services.AddTransient<IRepository<Lesson>,
@@ -40,6 +39,8 @@ namespace IdentityNLayer.DAL.EF
               StudentMarksRepository>();
             services.AddTransient<IRepository<Methodist>,
               MethodistsRepository>();
+            services.AddTransient<IFilterRepository<Course, CourseFilter>,
+             CoursesRepository>();
 
             return services;
         }

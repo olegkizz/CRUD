@@ -17,6 +17,7 @@
         <a asp-action="Create">Create New</a>
     </p>
 }
+@await Html.PartialAsync("Partial/_Search", Model.FirstOrDefault()?.CourseFilter)
 <table class="table">
     <thead>
         <tr>

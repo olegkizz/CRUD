@@ -5,13 +5,14 @@ using IdentityNLayer.Core.Entities;
 using Microsoft.EntityFrameworkCore;
 using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.EntityFrameworkCore.ChangeTracking;
 using System.Linq.Expressions;
+using IdentityNLayer.Core.Filters;
+using IdentityNLayer.DAL.Interfaces;
 
 namespace IdentityNLayer.DAL.EF.Repositories
 {
-    public class CoursesRepository : IRepository<Course>
-    {
+    public class CoursesRepository : IRepository<Course>, IFilterRepository<Course, CourseFilter>
+    {   
         private ApplicationContext _context;
 
         public CoursesRepository(ApplicationContext context)
@@ -29,9 +30,42 @@ namespace IdentityNLayer.DAL.EF.Repositories
             throw new NotImplementedException();
         }
 
-        public Task<IEnumerable<Course>> FindAsync(Expression<Func<Course, bool>> predicate)
+        public async Task<IEnumerable<Course>> Filter(CourseFilter filter)
         {
-            throw new NotImplementedException();
+            IQueryable<Course> filteredCourses = _context.Courses.AsQueryable();
+
+            if (!string.IsNullOrWhiteSpace(filter.TitleContains))
+                filteredCourses = filteredCourses.Where(c =>
+                c.Title.Contains(filter.TitleContains));
+
+            if (!string.IsNullOrWhiteSpace(filter.DescriptionContains))
+                filteredCourses = filteredCourses.Where(c =>
+                c.Description.Contains(filter.DescriptionContains));
+
+            if (!string.IsNullOrWhiteSpace(filter.TopicTitleContains))
+                filteredCourses = filteredCourses.Where(c =>
+                c.Topic.Title.Contains(filter.TopicTitleContains));
+
+            if (filter.LessonsFrom.HasValue)
+                filteredCourses = filteredCourses.Where(c => c.Lessons.Count() >= filter.LessonsFrom.Value);
+
+            if (filter.LessonsTo.HasValue)
+                filteredCourses = filteredCourses.Where(c => c.Lessons.Count() <= filter.LessonsFrom.Value);
+
+            return await filteredCourses
+                .Include(c => c.Lessons)
+                .Include(c => c.Topic)
+                .ToListAsync();
+        }
+
+        public async Task<IEnumerable<Course>> FindAsync(Expression<Func<Course, bool>> predicate)
+        {
+            return await _context.Courses
+                .Include(c => c.Topic)
+                .Include(c => c.Lessons)
+                .ThenInclude(l => l.File)
+                .Where(predicate)
+                .ToListAsync();
         }
 
         public async Task<IEnumerable<Course>> GetAllAsync()

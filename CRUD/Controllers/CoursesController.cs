@@ -13,6 +13,7 @@ using AutoMapper;
 using IdentityNLayer.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Logging;
+using IdentityNLayer.Core.Filters;
 
 namespace IdentityNLayer.Controllers
 {
@@ -53,6 +54,15 @@ namespace IdentityNLayer.Controllers
             return View(_mapper.Map<CourseModel>(await _courseService.GetByIdAsync(id)));
         }
 
+        public async Task<IActionResult> Search(string search)
+        {
+            return View("Index", _mapper.Map<IEnumerable<CourseModel>>(await _courseService.Search(search)));
+        }
+        public async Task<IActionResult> Filter(CourseModel courseModel)
+        {
+            return View("Index", _mapper.Map<IEnumerable<CourseModel>>
+                (await _courseService.Filter(_mapper.Map<CourseFilter>(courseModel.CourseFilter))));
+        }
         // GET: Courses/Create
         public IActionResult Create()
         {
