@@ -3,6 +3,7 @@
 @using System.Linq;
 @inject IdentityNLayer.BLL.Interfaces.ICourseService courseService
 @inject IdentityNLayer.BLL.Interfaces.IGroupService groupService
+@inject IdentityNLayer.BLL.Interfaces.IManagerService managerService
 @using AutoMapper
 @inject IMapper mapper
 @{
@@ -44,6 +45,20 @@
                     }
                 </div>
             }
+            @if ((await managerService.GetAllAsync()).Any() && User.IsInRole("Admin"))
+            {
+                <div class="form-group">
+                    <label class="control-label">Manager</label>
+                    @Html.DropDownListFor(model => model.ManagerId,
+                         new SelectList(
+                            mapper.Map<IEnumerable<ManagerModel>>(await managerService.GetAllAsync()),
+                                "Id", "Name"), "Manager is not selected...")
+                </div>
+            }
+            else
+            {
+                <span>No Managers</span>
+            }
             <div class="form-group">
                 <label asp-for="StudentRequests" class="control-label"></label>
                 @{
@@ -67,7 +82,6 @@
                         <span>No Student Requests</span>
                     }
                 }
-
             </div>
             <div class="form-group">
                 <input type="submit" value="Create" class="btn btn-primary" />

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading.Tasks;
 using IdentityNLayer.Core.Entities;
 
 namespace IdentityNLayer.DAL.Interfaces
@@ -15,7 +16,8 @@ namespace IdentityNLayer.DAL.Interfaces
         IRepository<GroupLesson> GroupLessons { get; }
         IRepository<Topic> Topics { get; }
         IRepository<StudentMark> StudentMarks { get; }
+        IRepository<Manager> Managers { get; }
 
-        void Save();
+        Task Save();
     }
 }

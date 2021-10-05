@@ -99,7 +99,7 @@ namespace IdentityNLayer.Controllers
             {
                 groupLesson.Lesson = null;
                 if (groupLesson.Id != 0)
-                    _groupLessonService.UpdateAsync(_mapper.Map<GroupLesson>(groupLesson));
+                    await _groupLessonService.UpdateAsync(_mapper.Map<GroupLesson>(groupLesson));
                 else await _groupLessonService.CreateAsync(_mapper.Map<GroupLesson>(groupLesson));
             }
             return RedirectToAction("Details", "Groups", new { id = groupId });
@@ -144,7 +144,7 @@ namespace IdentityNLayer.Controllers
                 }
                 if (!lesson.Id.HasValue)
                     await _lessonService.CreateAsync(_mapper.Map<Lesson>(lesson));
-                else _lessonService.UpdateAsync(_mapper.Map<Lesson>(lesson));
+                else await _lessonService.UpdateAsync(_mapper.Map<Lesson>(lesson));
                 return Json(new { Message = "Data Has Been Successfully Updated", StatusCode = 200, File = lesson.File });
             }
             catch (Exception e)
@@ -169,13 +169,9 @@ namespace IdentityNLayer.Controllers
                 int fileId = (int)lesson.FileId;
                 lesson.File = null;
                 lesson.FileId = null;
-                _lessonService.UpdateAsync(lesson);
+                await _lessonService.UpdateAsync(lesson);
                 if (!await _lessonService.FileUseAsync(fileId))
-                {
-                    EntityEntry<File> checkResult = await _fileService.Delete((await _fileService.GetByPathAsync(path)).Id);
-                    if (EntityState.Detached != checkResult.State)
-                        throw new DbUpdateConcurrencyException();
-                }
+                    await _fileService.Delete((await _fileService.GetByPathAsync(path)).Id);
             }
             catch (Exception e)
             {
@@ -207,15 +203,9 @@ namespace IdentityNLayer.Controllers
                 }
                 foreach (StudentMark studentMark in await _studentMarkService.GetByLessonIdAsync(id))
                     await _studentMarkService.Delete(studentMark.Id);
-                if ((await _lessonService.Delete(id)).State != EntityState.Detached)
-                    throw new DbUpdateConcurrencyException();
                 if (lesson.File != null)
                     if (!await _lessonService.FileUseAsync((int)lesson.FileId))
-                    {
-                        EntityEntry<File> checkResult = await _fileService.Delete((await _fileService.GetByPathAsync(lesson.File.Path)).Id);
-                        if (EntityState.Detached != checkResult.State)
-                            throw new DbUpdateConcurrencyException();
-                    }
+                        await _fileService.Delete((await _fileService.GetByPathAsync(lesson.File.Path)).Id);
             }
             catch (Exception e)
             {

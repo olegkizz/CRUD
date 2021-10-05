@@ -18,11 +18,11 @@ namespace IdentityNLayer.BLL.Services
         {
             Db = db;
         }
-        public Task<int> CreateAsync(File entity)
+        public async Task<int> CreateAsync(File entity)
         {
-            Db.Files.CreateAsync(entity);
-            Db.Save();
-            return Task.FromResult(entity.Id);
+            await Db.Files.CreateAsync(entity);
+            await Db.Save();
+            return entity.Id;
         }
 
         public async Task<File> CreateOrUpdateFileAsync(IFormFile file, string path)
@@ -46,18 +46,17 @@ namespace IdentityNLayer.BLL.Services
             if (oldFile?.Path == newFile.Path && oldFile != null)
             {
                 newFile.Id = oldFile.Id;
-                UpdateAsync(newFile);
+                await UpdateAsync(newFile);
             }
             else await CreateAsync(newFile);
             return newFile;
         }
 
-        public async Task<EntityEntry<File>> Delete(int id)
+        public async Task Delete(int id)
         {
             System.IO.File.Delete((await GetByIdAsync(id)).Path);
-            EntityEntry<File> entry = await Db.Files.DeleteAsync(id);
-            Db.Save();
-            return entry;
+            await Db.Files.DeleteAsync(id);
+            await Db.Save();
         }
 
         public Task<IEnumerable<File>> GetAllAsync()
@@ -75,10 +74,10 @@ namespace IdentityNLayer.BLL.Services
             return (await Db.Files.FindAsync(f => f.Path == path)).SingleOrDefault();
         }
 
-        public void UpdateAsync(File entity)
+        public async Task UpdateAsync(File entity)
         {
-            Db.Files.UpdateAsync(entity);
-            Db.Save();
+            Db.Files.Update(entity);
+            await Db.Save();
         }
     }
 }

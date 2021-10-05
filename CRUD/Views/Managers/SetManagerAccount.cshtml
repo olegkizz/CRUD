@@ -1,0 +1,38 @@
+﻿@model IdentityNLayer.Models.ManagerRegisterModel
+<form asp-action="SetManagerAccount">
+    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+    @if (Model != null)
+    {
+        <span>@Model.Error</span>
+    }
+    <input type="hidden" name="userId" value="@ViewBag.UserId" />
+    <input type="hidden" name="code" value="@ViewBag.Code" />
+    <div class="form-group">
+        <label asp-for="FirstName"></label>
+        <input asp-for="FirstName" class="form-control" />
+        <span asp-validation-for="FirstName" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <label asp-for="LastName"></label>
+        <input asp-for="LastName" class="form-control" />
+        <span asp-validation-for="LastName" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <label asp-for="LinkToContact"></label>
+        <input asp-for="LinkToContact" class="form-control" />
+        <span asp-validation-for="LinkToContact" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <label asp-for="Password"></label>
+        <input asp-for="Password" class="form-control" />
+        <span asp-validation-for="Password" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <label asp-for="ConfirmPassword"></label>
+        <input asp-for="ConfirmPassword" class="form-control" />
+        <span asp-validation-for="ConfirmPassword" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <input type="submit" value="Save" class="btn btn-primary" />
+    </div>
+</form>

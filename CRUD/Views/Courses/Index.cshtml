@@ -49,106 +49,114 @@
     <tbody>
         @foreach (var item in Model)
         {
-        <tr>
-            <td>
-                @{
-                    string action = "Details";
-                }
-                @if (Context.User.IsInRole("Admin"))
-                {
-                    action = "Edit";
-                }
-                <a asp-action="@action" asp-route-id="@item.Id">
-                    @Html.DisplayFor(modelItem => item.Title)
-                </a>
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Description)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Topic.Title)
-            </td>
-            <td>
-                @if (User.IsInRole("Admin") || User.IsInRole("Manager"))
-                {
-                    <a asp-controller="Lessons" asp-action="Create" asp-route-courseId="@item.Id">
-
-                        @if (item.Lessons?.Count() != 0)
-                        {
-                            <span>See All Lessons</span>
-                        }
-                        else
-                        {
-                            <span>Add Lessons</span>
-                        }
-                    </a>
-                }
-                else
-                {
-                    <span>@item.Lessons.Count()</span>
-                }
-            </td>
-            <td>
-                @if (Context.User.IsInRole("Admin"))
-                {
-                <span>@((await courseService.GetStudentRequests(item.Id)).Count())</span>
-                    <span>|</span> <span>@((await courseService.GetTeacherRequests(item.Id)).Count())</span>
-                }
-                else
-                {
-                    @if (!(await courseService.HasRequest(item.Id, (await userManager.GetUserAsync(Context.User)).Id, UserRoles.Student)))
+            <tr>
+                <td>
+                    @{
+                        string action = "Details";
+                    }
+                    @if (Context.User.IsInRole("Admin") || Context.User.IsInRole("Manager"))
                     {
-                        @if (!(await courseService.HasRequest(item.Id, (await userManager.GetUserAsync(Context.User)).Id, UserRoles.Teacher)))
-                        {
-                            Group yourGroup = null;
-                            foreach (Group gr in await courseService.GetGroups(item.Id, GroupStatus.Pending))
+                        action = "Edit";
+                    }
+                    <a asp-action="@action" asp-route-id="@item.Id">
+                        @Html.DisplayFor(modelItem => item.Title)
+                    </a>
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Description)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Topic.Title)
+                </td>
+                <td>
+                    @if (User.IsInRole("Admin") || User.IsInRole("Manager"))
+                    {
+                        <a asp-controller="Lessons" asp-action="Create" asp-route-courseId="@item.Id">
+
+                            @if (item.Lessons?.Count() != 0)
                             {
-                                if ((await groupService.GetCurrentTeacher(gr.Id))?.UserId == userManager.GetUserId(User))
-                                    yourGroup = gr;
-                            }
-                            if (yourGroup != null)
-                            {
-                                <span>
-                                    You are already in the <a asp-controller="Groups" asp-action="Details" asp-route-id="@yourGroup.Id.ToString()">@yourGroup.Number</a>
-                                    group like a Teacher
-                                </span>
+                                <span>See All Lessons</span>
                             }
                             else
                             {
-                                foreach (Student st in await groupService.GetStudents(item.Id, UserGroupStates.Applied))
+                                <span>Add Lessons</span>
+                            }
+                        </a>
+                    }
+                    else
+                    {
+                        <span>@item.Lessons.Count()</span>
+                    }
+                </td>
+                <td>
+                    @if (Context.User.IsInRole("Admin") || Context.User.IsInRole("Manager"))
+                    {
+                        <span>@((await courseService.GetStudentRequests(item.Id)).Count())</span>
+                        <span>|</span> <span>@((await courseService.GetTeacherRequests(item.Id)).Count())</span>
+                    }
+                    else
+                    {
+                        @if (!(await courseService.HasRequest(item.Id, (await userManager.GetUserAsync(Context.User)).Id, UserRoles.Student)))
+                        {
+                            @if (!(await courseService.HasRequest(item.Id, (await userManager.GetUserAsync(Context.User)).Id, UserRoles.Teacher)))
+                            {
+                                Group yourGroup = null;
+                                foreach (Group gr in await courseService.GetGroups(item.Id, GroupStatus.Pending))
                                 {
-                                    if (st != null)
-                                        if (st.UserId == userManager.GetUserId(User))
-                                            yourGroup = await studentService.GetGroupByCourseIdAsync(st.Id, item.Id);
+                                    if ((await groupService.GetCurrentTeacher(gr.Id))?.UserId == userManager.GetUserId(User))
+                                        yourGroup = gr;
                                 }
                                 if (yourGroup != null)
                                 {
                                     <span>
                                         You are already in the <a asp-controller="Groups" asp-action="Details" asp-route-id="@yourGroup.Id.ToString()">@yourGroup.Number</a>
-                                        group like a Student
+                                        group like a Teacher
                                     </span>
                                 }
                                 else
                                 {
-                                    <a asp-controller="Teachers" asp-route-courseId="@item.Id.ToString()"
-                                       asp-action="SendRequest">Teacher Request</a>
-                                    <a asp-controller="Students" asp-route-courseId="@item.Id.ToString()"
-                                       asp-action="SendRequest">Student Request</a>
+                                    foreach (Student st in await groupService.GetStudents(item.Id, UserGroupStates.Applied))
+                                    {
+                                        if (st != null)
+                                            if (st.UserId == userManager.GetUserId(User))
+                                                yourGroup = await studentService.GetGroupByCourseIdAsync(st.Id, item.Id);
+                                    }
+                                    if (yourGroup != null)
+                                    {
+                                        <span>
+                                            You are already in the <a asp-controller="Groups" asp-action="Details" asp-route-id="@yourGroup.Id.ToString()">@yourGroup.Number</a>
+                                            group like a Student
+                                        </span>
+                                    }
+                                    else
+                                    {
+                                        <a asp-controller="Teachers" asp-route-courseId="@item.Id.ToString()"
+                                           asp-action="SendRequest">Teacher Request</a>
+                                        <a asp-controller="Students" asp-route-courseId="@item.Id.ToString()"
+                                           asp-action="SendRequest">Student Request</a>
+                                    }
                                 }
+                            }
+                            else
+                            {
+                                <span>Teacher Request Has Been Sent</span>
+                                <form asp-controller="Teachers" asp-action="CancelRequest">
+                                    <input type="hidden" name="courseId" value="@item.Id.ToString()" />
+                                    <button type="submit" class="btn btn-warning">Cancel</button>
+                                </form>
                             }
                         }
                         else
                         {
-                            <span>Teacher Request Has Been Sent</span>
+                            <span>Student Request Has Been Sent</span>
+                            <form asp-controller="Students" asp-action="CancelRequest">
+                                <input type="hidden" name="courseId" value="@item.Id.ToString()" />
+                                <button type="submit" class="btn btn-warning">Cancel</button>
+                            </form>
                         }
                     }
-                    else
-                    {
-                        <span>Student Request Has Been Sent</span>
-                    }
-                }
-            </td>
-        </tr>
+                </td>
+            </tr>
         }
     </tbody>
 </table>

@@ -1,5 +1,5 @@
 ﻿@using Microsoft.Extensions.Configuration
-@inject IConfiguration config 
+@inject IConfiguration config
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -20,7 +20,7 @@
                 </button>
                 <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
                     <ul class="navbar-nav flex-grow-1">
-                        @if (Context.User.IsInRole("Admin"))
+                        @if (Context.User.IsInRole("Admin") || Context.User.IsInRole("Manager"))
                         {
                             <li class="nav-item">
                                 <a class="nav-link text-dark" asp-area="" asp-controller="Students" asp-action="Index">Students</a>
@@ -30,6 +30,13 @@
                             </li>
                             <li class="nav-item">
                                 <a class="nav-link text-dark" asp-area="" asp-controller="Topics" asp-action="Index">Topics</a>
+                            </li>
+
+                        }
+                        @if (Context.User.IsInRole("Admin"))
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-area="" asp-controller="Managers" asp-action="Index">Managers</a>
                             </li>
                         }
                         <li class="nav-item">

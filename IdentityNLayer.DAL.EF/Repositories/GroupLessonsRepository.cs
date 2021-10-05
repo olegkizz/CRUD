@@ -18,12 +18,12 @@ namespace IdentityNLayer.DAL.EF.Repositories
         {
             _context = context;
         }
-        public async void CreateAsync(GroupLesson item)
+        public async Task CreateAsync(GroupLesson item)
         {
             await _context.GroupLessons.AddAsync(item);
         }
 
-        public Task<EntityEntry<GroupLesson>> DeleteAsync(int id)
+        public Task DeleteAsync(int id)
         {
             throw new NotImplementedException();
         }
@@ -57,7 +57,7 @@ namespace IdentityNLayer.DAL.EF.Repositories
               .SingleAsync();
         }
 
-        public void UpdateAsync(GroupLesson item)
+        public void Update(GroupLesson item)
         {
             _context.Entry(item).State = EntityState.Modified;
             _context.GroupLessons.Update(item);

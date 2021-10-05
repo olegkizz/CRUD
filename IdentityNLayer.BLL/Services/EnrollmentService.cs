@@ -32,16 +32,23 @@ namespace IdentityNLayer.BLL.Services
                     State = UserGroupStates.Requested,
                     Updated = DateTime.Now
                 };
-                Db.Enrollments.CreateAsync(enrollment);
-                Db.Save();
+                await Db.Enrollments.CreateAsync(enrollment);
+                await Db.Save();
+            } else if (enrollment.State == UserGroupStates.Aborted)
+            {
+                enrollment.State = UserGroupStates.Requested;
+                Db.Enrollments.Update(enrollment);
+                await Db.Save();
             }
             return enrollment?.Id;
         }
 
         public async Task<int> EnrolInGroup(string userId, int groupId, UserRoles role)
         {
+            int courseId = (await Db.Groups.FindAsync(gr => gr.Id == groupId)).SingleOrDefault().CourseId;
+
             Enrollment enrollment =
-              (await Db.Enrollments.FindAsync(en => en.UserID == userId && en.EntityID == groupId
+              (await Db.Enrollments.FindAsync(en => en.UserID == userId && en.EntityID == courseId
               && en.Role == role)).SingleOrDefault();
 
             if (enrollment == null)
@@ -54,15 +61,15 @@ namespace IdentityNLayer.BLL.Services
                     State = UserGroupStates.Applied,
                     Updated = DateTime.Now
                 };
-                Db.Enrollments.CreateAsync(enrollment);
+                await Db.Enrollments.CreateAsync(enrollment);
             }
             else if (enrollment.State == UserGroupStates.Aborted || enrollment.State == UserGroupStates.Requested)
             {
                 enrollment.State = UserGroupStates.Applied;
                 enrollment.EntityID = groupId;
-                Db.Enrollments.UpdateAsync(enrollment);
+                Db.Enrollments.Update(enrollment);
             }
-            Db.Save();
+            await Db .Save();
 
             return enrollment.Id;
         }
@@ -94,18 +101,34 @@ namespace IdentityNLayer.BLL.Services
                  Db.Save();
              }*/
 
-        public async void UnEnrol(string userId, int groupdId)
+        public async Task UnEnrol(string userId, int groupId)
         {
+            int courseId = (await Db.Groups.FindAsync(gr => gr.Id == groupId)).SingleOrDefault().CourseId;
+
             Enrollment enrollment =
-             (await Db.Enrollments.FindAsync(en => en.UserID == userId && en.EntityID == groupdId
+             (await Db.Enrollments.FindAsync(en => en.UserID == userId && en.EntityID == groupId
                     && en.State == UserGroupStates.Applied)).SingleOrDefault();
             if (enrollment == null)
             {
                 return;
             }
             enrollment.State = UserGroupStates.Aborted;
-            Db.Enrollments.UpdateAsync(enrollment);
-            Db.Save();
+            enrollment.EntityID = courseId;
+            Db.Enrollments.Update(enrollment);
+            await Db.Save();
+        }
+
+        public async Task CancelRequest(string userId, int courseId)
+        {
+            Enrollment enrollment =
+            (await Db.Enrollments.FindAsync(en => en.UserID == userId && en.EntityID == courseId
+                   && en.State == UserGroupStates.Requested)).SingleOrDefault();
+            if (enrollment == null)
+            {
+                return;
+            }
+            await Db.Enrollments.DeleteAsync(enrollment.Id);
+            await Db.Save();
         }
     }
 }

@@ -23,18 +23,17 @@ namespace IdentityNLayer.BLL.Services
             _groupLessonService = groupLessonService;
             _studentService = studentService;
         }
-        public Task<int> CreateAsync(StudentMark entity)
+        public async Task<int> CreateAsync(StudentMark entity)
         {
-            Db.StudentMarks.CreateAsync(entity);
-            Db.Save();
-            return Task.FromResult(entity.Id);
+            await Db.StudentMarks.CreateAsync(entity);
+            await Db.Save();
+            return entity.Id;
         }
 
-        public async Task<EntityEntry<StudentMark>> Delete(int id)
+        public async Task Delete(int id)
         {
-            EntityEntry<StudentMark> entry = await Db.StudentMarks.DeleteAsync(id);
-            Db.Save();
-            return entry;
+            await Db.StudentMarks.DeleteAsync(id);
+            await Db.Save();
         }
 
         public Task<IEnumerable<StudentMark>> GetAllAsync()
@@ -47,10 +46,10 @@ namespace IdentityNLayer.BLL.Services
             return Db.StudentMarks.GetAsync(id);
         }
 
-        public void UpdateAsync(StudentMark entity)
+        public async Task UpdateAsync(StudentMark entity)
         {
-            Db.StudentMarks.UpdateAsync(entity);
-            Db.Save();
+            Db.StudentMarks.Update(entity);
+            await Db.Save();
         }
 
         public async Task<IEnumerable<StudentMark>> GetMarksByGroupAndStudentIdAsync(int groupId, int studentId)

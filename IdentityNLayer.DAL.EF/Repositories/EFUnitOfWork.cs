@@ -2,6 +2,7 @@
 using IdentityNLayer.DAL.EF.Context;
 using IdentityNLayer.Core.Entities;
 using IdentityNLayer.DAL.Interfaces;
+using System.Threading.Tasks;
 
 namespace IdentityNLayer.DAL.EF.Repositories
 {
@@ -18,6 +19,7 @@ namespace IdentityNLayer.DAL.EF.Repositories
         private IRepository<File> _filesRepository;
         private IRepository<GroupLesson> _groupLessonsRepository;
         private IRepository<StudentMark> _studentMarksRepository;
+        private IRepository<Manager> _managersRepository;
         public EFUnitOfWork(ApplicationContext context,
             IRepository<Student> studentRepository,
             IRepository<Group> groupRepository,
@@ -28,6 +30,7 @@ namespace IdentityNLayer.DAL.EF.Repositories
             IRepository<Lesson> lessonsRepository,
             IRepository<File> filesRepository,
             IRepository<GroupLesson> groupLessonsRepository,
+            IRepository<Manager> managersRepository,
             IRepository<StudentMark> studentMarksRepository)
         {
             _context = context;
@@ -41,6 +44,7 @@ namespace IdentityNLayer.DAL.EF.Repositories
             _filesRepository = filesRepository;
             _groupLessonsRepository = groupLessonsRepository;
             _studentMarksRepository = studentMarksRepository;
+            _managersRepository = managersRepository;
 
         }
         public IRepository<Student> Students => _studentRepository;
@@ -53,10 +57,11 @@ namespace IdentityNLayer.DAL.EF.Repositories
         public IRepository<File> Files => _filesRepository;
         public IRepository<GroupLesson> GroupLessons => _groupLessonsRepository;
         public IRepository<StudentMark> StudentMarks => _studentMarksRepository;
+        public IRepository<Manager> Managers => _managersRepository;
 
-        public void Save()
+        public async Task Save()
         {
-            _context.SaveChanges();
+            await _context.SaveChangesAsync();
         }
 
         private bool disposed = false;

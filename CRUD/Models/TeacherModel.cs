@@ -9,7 +9,7 @@ namespace IdentityNLayer.Models
 {
     public class TeacherModel : Teacher
     {
-        [RegularExpression(@"^((https|http)?:\/\/)?([\w-]{1,32}\.[\w-]{1,32})[^\s]*$", ErrorMessage="Invalid link format")]
+        [RegularExpression(@"^((https|http)?:\/\/)?([\w-]{1,32}\.[\w-]{1,32})[^\s]*$", ErrorMessage="Invalid link format.")]
         public new string LinkToProfile { get; set; }
         public string Name
         {

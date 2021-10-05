@@ -1,11 +1,9 @@
 ﻿using IdentityNLayer.BLL.Interfaces;
 using IdentityNLayer.Core.Entities;
 using IdentityNLayer.DAL.Interfaces;
-using Microsoft.EntityFrameworkCore.ChangeTracking;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace IdentityNLayer.BLL.Services
@@ -19,15 +17,15 @@ namespace IdentityNLayer.BLL.Services
             Db = db;
         }
 
-        public Task<EntityEntry<Course>> Delete(int id)
+        public Task Delete(int id)
         {
             throw new NotImplementedException();
         }
 
-        public void UpdateAsync(Course entity)
+        public async Task UpdateAsync(Course entity)
         {
-            Db.Courses.UpdateAsync(entity);
-            Db.Save();
+            Db.Courses.Update(entity);
+            await Db.Save();
         }
         public async Task<IEnumerable<Enrollment>> GetStudentRequests(int id)
         {
@@ -73,11 +71,11 @@ namespace IdentityNLayer.BLL.Services
             return groups;
         }
 
-        public Task<int> CreateAsync(Course entity)
+        public async Task<int> CreateAsync(Course entity)
         {
-            Db.Courses.CreateAsync(entity);
-            Db.Save();
-            return Task.FromResult(entity.Id);
+            await Db.Courses.CreateAsync(entity);
+            await Db.Save();
+            return entity.Id;
         }
 
         public Task<Course> GetByIdAsync(int id)

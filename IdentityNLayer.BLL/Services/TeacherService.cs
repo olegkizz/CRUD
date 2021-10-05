@@ -17,13 +17,13 @@ namespace IdentityNLayer.BLL.Services
             Db = db;
         }
 
-        public void UpdateAsync(Teacher entity)
+        public async Task UpdateAsync(Teacher entity)
         {
-            Db.Teachers.UpdateAsync(entity);
-            Db.Save();
+            Db.Teachers.Update(entity);
+            await Db.Save();
         }
 
-        public Task<EntityEntry<Teacher>> Delete(int id)
+        public Task Delete(int id)
         {
             throw new NotImplementedException();
         }
@@ -55,11 +55,11 @@ namespace IdentityNLayer.BLL.Services
             return groups;
         }
 
-        public Task<int> CreateAsync(Teacher entity)
+        public async Task<int> CreateAsync(Teacher entity)
         {
-            Db.Teachers.CreateAsync(entity);
-            Db.Save();
-            return Task.FromResult(entity.Id);
+            await Db.Teachers.CreateAsync(entity);
+            await Db.Save();
+            return entity.Id;
         }
 
         public Task<Teacher> GetByIdAsync(int id)

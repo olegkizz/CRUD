@@ -19,14 +19,14 @@ namespace IdentityNLayer.DAL.EF.Repositories
             _context = context;
         }
 
-        public void UpdateAsync(Group item)
+        public void Update(Group item)
         {
            _context.Entry(item).State = EntityState.Modified;
            _context.Groups.Update(item);
         }
-        public async Task<EntityEntry<Group>> DeleteAsync(int id)
+        public async Task DeleteAsync(int id)
         {
-            return _context.Groups.Remove(await _context.Groups.Where(gr => gr.Id == id).SingleOrDefaultAsync());
+            _context.Groups.Remove(await _context.Groups.Where(gr => gr.Id == id).SingleOrDefaultAsync());
         }
 
         public async Task<IEnumerable<Group>> FindAsync(Expression<Func<Group, bool>> predicate)
@@ -40,7 +40,7 @@ namespace IdentityNLayer.DAL.EF.Repositories
               .ToListAsync();
         }
 
-        public async void CreateAsync(Group item)
+        public async Task CreateAsync(Group item)
         {
             await _context.Groups.AddAsync(item);
         }

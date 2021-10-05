@@ -68,6 +68,13 @@ namespace IdentityNLayer.Controllers
             return Redirect("/Courses/Index");
         }
 
+        [HttpPost]
+        public async Task<IActionResult> CancelRequest(int courseId)
+        {
+            await _enrollmentService.CancelRequest(_userManager.GetUserId(User), courseId);
+
+            return Redirect("/Courses/Index");
+        }
         // GET: Students/Create
         [HttpGet]
 
@@ -171,7 +178,7 @@ namespace IdentityNLayer.Controllers
             {
                 try
                 {
-                    _studentService.UpdateAsync(_mapper.Map<Student>(student));
+                    await _studentService.UpdateAsync(_mapper.Map<Student>(student));
                 }
                 catch (DbUpdateConcurrencyException ex)
                 {
@@ -194,6 +201,7 @@ namespace IdentityNLayer.Controllers
         }
 
         // GET: Students/Delete/5
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)

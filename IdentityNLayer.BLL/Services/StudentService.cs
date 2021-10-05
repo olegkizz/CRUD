@@ -25,18 +25,16 @@ namespace IdentityNLayer.BLL.Services
             return Enum.GetValues(typeof(StudentType));
         }
 
-        public void UpdateAsync(Student entity)
+        public async Task UpdateAsync(Student entity)
         {
-            Db.Students.UpdateAsync(entity);
-            Db.Save();
+            Db.Students.Update(entity);
+            await Db.Save();
         }
 
-        public async Task<EntityEntry<Student>> Delete(int id)
+        public async Task Delete(int id)
         {
-            EntityEntry<Student> entity = await Db.Students.DeleteAsync(id);
-            Db.Save();
-            return entity;
-
+            await Db.Students.DeleteAsync(id);
+            await Db.Save();
         }
         public async Task<List<Group>> GetStudentGroupsAsync(int studentId)
         {
@@ -69,11 +67,11 @@ namespace IdentityNLayer.BLL.Services
             return null;
         }
 
-        public Task<int> CreateAsync(Student entity)
+        public async Task<int> CreateAsync(Student entity)
         {
-            Db.Students.CreateAsync(entity);
-            Db.Save();
-            return Task.FromResult(entity.Id);
+            await Db.Students.CreateAsync(entity);
+            await Db.Save();
+            return entity.Id;
         }
 
         public Task<Student> GetByIdAsync(int id)

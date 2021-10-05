@@ -22,18 +22,16 @@ namespace IdentityNLayer.BLL.Services
             _studentMarkService = studentMarkService;
         }
 
-        public void UpdateAsync(Group entity)
+        public async Task  UpdateAsync(Group entity)
         {
-            Db.Groups.UpdateAsync(entity);
-            Db.Save();
+            Db.Groups.Update(entity);
+            await Db.Save();
         }
 
-        public async Task<EntityEntry<Group>> Delete(int id)
+        public async Task Delete(int id)
         {
-            await CancelGroupAsync(id);
-            EntityEntry<Group> entry = await Db.Groups.DeleteAsync(id);
-            Db.Save();
-            return entry;
+            await Db.Groups.DeleteAsync(id);
+            await Db.Save();
         }
 
         public async Task<Teacher> GetCurrentTeacher(int groupId)
@@ -117,11 +115,11 @@ namespace IdentityNLayer.BLL.Services
                 ? true : false;
         }
 
-        public Task<int> CreateAsync(Group entity)
+        public async Task<int> CreateAsync(Group entity)
         {
-            Db.Groups.CreateAsync(entity);
-            Db.Save();
-            return Task.FromResult(entity.Id);
+            await Db.Groups.CreateAsync(entity);
+            await Db.Save();
+            return entity.Id;
         }
 
         public Task<Group> GetAsync(int id)
@@ -148,14 +146,14 @@ namespace IdentityNLayer.BLL.Services
             {
                 enrollment.State = UserGroupStates.Requested;
                 enrollment.EntityID = group.CourseId;
-                Db.Enrollments.UpdateAsync(enrollment);
+                Db.Enrollments.Update(enrollment);
             }
             group.Status = GroupStatus.Pending;
             group.Teacher = null;
             group.TeacherId = null;
             await _studentMarkService.DeleteGroupMarksAsync(groupId);
             
-            UpdateAsync(group);
+            await UpdateAsync(group);
 
             return group;
         }
@@ -174,7 +172,7 @@ namespace IdentityNLayer.BLL.Services
             group.Status = GroupStatus.Pending;
 
 
-            UpdateAsync(group);
+            await UpdateAsync(group);
 
             return group;
         }
@@ -194,6 +192,17 @@ namespace IdentityNLayer.BLL.Services
                 else statusList.Add(new SelectListItem(GroupStatus.Cancelled.ToString(), GroupStatus.Cancelled.ToString()));
             }
             return statusList;
+        }
+
+        public async Task<Manager> GetCurrentManager(int groupId)
+        {
+            return (await Db.Groups.FindAsync(gr => gr.Id == groupId)).SingleOrDefault()?.Manager;
+        }
+
+        public async Task<IEnumerable<Group>> GetManagerGroups(string userId)
+        {
+            Manager manager = (await Db.Managers.FindAsync(m => m.UserId == userId)).SingleOrDefault();
+            return await Db.Groups.FindAsync(gr => gr.ManagerId == manager.Id);
         }
     }
 }

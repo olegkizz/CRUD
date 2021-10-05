@@ -8,6 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Logging;
 using System.Collections.Generic;
+using Microsoft.AspNetCore.Authorization;
 
 namespace IdentityNLayer.Controllers
 {
@@ -53,7 +54,13 @@ namespace IdentityNLayer.Controllers
 
             return Redirect("/Courses/Index");
         }
+        [HttpPost]
+        public async Task<IActionResult> CancelRequest(int courseId)
+        {
+            await _enrollmentService.CancelRequest(_userManager.GetUserId(User), courseId);
 
+            return Redirect("/Courses/Index");
+        }
         // GET: Contacts/Details/5
         public async Task<IActionResult> Details(int? id)
         {
@@ -159,7 +166,7 @@ namespace IdentityNLayer.Controllers
             {
                 try
                 {
-                    _teacherService.UpdateAsync(_mapper.Map<Teacher>(teacher));
+                    await _teacherService.UpdateAsync(_mapper.Map<Teacher>(teacher));
                 }
                 catch (DbUpdateConcurrencyException ex)
                 {
@@ -182,6 +189,7 @@ namespace IdentityNLayer.Controllers
         }
 
         // GET: Teachers/Delete/5
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -196,17 +204,6 @@ namespace IdentityNLayer.Controllers
             }
 
             return View();
-        }
-
-        // POST: Contacts/Delete/5
-        [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
-        {
-            /*           var contact = await _context.Contact.FindAsync(id);
-                       _context.Contact.Remove(contact);
-                       await _context.SaveChangesAsync();*/
-            return RedirectToAction(nameof(Index));
         }
     }
 }

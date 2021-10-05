@@ -19,7 +19,7 @@ namespace IdentityNLayer.DAL.EF.Repositories
             _context = context;
         }
 
-        public async void CreateAsync(StudentMark item)
+        public async Task CreateAsync(StudentMark item)
         {
             await _context.StudentMarks.AddAsync(item);
         }
@@ -52,15 +52,15 @@ namespace IdentityNLayer.DAL.EF.Repositories
                 .SingleAsync();
         }
 
-        public void UpdateAsync(StudentMark item)
+        public void Update(StudentMark item)
         {
             _context.Attach(item);
             _context.Entry(item).Property("Mark").IsModified = true;
         }
 
-        async Task<EntityEntry<StudentMark>> IRepository<StudentMark>.DeleteAsync(int id)
+        async Task IRepository<StudentMark>.DeleteAsync(int id)
         {
-            return _context.StudentMarks.Remove(
+            _context.StudentMarks.Remove(
                     await _context.StudentMarks.Where(sm => sm.Id == id).SingleOrDefaultAsync());
         }
     }

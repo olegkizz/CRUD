@@ -11,22 +11,23 @@
         {
             if (await UserManager.IsInRoleAsync(await UserManager.GetUserAsync(User), "Student"))
             {
-                @*Dictionary<string, string> studentId = new Dictionary<string, string> { { "id",
-                    studentService.GetByUserId(UserManager.GetUserId(User))?.Id.ToString()} };*@
-
                 <li class="nav-item">
-                    <a class="nav-link text-dark" asp-controller="Students" asp-action="Edit" 
+                    <a class="nav-link text-dark" asp-controller="Students" asp-action="Edit"
                        title="Manage">Student Account</a>
                 </li>
             }
             if (await UserManager.IsInRoleAsync(await UserManager.GetUserAsync(User), "Teacher"))
             {
-               @* Dictionary<string, string> teacherId = new Dictionary<string, string> { { "id",
-                                    teacherService.GetByUserId(UserManager.GetUserId(User))?.Id.ToString()} };*@
-
                 <li class="nav-item">
-                    <a class="nav-link text-dark" asp-controller="Teachers" asp-action="Edit" 
+                    <a class="nav-link text-dark" asp-controller="Teachers" asp-action="Edit"
                        title="Manage">Teacher Account</a>
+                </li>
+            }
+            if (await UserManager.IsInRoleAsync(await UserManager.GetUserAsync(User), "Manager"))
+            {
+                <li class="nav-item">
+                    <a class="nav-link text-dark" asp-controller="Managers" asp-action="Edit"
+                       title="Manage">Manager Account</a>
                 </li>
             }
         }

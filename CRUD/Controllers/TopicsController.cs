@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using IdentityNLayer.BLL.Interfaces;
 using IdentityNLayer.Core.Entities;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.AspNetCore.Authorization;
 
 namespace IdentityNLayer.Controllers
 {
@@ -97,7 +98,7 @@ namespace IdentityNLayer.Controllers
             {
                 try
                 {
-                    _topicService.UpdateAsync(topic);
+                    await _topicService.UpdateAsync(topic);
                 }
                 catch (DbUpdateConcurrencyException)
                 {
@@ -117,6 +118,7 @@ namespace IdentityNLayer.Controllers
         }
 
         // GET: Topics/Delete/5
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -138,7 +140,7 @@ namespace IdentityNLayer.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var topic = await _topicService.Delete(id);
+            await _topicService.Delete(id);
             return RedirectToAction(nameof(Index));
         }
     }

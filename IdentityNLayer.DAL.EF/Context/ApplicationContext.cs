@@ -30,6 +30,7 @@ namespace IdentityNLayer.DAL.EF.Context
         public DbSet<File> Files { get; set; }
         public DbSet<GroupLesson> GroupLessons { get; set; }
         public DbSet<StudentMark> StudentMarks { get; set; }
+        public DbSet<Manager> Managers { get; set; }
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             optionsBuilder.EnableSensitiveDataLogging();
@@ -44,7 +45,18 @@ namespace IdentityNLayer.DAL.EF.Context
                    .HasMany(c => c.Lessons)
                    .WithOne(l => l.Course)
                    .OnDelete(DeleteBehavior.ClientCascade);
-            
+
+            modelBuilder.Entity<Course>()
+            .HasOne(v => v.Topic)
+            .WithMany()
+            .HasForeignKey(v => v.TopicId)
+            .OnDelete(DeleteBehavior.SetNull);
+
+            modelBuilder.Entity<Group>()
+             .HasOne(v => v.Manager)
+             .WithMany()
+             .HasForeignKey(v => v.ManagerId)
+             .OnDelete(DeleteBehavior.SetNull);
             modelBuilder.Seed();
         }
     }

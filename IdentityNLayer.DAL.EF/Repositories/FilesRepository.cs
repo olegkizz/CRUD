@@ -19,14 +19,14 @@ namespace IdentityNLayer.DAL.EF.Repositories
         {
             _context = context;
         }
-        public async void CreateAsync(File item)
+        public async Task CreateAsync(File item)
         {
             await _context.Files.AddAsync(item);
         }
 
-        public async Task<EntityEntry<File>> DeleteAsync(int id)
+        public async Task DeleteAsync(int id)
         {
-            return _context.Files.Remove(await _context.Files.FindAsync(id));
+            _context.Files.Remove(await _context.Files.FindAsync(id));
         }
 
         public async Task<IEnumerable<File>> FindAsync(Expression<Func<File, bool>> predicate)
@@ -50,7 +50,7 @@ namespace IdentityNLayer.DAL.EF.Repositories
             .SingleAsync();
         }
 
-        public void UpdateAsync(File item)
+        public void Update(File item)
         {
             _context.Files.Update(item);
         }

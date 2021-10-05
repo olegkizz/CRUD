@@ -16,5 +16,7 @@ namespace IdentityNLayer.BLL.Interfaces
         public Task<Group> CancelGroupAsync(int groupId);
         public Task<Group> FinishGroupAsync(int groupId);
         public Task<List<SelectListItem>> GetAvailableStatusAsync(int groupId);
+        Task<Manager> GetCurrentManager(int groupId);
+        Task<IEnumerable<Group>> GetManagerGroups(string userId);
     }
 }

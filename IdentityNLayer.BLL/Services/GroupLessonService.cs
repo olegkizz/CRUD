@@ -17,14 +17,14 @@ namespace IdentityNLayer.BLL.Services
         {
             Db = db;
         }
-        public Task<int> CreateAsync(GroupLesson entity)
+        public async Task<int> CreateAsync(GroupLesson entity)
         {
-            Db.GroupLessons.CreateAsync(entity);
-            Db.Save();
-            return Task.FromResult(entity.Id);
+            await Db.GroupLessons.CreateAsync(entity);
+            await Db.Save();
+            return entity.Id;
         }
 
-        public Task<EntityEntry<GroupLesson>> Delete(int id)
+        public Task Delete(int id)
         {
             throw new NotImplementedException();
         }
@@ -49,10 +49,10 @@ namespace IdentityNLayer.BLL.Services
             return (await Db.GroupLessons.FindAsync(gl => gl.GroupId == groupId)).OrderBy(gl => gl.StartDate).ToList();
         }
 
-        public void UpdateAsync(GroupLesson entity)
+        public async Task UpdateAsync(GroupLesson entity)
         {
-            Db.GroupLessons.UpdateAsync(entity);
-            Db.Save();
+            Db.GroupLessons.Update(entity);
+            await Db.Save();
         }
     }
 }

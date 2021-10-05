@@ -14,8 +14,8 @@ namespace IdentityNLayer.DAL
         Task<IEnumerable<T>> GetAllAsync();
         Task<T> GetAsync(int id);
         Task<IEnumerable<T>> FindAsync(Expression<Func<T, Boolean>> predicate);
-        void CreateAsync(T item);
-        void UpdateAsync(T item);
-        Task<EntityEntry<T>> DeleteAsync(int id);
+        Task CreateAsync(T item);
+        void Update(T item);
+        Task DeleteAsync(int id);
     }   
 }

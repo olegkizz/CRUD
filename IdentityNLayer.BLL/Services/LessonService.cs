@@ -17,18 +17,17 @@ namespace IdentityNLayer.BLL.Services
         {
             Db = db;
         }
-        public Task<int> CreateAsync(Lesson entity)
+        public async Task<int> CreateAsync(Lesson entity)
         {
-            Db.Lessons.CreateAsync(entity);
-            Db.Save();
-            return Task.FromResult(entity.Id);
+            await Db.Lessons.CreateAsync(entity);
+            await Db.Save();
+            return entity.Id;
         }
 
-        public async Task<EntityEntry<Lesson>> Delete(int id)
+        public async Task Delete(int id)
         {
-            EntityEntry<Lesson> entry = await Db.Lessons.DeleteAsync(id);
-            Db.Save();
-            return entry;
+            await Db.Lessons.DeleteAsync(id);
+            await Db .Save();
         }
 
         public async Task<bool> FileUseAsync(int fileId)
@@ -46,10 +45,10 @@ namespace IdentityNLayer.BLL.Services
             return Db.Lessons.GetAsync(id);
         }
 
-        public void UpdateAsync(Lesson entity)
+        public async Task UpdateAsync(Lesson entity)
         {
-            Db.Lessons.UpdateAsync(entity);
-            Db.Save();
+            Db.Lessons.Update(entity);
+            await Db.Save();
         }
     }
 }

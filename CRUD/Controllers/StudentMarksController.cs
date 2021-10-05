@@ -55,7 +55,7 @@ namespace IdentityNLayer.Controllers
                 {
 
                     foreach (StudentMark studentMark in studentMarks)
-                        _studentMarkService.UpdateAsync(_mapper.Map<StudentMark>(studentMark));
+                        await _studentMarkService.UpdateAsync(_mapper.Map<StudentMark>(studentMark));
 
                     return Json(new
                     {

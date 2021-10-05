@@ -48,8 +48,8 @@ namespace IdentityNLayer.DAL.EF.Context
                         EmailConfirmed = true,
                         Email = "manager@manager.com",
                         BirthDate = new DateTime(2000, 9, 21),
-                    FirstName = "manager",
-                    LastName = "manager"
+                        FirstName = "manager",
+                        LastName = "manager"
                 },
                /* new IdentityUser
                     {

@@ -19,12 +19,12 @@ namespace IdentityNLayer.DAL.EF.Repositories
             _context = context;
         }
 
-        public async void CreateAsync(Course item)
+        public async Task CreateAsync(Course item)
         {
             await _context.Courses.AddAsync(item);
         }
 
-        public Task<EntityEntry<Course>> DeleteAsync(int id)
+        public Task DeleteAsync(int id)
         {
             throw new NotImplementedException();
         }
@@ -53,7 +53,7 @@ namespace IdentityNLayer.DAL.EF.Repositories
                 .SingleAsync();
         }
 
-        public void UpdateAsync(Course item)
+        public void Update(Course item)
         {
             _context.Courses.Update(item);
         }

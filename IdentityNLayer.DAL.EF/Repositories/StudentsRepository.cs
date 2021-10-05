@@ -19,15 +19,15 @@ namespace IdentityNLayer.DAL.EF.Repositories
             _context = context;
         }        
 
-        public void UpdateAsync(Student item)
+        public void Update(Student item)
         {
             _context.Attach(item);
             _context.Entry(item).Property("Type").IsModified = true;
         }
 
-        public async Task<EntityEntry<Student>> DeleteAsync(int id)
+        public async Task DeleteAsync(int id)
         {
-            return _context.Students.Remove(await _context.Students.FindAsync(id));
+            _context.Students.Remove(await _context.Students.FindAsync(id));
         }
 
         public async Task<IEnumerable<Student>> FindAsync(Expression<Func<Student, bool>> predicate)
@@ -39,9 +39,9 @@ namespace IdentityNLayer.DAL.EF.Repositories
                 .ToListAsync();
         }
 
-        public void CreateAsync(Student item)
+        public async Task CreateAsync(Student item)
         {
-            _context.Students.AddAsync(item);
+            await _context.Students.AddAsync(item);
         }
 
         public async Task<Student> GetAsync(int id)

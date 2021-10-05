@@ -9,7 +9,7 @@ namespace IdentityNLayer.BLL.Interfaces
         Task<IEnumerable<T>> GetAllAsync();
         Task<T> GetByIdAsync(int id);
         Task<int> CreateAsync(T entity);
-        void UpdateAsync(T entity);
-        Task<EntityEntry<T>> Delete(int id);
+        Task UpdateAsync(T entity);
+        Task Delete(int id);
     }
 }

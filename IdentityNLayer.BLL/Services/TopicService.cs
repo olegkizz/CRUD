@@ -15,16 +15,17 @@ namespace IdentityNLayer.BLL.Services
         {
             Db = db;
         }
-        public Task<int> CreateAsync(Topic entity)
+        public async Task<int> CreateAsync(Topic entity)
         {
-            Db.Topics.CreateAsync(entity);
-            Db.Save();
-            return Task.FromResult(entity.Id);
+            await Db.Topics.CreateAsync(entity);
+            await Db.Save();
+            return entity.Id;
         }
 
-        public Task<EntityEntry<Topic>> Delete(int id)
+        public async Task Delete(int id)
         {
-            throw new NotImplementedException();
+            await Db.Topics.DeleteAsync(id);
+            await Db.Save();
         }
 
         public Task<IEnumerable<Topic>> GetAllAsync()
@@ -38,10 +39,10 @@ namespace IdentityNLayer.BLL.Services
 
         }
 
-        public void UpdateAsync(Topic entity)
+        public async Task UpdateAsync(Topic entity)
         {
-            Db.Topics.UpdateAsync(entity);
-            Db.Save();
+            Db.Topics.Update(entity);
+            await Db.Save();
         }
     }
 }

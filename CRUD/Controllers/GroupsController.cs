@@ -23,6 +23,7 @@ namespace IdentityNLayer.Controllers
         private readonly ICourseService _courseService;
         private readonly ITeacherService _teacherService;
         private readonly IGroupLessonService _groupLessonService;
+        private readonly IManagerService _managerService;
         private readonly IMapper _mapper;
         private readonly ILogger _logger;
         private readonly UserManager<Person> _userManager;
@@ -34,7 +35,8 @@ namespace IdentityNLayer.Controllers
             ITeacherService teacherService,
             UserManager<Person> userManager,
             ILogger<CoursesController> logger,
-            IGroupLessonService groupLessonService)
+            IGroupLessonService groupLessonService,
+            IManagerService managerService)
         {
             _groupService = groupService;
             _mapper = mapper;
@@ -42,6 +44,7 @@ namespace IdentityNLayer.Controllers
             _courseService = courseService;
             _teacherService = teacherService;
             _groupLessonService = groupLessonService;
+            _managerService = managerService;
             _userManager = userManager;
             _logger = logger;
         }
@@ -49,9 +52,12 @@ namespace IdentityNLayer.Controllers
         // GET: Groups
         public async Task<IActionResult> Index()
         {
-            if (User.IsInRole("Admin") || User.IsInRole("Manager"))
+            if (User.IsInRole("Admin"))
                 return View(_mapper.Map<IEnumerable<GroupModel>>(await _groupService.GetAllAsync()));
-            return View(_mapper.Map<IEnumerable<GroupModel>>(await _groupService.GetGroupsByUserIdAsync(_userManager.GetUserId(User))));
+            if (User.IsInRole("Manager"))
+                return View(_mapper.Map<IEnumerable<GroupModel>>(await _groupService.GetManagerGroups(_userManager.GetUserId(User))));
+            return View(_mapper.Map<IEnumerable<GroupModel>>(await _groupService.GetGroupsByUserIdAsync
+                (_userManager.GetUserId(User))));
         }
 
         // GET: Groups/Details/5
@@ -66,7 +72,7 @@ namespace IdentityNLayer.Controllers
         }
 
         // GET: Groups/Create
-        [Authorize(Roles = "Admin, Manager")]
+        [Authorize(Roles = "Admin")]
 
         public IActionResult Create(int courseId)
         {
@@ -80,8 +86,9 @@ namespace IdentityNLayer.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        [Authorize(Roles = "Admin, Manager")]
-        public async Task<IActionResult> Create([Bind("Id,Number,Status,StudentRequests,CourseId,TeacherId")] GroupModel group)
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> Create([Bind("Id,Number,Status,StudentRequests,CourseId," +
+            "TeacherId,ManagerId")] GroupModel group)
         {
             if (ModelState.IsValid)
             {
@@ -103,13 +110,19 @@ namespace IdentityNLayer.Controllers
         [Authorize(Roles = "Admin, Manager")]
         public async Task<IActionResult> Edit(int? id)
         {
+       
             if (id == null)
             {
                 return NotFound();
             }
 
             GroupModel group = _mapper.Map<GroupModel>(await _groupService.GetByIdAsync((int)id));
-            IEnumerable<Student> students = await _groupService.GetStudents(group.Id);
+
+            if (User.IsInRole("Manager"))
+                if (group.ManagerId != (await _managerService.GetByUserId(_userManager.GetUserId(User))).Id)
+                    return View("Identity/Account/AccessDenied");
+
+            IEnumerable <Student> students = await _groupService.GetStudents(group.Id);
             await group.SetStudents(_mapper.Map<IEnumerable<StudentModel>>(students), _groupService);
             ViewBag.CountStudentRequest = students.Count();
             if (group == null)
@@ -125,7 +138,8 @@ namespace IdentityNLayer.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize(Roles = "Admin, Manager")]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Number,StudentRequests,Status,TeacherId,CourseId")] GroupModel group)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,Number,StudentRequests," +
+            "Status,TeacherId,CourseId,ManagerId")] GroupModel group)
         {
             if (id != group.Id)
             {
@@ -141,13 +155,13 @@ namespace IdentityNLayer.Controllers
                     switch (group.Status)
                     {
                         case GroupStatus.Cancelled:
-                            group = _mapper.Map<GroupModel>(await _groupService.CancelGroupAsync(group.Id));
+                            await _groupService.CancelGroupAsync(group.Id);
                             break;
                         case GroupStatus.Finished:
-                            group = _mapper.Map<GroupModel>(await _groupService.FinishGroupAsync(group.Id));
+                            await _groupService.FinishGroupAsync(group.Id);
                             break;
                         default:
-                            _groupService.UpdateAsync(_mapper.Map<Group>(group));
+                            await _groupService.UpdateAsync(_mapper.Map<Group>(group));
                             break;
                     }
 
@@ -158,7 +172,7 @@ namespace IdentityNLayer.Controllers
                                 if (!(await _groupService.HasStudent(group.Id, studentRequest.UserId)))
                                     await _enrollmentService.EnrolInGroup(studentRequest.UserId, group.Id, UserRoles.Student);
                             }
-                            else _enrollmentService.UnEnrol(studentRequest.UserId, group.Id);
+                            else await _enrollmentService.UnEnrol(studentRequest.UserId, group.Id);
                         }
                     if (group.TeacherId != null)
                     {
@@ -168,18 +182,17 @@ namespace IdentityNLayer.Controllers
                         {
                             if (currentTeacher.Id != group.TeacherId)
                             {
-                                _enrollmentService.UnEnrol(currentTeacher.UserId, group.Id);
+                                await _enrollmentService.UnEnrol(currentTeacher.UserId, group.Id);
                                 await _enrollmentService.EnrolInGroup(newTeacher.UserId, group.Id, UserRoles.Teacher);
                             }
                         }
                         else await _enrollmentService.EnrolInGroup(newTeacher.UserId, group.Id, UserRoles.Teacher);
                     }
                     else if (currentTeacher != null)
-                        _enrollmentService.UnEnrol(currentTeacher.UserId, group.Id);
-                   
+                        await _enrollmentService.UnEnrol(currentTeacher.UserId, group.Id);
                     return RedirectToAction(nameof(Index));
                 }
-                catch (DbUpdateConcurrencyException ex)
+                catch (Exception ex)
                 {
                     if (!GroupExists(group.Id))
                     {
@@ -191,12 +204,6 @@ namespace IdentityNLayer.Controllers
                         _logger.LogError(ex.Message);
                         throw;
                     }
-                }
-                catch(Exception ex)
-                {
-                    Console.WriteLine();
-                    _logger.LogError(ex.Message);
-                    throw;
                 }
             }
             return View();
@@ -222,6 +229,8 @@ namespace IdentityNLayer.Controllers
         }
         [HttpPost]
         [ActionName("Delete")]
+        [Authorize(Roles = "Admin")]
+
         public async Task<IActionResult> DeleteGroup(int? id)
         {
             if (id == null)
@@ -235,7 +244,7 @@ namespace IdentityNLayer.Controllers
             }
             if (group.Status == GroupStatus.Started)
                 return BadRequest();
-
+            await _groupService.CancelGroupAsync((int)id);
             await _groupService.Delete((int)id);
 
             return RedirectToAction(nameof(Index));

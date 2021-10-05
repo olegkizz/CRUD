@@ -19,14 +19,14 @@ namespace IdentityNLayer.DAL.EF.Repositories
             _context = context;
         }
 
-        public async void CreateAsync(Topic item)
+        public async Task CreateAsync(Topic item)
         {
             await _context.Topics.AddAsync(item);
         }
 
-        public async Task<EntityEntry<Topic>> DeleteAsync(int id)
+        public async Task DeleteAsync(int id)
         {
-            return _context.Topics.Remove(await _context.Topics.Where(t => t.Id == id)?.SingleOrDefaultAsync());
+            _context.Topics.Remove(await _context.Topics.Where(t => t.Id == id)?.SingleOrDefaultAsync());
         }
 
         public async Task<IEnumerable<Topic>> FindAsync(Expression<Func<Topic, bool>> predicate)
@@ -48,7 +48,7 @@ namespace IdentityNLayer.DAL.EF.Repositories
                 .SingleAsync(t => t.Id == id);
         }
 
-        public void UpdateAsync(Topic item)
+        public void Update(Topic item)
         {
             _context.Topics.Update(item);
         }

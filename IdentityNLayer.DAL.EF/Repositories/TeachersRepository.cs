@@ -19,7 +19,7 @@ namespace IdentityNLayer.DAL.EF.Repositories
             _context = context;
         }
 
-        public void UpdateAsync(Teacher item)
+        public void Update(Teacher item)
         {
 
             _context.Attach(item);
@@ -27,7 +27,7 @@ namespace IdentityNLayer.DAL.EF.Repositories
             _context.Entry(item).Property(e => e.LinkToProfile).IsModified = true;
         }
 
-        public Task<EntityEntry<Teacher>> DeleteAsync(int id)
+        public Task DeleteAsync(int id)
         {
             throw new NotImplementedException();
         }
@@ -40,7 +40,7 @@ namespace IdentityNLayer.DAL.EF.Repositories
                .ToListAsync();
         }
 
-        public async void CreateAsync(Teacher item)
+        public async Task CreateAsync(Teacher item)
         {
             await _context.Teachers.AddAsync(item);
         }

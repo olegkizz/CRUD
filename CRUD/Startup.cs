@@ -13,6 +13,7 @@ using IdentityNLayer.Core.Entities;
 using IdentityNLayer.Mapper;
 using IdentityNLayer.BLL;
 using IdentityNLayer.DAL.EF;
+using System;
 
 namespace IdentityNLayer
 {
@@ -40,6 +41,7 @@ namespace IdentityNLayer
        
             services.AddDefaultIdentity<Person>(options => options.SignIn.RequireConfirmedAccount = true)
                 .AddRoles<IdentityRole>()
+                .AddDefaultTokenProviders()
                 .AddEntityFrameworkStores<ApplicationContext>();
             services.AddControllersWithViews(config =>
             {
@@ -63,6 +65,8 @@ namespace IdentityNLayer
                 mc.AddProfile(new MappingProfile());
             });
 
+            services.Configure<DataProtectionTokenProviderOptions>(o =>
+                o.TokenLifespan = TimeSpan.FromHours(3));
             IMapper mapper = mapperConfig.CreateMapper();
             services.AddSingleton(mapper);
             services.AddRepositories();
