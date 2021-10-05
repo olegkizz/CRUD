@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Threading.Tasks;
 using IdentityNLayer.Core.Entities;
+using IdentityNLayer.Core.Filters;
 
 namespace IdentityNLayer.DAL.Interfaces
 {
@@ -10,7 +11,7 @@ namespace IdentityNLayer.DAL.Interfaces
         IRepository<Student> Students { get; }
         IRepository<Teacher> Teachers { get; }
         IRepository<Enrollment> Enrollments { get; }
-        IRepository<Course> Courses { get; }
+        IFilterRepository<Course, CourseFilter> Courses { get; }
         IRepository<Lesson> Lessons { get; }
         IRepository<File> Files { get; }
         IRepository<GroupLesson> GroupLessons { get; }

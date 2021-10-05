@@ -3,6 +3,7 @@ using IdentityNLayer.DAL.EF.Context;
 using IdentityNLayer.Core.Entities;
 using IdentityNLayer.DAL.Interfaces;
 using System.Threading.Tasks;
+using IdentityNLayer.Core.Filters;
 
 namespace IdentityNLayer.DAL.EF.Repositories
 {
@@ -13,7 +14,7 @@ namespace IdentityNLayer.DAL.EF.Repositories
         private IRepository<Group> _groupRepository;
         private IRepository<Teacher> _teacherRepository;
         private IRepository<Enrollment> _enrollmentsRepository;
-        private IRepository<Course> _coursesRepository;
+        private IFilterRepository<Course, CourseFilter> _coursesRepository;
         private IRepository<Topic> _topicsRepository;
         private IRepository<Lesson> _lessonsRepository;
         private IRepository<File> _filesRepository;
@@ -25,7 +26,7 @@ namespace IdentityNLayer.DAL.EF.Repositories
             IRepository<Group> groupRepository,
             IRepository<Teacher> teacherRepository,
             IRepository<Enrollment> enrollmentsRepository,
-            IRepository<Course> coursesRepository,
+            IFilterRepository<Course, CourseFilter> coursesRepository,
             IRepository<Topic> topicsRepository,
             IRepository<Lesson> lessonsRepository,
             IRepository<File> filesRepository,
@@ -51,7 +52,7 @@ namespace IdentityNLayer.DAL.EF.Repositories
         public IRepository<Group> Groups => _groupRepository;
         public IRepository<Teacher> Teachers => _teacherRepository;
         public IRepository<Enrollment> Enrollments => _enrollmentsRepository;
-        public IRepository<Course> Courses => _coursesRepository;
+        public IFilterRepository<Course, CourseFilter> Courses => _coursesRepository;
         public IRepository<Topic> Topics => _topicsRepository;
         public IRepository<Lesson> Lessons => _lessonsRepository;
         public IRepository<File> Files => _filesRepository;

@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using IdentityNLayer.Core.Entities;
+using IdentityNLayer.Core.Filters;
 using IdentityNLayer.Models;
 
 namespace IdentityNLayer.Mapper
@@ -24,6 +25,8 @@ namespace IdentityNLayer.Mapper
                .ReverseMap();
             CreateMap<Methodist, MethodistModel>()
                 .ReverseMap();
+            CreateMap<CourseFilter, CourseFilterModel>()
+            .ReverseMap();
         }
     }
 }
