@@ -38,7 +38,7 @@ namespace IdentityNLayer.Tests
             _db.Setup(x => groups).Returns((IEnumerable<Group>)null);
 
             //act
-            _underTest.EnrolInCourse(userId, entityId, role);
+            await _underTest.EnrolInCourse(userId, entityId, role);
 
             //assert
             _db.Verify(d => d.Enrollments.CreateAsync(It.Is<Enrollment>(x => x.UserID == userId

@@ -9,7 +9,7 @@
                     Filter
                 </button>
             </h2>
-            <div id="filter_body" class="accordion-collapse collapse show" aria-labelledby="filterOne" data-bs-parent="#accordion_filter">
+            <div id="filter_body" class="accordion-collapse collapse" aria-labelledby="filterOne" data-bs-parent="#accordion_filter">
                 <div class="accordion-body">
                     <div class="card card-body">
                         <div class="form-group">
@@ -46,7 +46,7 @@
 }
 @using (Html.BeginForm("Search", "Courses", FormMethod.Get))
 {
-    <div class="form-group">
+    <div class="form-group" id="server_search">
         <div class="input-group">
             <input type="text" class="form-control" placeholder="Search courses" name="search" />
             <div class="input-group-append">

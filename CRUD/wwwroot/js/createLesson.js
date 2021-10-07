@@ -27,8 +27,8 @@
                     inputFile.remove();
                     if (!accordionItem.querySelector(".file-href"));
                     accordionItem.querySelector("label[for=File]")
-                        .insertAdjacentHTML("afterEnd", '<a class="file-href" href="' + data.file.path +
-                            '" target="_blank">' + data.file.name +
+                        .insertAdjacentHTML("afterEnd", '<a class="file-href" href=/Lessons/OpenFile?filePath=' + data.file.path +
+                            ' target="_blank">' + data.file.name +
                             '</a><button type="button" class="btn btn-warning btn-close">' +
                             '<span class= "action_text"></span></button>');
                     accordionItem.querySelector(".btn-close").onclick = () => eventDeletingFile(accordionItem);
@@ -142,4 +142,7 @@
             setTimeout(() => { spanSuccessHeader.textContent = '' }, 2500);
         };
     }
+
+    //Event Coolapse Lesson From Anchor
+    $(window.location.hash).find('.collapse').collapse();
 }

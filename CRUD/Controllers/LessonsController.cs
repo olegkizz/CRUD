@@ -2,18 +2,17 @@
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using IdentityNLayer.Core.Entities;
 using IdentityNLayer.BLL.Interfaces;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
-using Microsoft.EntityFrameworkCore.ChangeTracking;
 using Microsoft.AspNetCore.Authorization;
 using System.Collections.Generic;
 using AutoMapper;
 using IdentityNLayer.Models;
 using IdentityNLayer.Validation;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Hosting;
 
 namespace IdentityNLayer.Controllers
 {
@@ -117,8 +116,14 @@ namespace IdentityNLayer.Controllers
             return RedirectToAction("Details", "Groups", new { id = groupId });
         }
 
+        public async Task<FileResult> OpenFile(string filePath)
+        {
+            File file = await _fileService.GetByPathAsync(filePath);
+            return File(filePath, file.ContentType);
+        }
+
         [HttpGet]
-        [Authorize(Roles = "Admin, Manager")]
+        [Authorize(Roles = "Admin")]
         // GET: Lessons/Create
         public IActionResult Create(int courseId)
         {
@@ -133,7 +138,7 @@ namespace IdentityNLayer.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        [Authorize(Roles = "Admin, Manager")]
+        [Authorize(Roles = "Admin")]
         public async Task<JsonResult> Edit([Bind("Id,Name,Theme,CourseId,Duration")] LessonModel lesson)
         {
             if (!ModelState.IsValid)
@@ -169,7 +174,7 @@ namespace IdentityNLayer.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        [Authorize(Roles = "Admin, Manager")]
+        [Authorize(Roles = "Admin")]
         public async Task<JsonResult> DeleteFile(int lessonId)
         {
             Lesson lesson = await _lessonService.GetByIdAsync(lessonId);
@@ -195,7 +200,7 @@ namespace IdentityNLayer.Controllers
 
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        [Authorize(Roles = "Admin, Manager")]
+        [Authorize(Roles = "Admin")]
         public async Task<JsonResult> Delete(int id)
         {
             Lesson lesson = await _lessonService.GetByIdAsync(id);

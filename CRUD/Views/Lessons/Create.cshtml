@@ -23,7 +23,7 @@
                 }
                 @if (course.Lessons != null) for (int i = 0; i < course.Lessons.Count() + 1; ++i)
                     {
-                        string idBody = "lesson_" + (i + 1);
+                        string idBody = "lesson_create";
                         string idFlushCollapse = "flush-collapse-" + i;
                         string idFlushHeading = "flush-heading-" + i;
                         string accordionHeader = "Create Lesson";
@@ -31,13 +31,13 @@
 
                         if (course.Lessons.Count() == i)
                         {
-                            idBody = "lesson_create";
                             idFlushCollapse = "flush-collapse-create";
                             idFlushHeading = "flush-heading-create";
                         }
                         else
                         {
                             lesson = course.Lessons.ToList()[i];
+                            idBody = "lesson_" + lesson?.Id;
                             accordionHeader = "Lesson " + (i + 1);
                         }
 

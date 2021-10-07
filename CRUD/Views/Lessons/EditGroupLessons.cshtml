@@ -83,8 +83,8 @@
                         <td>
                             @if (User.IsInRole("Admin") || User.IsInRole("Manager"))
                             {
-                                string acnhorLessonId = "lesson_" + item.Lesson.Id;
-                                <a asp-controller="Lessons" asp-action="Create" asp-fragment="@acnhorLessonId" asp-route-courseId="@group.CourseId"
+                                string anchorLessonId = "lesson_" + item.Lesson.Id;
+                                <a asp-controller="Lessons" asp-action="Create" asp-fragment="@anchorLessonId" asp-route-courseId="@group.CourseId"
                                    target="_blank">@item.Lesson.Name</a>
                             }
                             else
