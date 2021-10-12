@@ -34,9 +34,9 @@
                 <label class="control-label">Assign Groups Like Student</label>
                 @foreach (Group gr in studentGroups)
                 {
-                    <span class="form-control"><a asp-controller="Groups" asp-action="Edit" asp-route-id="@gr.Id">@gr.Number </a></span>
+                    <span class="form-control"><a asp-controller="Groups" asp-action="Details" asp-route-id="@gr.Id">@gr.Number </a></span>
                 }
-                <label class="control-label">Your Finished Courses</label>
+                <label class="control-label">Finished Courses</label>
                 @foreach (StudentMark studentMark in await studentMarkService.GetMarksOfCoursesAsync(Model.Id))
                 {
                     <span class="form-control">

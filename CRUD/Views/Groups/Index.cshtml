@@ -16,11 +16,14 @@
                 @Html.DisplayNameFor(model => model.Status)
             </th>
             <th>
+                @Html.DisplayNameFor(model => model.Course)
+            </th>
+            <th>
                 Link To Teacher Profile
             </th>
             <th>
                 Link To Methodist Contact
-            </th>   
+            </th>
             <th></th>
         </tr>
     </thead>
@@ -28,7 +31,7 @@
         @foreach (var item in Model)
         {
         <tr>
-            @{ 
+            @{
                 string action = "Details";
             }
             @if (User.IsInRole("Admin") || User.IsInRole("Methodist"))
@@ -40,6 +43,14 @@
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.Status)
+            </td>
+            <td>
+                @{
+                    action = "Details";
+                    if (User.IsInRole("Admin"))
+                        action = "Edit";
+                }
+                @Html.ActionLink(item.Course.Title, action, "Courses", item.Id)
             </td>
             <td>
                 <a href="@item.Teacher?.LinkToProfile">@item.Teacher?.User.FirstName @item.Teacher?.User.LastName</a>

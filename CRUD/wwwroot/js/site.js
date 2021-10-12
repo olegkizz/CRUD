@@ -189,8 +189,8 @@ $(".table").fancyTable({
 	sortOrder: 'descending', // 'desc', 'descending', 'asc', 'ascending', -1 (descending) and 1 (ascending)
 	sortable: true,
 	pagination: true, // default: false
-	searchable: $("server_search").length ? false : true,
-	globalSearch: $("server_search").length ? false : true,
+	searchable: $("#server_search").length ? false : true,
+	globalSearch: $("#server_search").length ? false : true,
 	globalSearchExcludeColumns: [$('.table').find('th').length], // exclude column last
 	perPage: 5
 });

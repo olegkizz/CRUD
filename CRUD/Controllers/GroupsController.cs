@@ -152,19 +152,6 @@ namespace IdentityNLayer.Controllers
                 {
                     Teacher currentTeacher = await _groupService.GetCurrentTeacher(group.Id);
 
-                    switch (group.Status)
-                    {
-                        case GroupStatus.Cancelled:
-                            await _groupService.CancelGroupAsync(group.Id);
-                            break;
-                        case GroupStatus.Finished:
-                            await _groupService.FinishGroupAsync(group.Id);
-                            break;
-                        default:
-                            await _groupService.UpdateAsync(_mapper.Map<Group>(group));
-                            break;
-                    }
-
                     if (group.StudentRequests != null) foreach (StudentRequestsModel studentRequest in group.StudentRequests)
                         {
                             if (studentRequest.Applied)
@@ -190,6 +177,20 @@ namespace IdentityNLayer.Controllers
                     }
                     else if (currentTeacher != null)
                         await _enrollmentService.UnEnrol(currentTeacher.UserId, group.Id);
+
+                    switch (group.Status)
+                    {
+                        case GroupStatus.Cancelled:
+                            await _groupService.CancelGroupAsync(group.Id);
+                            break;
+                        case GroupStatus.Finished:
+                            await _groupService.FinishGroupAsync(group.Id);
+                            break;
+                        default:
+                            await _groupService.UpdateAsync(_mapper.Map<Group>(group));
+                            break;
+                    }
+
                     return RedirectToAction(nameof(Index));
                 }
                 catch (Exception ex)

@@ -62,6 +62,7 @@ namespace IdentityNLayer.DAL.EF.Repositories
         {
             return await _context.Groups
                 .Include(g => g.Enrollments)
+                .Include(g => g.Course)
                 .Include(g => g.Teacher)
                 .ThenInclude(tc => tc.User)
                 .AsNoTracking()

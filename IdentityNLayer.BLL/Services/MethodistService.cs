@@ -31,7 +31,6 @@ namespace IdentityNLayer.BLL.Services
         public async Task<Methodist> GetByIdAsync(int id)
         {
             return (await Db.Methodists.FindAsync(m => m.Id == id)).SingleOrDefault();
-
         }
 
         public async Task<int> CreateAsync(Methodist entity)
