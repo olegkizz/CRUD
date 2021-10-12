@@ -83,7 +83,7 @@ namespace IdentityNLayer.BLL.Services
             List<StudentMark> studentMarks = new();
 
             foreach (Enrollment en in await Db.Enrollments.FindAsync(en => en.EntityID == groupId 
-                && en.State == UserGroupStates.Applied && en.Role == UserRoles.Student))
+                && en.State == UserGroupState.Applied && en.Role == UserRole.Student))
             {
                 students.Add((await Db.Students.FindAsync(st => st.UserId == en.UserID)).SingleOrDefault());
             }

@@ -25,6 +25,8 @@ namespace IdentityNLayer.Mapper
                .ReverseMap();
             CreateMap<Methodist, MethodistModel>()
                 .ReverseMap();
+            CreateMap<MethodistRegisterModel, Methodist>()
+             .ReverseMap();
             CreateMap<CourseFilter, CourseFilterModel>()
             .ReverseMap();
         }

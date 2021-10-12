@@ -30,7 +30,7 @@ namespace IdentityNLayer.Tests
         {
             string userId = "12345";
             int entityId = 2;
-            UserRoles role = UserRoles.Student;
+            UserRole role = UserRole.Student;
             //arrange
             IEnumerable<Enrollment> enrollments = await _db.Object.Enrollments.FindAsync(en => en.UserID == "");
             IEnumerable<Group> groups = await _db.Object.Groups.FindAsync(gr => gr.TeacherId == 0);
@@ -42,7 +42,7 @@ namespace IdentityNLayer.Tests
 
             //assert
             _db.Verify(d => d.Enrollments.CreateAsync(It.Is<Enrollment>(x => x.UserID == userId
-            && x.Role == role && x.State == UserGroupStates.Requested && x.EntityID == entityId)), Times.Once);
+            && x.Role == role && x.State == UserGroupState.Requested && x.EntityID == entityId)), Times.Once);
         }
 
         //[Test]

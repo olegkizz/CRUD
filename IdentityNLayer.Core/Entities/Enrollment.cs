@@ -12,7 +12,7 @@ namespace IdentityNLayer.Core.Entities
         public int EntityID { get; set; }
         public string UserID { get; set; }
         public Person User { get; set; }
-        public UserGroupStates State{ get; set; }
-        public UserRoles Role{ get; set; }
+        public UserGroupState State{ get; set; }
+        public UserRole Role{ get; set; }
     }
 }

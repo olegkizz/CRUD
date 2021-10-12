@@ -16,7 +16,7 @@ namespace IdentityNLayer.BLL.Services
             Db = db;
         }
 
-        public async Task<int?> EnrolInCourse(string userId, int courseId, UserRoles role)
+        public async Task<int?> EnrolInCourse(string userId, int courseId, UserRole role)
         {
             Enrollment enrollment =
               (await Db.Enrollments.FindAsync(en => en.UserID == userId && en.EntityID == courseId
@@ -29,21 +29,21 @@ namespace IdentityNLayer.BLL.Services
                     UserID = userId,
                     EntityID = courseId,
                     Role = role,
-                    State = UserGroupStates.Requested,
+                    State = UserGroupState.Requested,
                     Updated = DateTime.Now
                 };
                 await Db.Enrollments.CreateAsync(enrollment);
                 await Db.Save();
-            } else if (enrollment.State == UserGroupStates.Aborted)
+            } else if (enrollment.State == UserGroupState.Aborted)
             {
-                enrollment.State = UserGroupStates.Requested;
+                enrollment.State = UserGroupState.Requested;
                 Db.Enrollments.Update(enrollment);
                 await Db.Save();
             }
             return enrollment?.Id;
         }
 
-        public async Task<int> EnrolInGroup(string userId, int groupId, UserRoles role)
+        public async Task<int> EnrolInGroup(string userId, int groupId, UserRole role)
         {
             int courseId = (await Db.Groups.FindAsync(gr => gr.Id == groupId)).SingleOrDefault().CourseId;
 
@@ -58,14 +58,14 @@ namespace IdentityNLayer.BLL.Services
                     UserID = userId,
                     EntityID = groupId,
                     Role = role,
-                    State = UserGroupStates.Applied,
+                    State = UserGroupState.Applied,
                     Updated = DateTime.Now
                 };
                 await Db.Enrollments.CreateAsync(enrollment);
             }
-            else if (enrollment.State == UserGroupStates.Aborted || enrollment.State == UserGroupStates.Requested)
+            else if (enrollment.State == UserGroupState.Aborted || enrollment.State == UserGroupState.Requested)
             {
-                enrollment.State = UserGroupStates.Applied;
+                enrollment.State = UserGroupState.Applied;
                 enrollment.EntityID = groupId;
                 Db.Enrollments.Update(enrollment);
             }
@@ -107,12 +107,12 @@ namespace IdentityNLayer.BLL.Services
 
             Enrollment enrollment =
              (await Db.Enrollments.FindAsync(en => en.UserID == userId && en.EntityID == groupId
-                    && en.State == UserGroupStates.Applied)).SingleOrDefault();
+                    && en.State == UserGroupState.Applied)).SingleOrDefault();
             if (enrollment == null)
             {
                 return;
             }
-            enrollment.State = UserGroupStates.Aborted;
+            enrollment.State = UserGroupState.Aborted;
             enrollment.EntityID = courseId;
             Db.Enrollments.Update(enrollment);
             await Db.Save();
@@ -122,7 +122,7 @@ namespace IdentityNLayer.BLL.Services
         {
             Enrollment enrollment =
             (await Db.Enrollments.FindAsync(en => en.UserID == userId && en.EntityID == courseId
-                   && en.State == UserGroupStates.Requested)).SingleOrDefault();
+                   && en.State == UserGroupState.Requested)).SingleOrDefault();
             if (enrollment == null)
             {
                 return;

@@ -32,7 +32,7 @@
             Number Of Students
         </dt>
         <dd class="col-sm-10">
-            @((await groupService.GetStudents(Model.Id, UserGroupStates.Applied)).Count())
+            @((await groupService.GetStudents(Model.Id, UserGroupState.Applied)).Count())
         </dd>
         <dt class="col-sm-2">
             Start Date
@@ -61,7 +61,7 @@
         </dd>
     </dl>
 </div>
-@{ await Html.RenderPartialAsync("_EditStudentMarks", await groupService.GetStudents(Model.Id, UserGroupStates.Applied)); }
+@{ await Html.RenderPartialAsync("_EditStudentMarks", await groupService.GetStudents(Model.Id, UserGroupState.Applied)); }
 <div>
     @if (User.IsInRole("Admin") || User.IsInRole("Manager"))
     {

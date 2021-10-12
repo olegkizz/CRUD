@@ -31,14 +31,14 @@ namespace IdentityNLayer.BLL.Services
         }
         public async Task<IEnumerable<Enrollment>> GetStudentRequests(int id)
         {
-            return await Db.Enrollments.FindAsync(en => en.EntityID == id && en.State == UserGroupStates.Requested && en.Role == UserRoles.Student);
+            return await Db.Enrollments.FindAsync(en => en.EntityID == id && en.State == UserGroupState.Requested && en.Role == UserRole.Student);
         }
         public async Task<IEnumerable<Teacher>> GetTeacherRequests(int id)
         {
             List<Teacher> teachers = new();
             foreach (Enrollment en
                 in await Db.Enrollments.FindAsync(en => en.EntityID == id 
-                    && en.State == UserGroupStates.Requested && en.Role == UserRoles.Teacher))
+                    && en.State == UserGroupState.Requested && en.Role == UserRole.Teacher))
             {
                 Teacher teacher = (await Db.Teachers.FindAsync(tc => tc.UserId == en.UserID)).SingleOrDefault();
                 if (teacher != null)
@@ -47,12 +47,12 @@ namespace IdentityNLayer.BLL.Services
             return teachers;
         }
 
-        public async Task<bool> HasRequest(int courseId, string userId, UserRoles role)
+        public async Task<bool> HasRequest(int courseId, string userId, UserRole role)
         {
             return (await Db.Enrollments.FindAsync(en => en.EntityID == courseId 
             && en.UserID == userId 
             && en.Role == role 
-            && en.State == UserGroupStates.Requested))
+            && en.State == UserGroupState.Requested))
                 .Any();
         }
 

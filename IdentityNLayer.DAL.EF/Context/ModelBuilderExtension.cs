@@ -375,8 +375,8 @@ namespace IdentityNLayer.DAL.EF.Context
                             Id = i,
                             UserID = users[i].Id,
                             EntityID = courses[courseId].Id,
-                            State = UserGroupStates.Requested,
-                            Role = UserRoles.Student
+                            State = UserGroupState.Requested,
+                            Role = UserRole.Student
                         });
                         courseId++;
                     }
@@ -387,8 +387,8 @@ namespace IdentityNLayer.DAL.EF.Context
                             Id = i,
                             UserID = users[i].Id,
                             EntityID = groups[groupId].Id,
-                            State = UserGroupStates.Applied,
-                            Role = UserRoles.Teacher
+                            State = UserGroupState.Applied,
+                            Role = UserRole.Teacher
                         });
                         groupId++;
                     }

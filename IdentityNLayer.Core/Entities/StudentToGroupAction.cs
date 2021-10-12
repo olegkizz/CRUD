@@ -9,7 +9,7 @@ namespace IdentityNLayer.Core.Entities
         public Student Student { get; set; }
         public int GroupId { get; set; }
         public Group Group { get; set; }
-        public UserGroupStates Action { get; set; }
+        public UserGroupState Action { get; set; }
         public DateTime Date { get; set; }
     }
 }

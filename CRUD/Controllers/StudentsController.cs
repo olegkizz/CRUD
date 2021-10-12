@@ -62,7 +62,7 @@ namespace IdentityNLayer.Controllers
             {
                 if (!(await _studentService.HasAccount(_userManager.GetUserId(User))))
                     return RedirectToAction("Create", new { courseId });
-                await _enrollmentService.EnrolInCourse(_userManager.GetUserId(User), courseId, UserRoles.Student);
+                await _enrollmentService.EnrolInCourse(_userManager.GetUserId(User), courseId, UserRole.Student);
             }
 
             return Redirect("/Courses/Index");
@@ -101,7 +101,7 @@ namespace IdentityNLayer.Controllers
                     int newStudentId = await _studentService.CreateAsync(_mapper.Map<Student>(student));
                     if (newStudentId >= 0)
                     {
-                        IdentityResult result = await _userManager.AddToRoleAsync(user, UserRoles.Student.ToString());
+                        IdentityResult result = await _userManager.AddToRoleAsync(user, UserRole.Student.ToString());
                         if (courseId != null)
                             return RedirectToAction("SendRequest", new { courseId });
                         return RedirectToAction("Index", "Courses", new { area = "Courses" });

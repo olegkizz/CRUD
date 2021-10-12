@@ -97,10 +97,10 @@ namespace IdentityNLayer.Controllers
                     foreach (StudentRequestsModel studentRequest in group.StudentRequests)
                     {
                         if (studentRequest.Applied)
-                            await _enrollmentService.EnrolInGroup(studentRequest.UserId, groupId, UserRoles.Student);
+                            await _enrollmentService.EnrolInGroup(studentRequest.UserId, groupId, UserRole.Student);
                     }
                 if (group.TeacherId != null)
-                    await _enrollmentService.EnrolInGroup((await _teacherService.GetByIdAsync((int)group.TeacherId)).UserId, groupId, UserRoles.Teacher);
+                    await _enrollmentService.EnrolInGroup((await _teacherService.GetByIdAsync((int)group.TeacherId)).UserId, groupId, UserRole.Teacher);
                 return RedirectToAction(nameof(Index));
             }
             return View();
@@ -157,7 +157,7 @@ namespace IdentityNLayer.Controllers
                             if (studentRequest.Applied)
                             {
                                 if (!(await _groupService.HasStudent(group.Id, studentRequest.UserId)))
-                                    await _enrollmentService.EnrolInGroup(studentRequest.UserId, group.Id, UserRoles.Student);
+                                    await _enrollmentService.EnrolInGroup(studentRequest.UserId, group.Id, UserRole.Student);
                             }
                             else await _enrollmentService.UnEnrol(studentRequest.UserId, group.Id);
                         }
@@ -170,10 +170,10 @@ namespace IdentityNLayer.Controllers
                             if (currentTeacher.Id != group.TeacherId)
                             {
                                 await _enrollmentService.UnEnrol(currentTeacher.UserId, group.Id);
-                                await _enrollmentService.EnrolInGroup(newTeacher.UserId, group.Id, UserRoles.Teacher);
+                                await _enrollmentService.EnrolInGroup(newTeacher.UserId, group.Id, UserRole.Teacher);
                             }
                         }
-                        else await _enrollmentService.EnrolInGroup(newTeacher.UserId, group.Id, UserRoles.Teacher);
+                        else await _enrollmentService.EnrolInGroup(newTeacher.UserId, group.Id, UserRole.Teacher);
                     }
                     else if (currentTeacher != null)
                         await _enrollmentService.UnEnrol(currentTeacher.UserId, group.Id);

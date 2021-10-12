@@ -43,7 +43,7 @@ namespace IdentityNLayer.BLL.Services
             Student student = await Db.Students.GetAsync(studentId);
             foreach (Enrollment en in await Db.Enrollments.FindAsync(en => en.UserID == student.UserId))
             {
-                if (en.State != UserGroupStates.Aborted && en.State != UserGroupStates.Requested)
+                if (en.State != UserGroupState.Aborted && en.State != UserGroupState.Requested)
                     groups.Add(await Db.Groups.GetAsync(en.EntityID));
             }
             return groups;

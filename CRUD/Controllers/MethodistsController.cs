@@ -150,13 +150,12 @@ namespace IdentityNLayer.Controllers
                         return View("Error");
                     }
                     if ((await _userManager.ConfirmEmailAsync(user, code)).Succeeded &&
-                        (await _userManager.AddToRoleAsync(user, UserRoles.Methodist.ToString())).Succeeded)
+                        (await _userManager.AddToRoleAsync(user, UserRole.Methodist.ToString())).Succeeded)
                     {
                         user.FirstName = methodist.FirstName;
                         user.LastName = methodist.LastName;
-
+                        
                         methodist.User = user;
-
 
                         var token = await _userManager.GeneratePasswordResetTokenAsync(user);
 
@@ -271,7 +270,7 @@ namespace IdentityNLayer.Controllers
                 Methodist methodist = await _methodistService.GetByIdAsync(id);
                 Person user = await _userManager.FindByIdAsync(methodist.UserId);
                 await _userManager.RemoveFromRoleAsync(user,
-                    UserRoles.Methodist.ToString());
+                    UserRole.Methodist.ToString());
                 await _methodistService.Delete(id);
 
                 await _userManager.DeleteAsync(user);

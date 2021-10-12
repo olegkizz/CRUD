@@ -97,9 +97,9 @@
                     }
                     else
                     {
-                        @if (!(await courseService.HasRequest(item.Id, (await userManager.GetUserAsync(Context.User)).Id, UserRoles.Student)))
+                        @if (!(await courseService.HasRequest(item.Id, (await userManager.GetUserAsync(Context.User)).Id, UserRole.Student)))
                         {
-                            @if (!(await courseService.HasRequest(item.Id, (await userManager.GetUserAsync(Context.User)).Id, UserRoles.Teacher)))
+                            @if (!(await courseService.HasRequest(item.Id, (await userManager.GetUserAsync(Context.User)).Id, UserRole.Teacher)))
                             {
                                 Group yourGroup = null;
                                 foreach (Group gr in await courseService.GetGroups(item.Id, GroupStatus.Pending))
@@ -116,7 +116,7 @@
                                 }
                                 else
                                 {
-                                    foreach (Student st in await groupService.GetStudents(item.Id, UserGroupStates.Applied))
+                                    foreach (Student st in await groupService.GetStudents(item.Id, UserGroupState.Applied))
                                     {
                                         if (st != null)
                                             if (st.UserId == userManager.GetUserId(User))

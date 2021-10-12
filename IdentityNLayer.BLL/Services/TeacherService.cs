@@ -45,7 +45,7 @@ namespace IdentityNLayer.BLL.Services
             Teacher teacher = await Db.Teachers.GetAsync(teacherId);
             foreach (Enrollment en in await Db.Enrollments.FindAsync(en => en.UserID == teacher.UserId))
             {
-                if (en.State != UserGroupStates.Aborted && en.State != UserGroupStates.Requested)
+                if (en.State != UserGroupState.Aborted && en.State != UserGroupState.Requested)
                 {
                     Group group = await Db.Groups.GetAsync(en.EntityID);
                     groups.Add(group);

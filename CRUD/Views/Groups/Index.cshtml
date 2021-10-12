@@ -50,7 +50,7 @@
                     if (User.IsInRole("Admin"))
                         action = "Edit";
                 }
-                @Html.ActionLink(item.Course.Title, action, "Courses", item.Id)
+                <a asp-action="@action" asp-controller="Courses" asp-route-id="@item.CourseId">@item.Course.Title</a>
             </td>
             <td>
                 <a href="@item.Teacher?.LinkToProfile">@item.Teacher?.User.FirstName @item.Teacher?.User.LastName</a>

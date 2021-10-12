@@ -5,10 +5,10 @@ using static IdentityNLayer.Areas.Identity.Pages.Account.RegisterModel;
 
 namespace IdentityNLayer.Models
 {
-    public class MethodistRegisterModel : Methodist
+    public class MethodistRegisterModel
     {
         [RegularExpression(@"^((https|http)?:\/\/)?([\w-]{1,32}\.[\w-]{1,32})[^\s]*$", ErrorMessage = "Invalid link format.")]
-        public new string LinkToContact { get; set; }
+        public string LinkToContact { get; set; }
         [Required]
         [Display(Name = "FirstName")]
         public string FirstName { get; set; }
@@ -27,6 +27,7 @@ namespace IdentityNLayer.Models
         [Display(Name = "Confirm password")]
         [Compare("Password", ErrorMessage = "The password and confirmation password do not match.")]
         public string ConfirmPassword { get; set; }
+        public Person User { get; set; }
         public string Error { get; set; }
     }
 }

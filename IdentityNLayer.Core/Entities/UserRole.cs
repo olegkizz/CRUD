@@ -1,6 +1,6 @@
 ﻿namespace IdentityNLayer.Core.Entities
 {
-   public enum UserRoles
+   public enum UserRole
     {
         Admin,
         Methodist,
