@@ -30,42 +30,46 @@
     <tbody>
         @foreach (var item in Model)
         {
-        <tr>
-            @{
-                string action = "Details";
-            }
-            @if (User.IsInRole("Admin") || User.IsInRole("Methodist"))
-            {
-                action = "Edit";
-            }
-            <td>
-                <a asp-controller="Groups" asp-action="@action" asp-route-id="@item.Id.ToString()">@Html.DisplayFor(modelItem => item.Number)</a>
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Status)
-            </td>
-            <td>
+            <tr>
                 @{
-                    action = "Details";
-                    if (User.IsInRole("Admin"))
-                        action = "Edit";
+                    string action = "Details";
                 }
-                <a asp-action="@action" asp-controller="Courses" asp-route-id="@item.CourseId">@item.Course.Title</a>
-            </td>
-            <td>
-                <a href="@item.Teacher?.LinkToProfile">@item.Teacher?.User.FirstName @item.Teacher?.User.LastName</a>
-            </td>
-            <td>
-                <a href="@item.Methodist?.LinkToContact">@item.Methodist?.User.FirstName @item.Methodist?.User.LastName</a>
-            </td>
-            <td>
-                <a asp-action="Details" asp-route-id="@item.Id">Details </a>
-                @if (User.IsInRole("Admin"))
+                @if (User.IsInRole("Admin") || User.IsInRole("Methodist"))
                 {
-                    <a asp-action="Delete" asp-route-id="@item.Id"> | Delete</a>
+                    action = "Edit";
                 }
-            </td>
-        </tr>
+                 <td style="display:none;">@item.Id</td>
+                <td>
+                    <a asp-controller="Groups" asp-action="@action" asp-route-id="@item.Id.ToString()">@Html.DisplayFor(modelItem => item.Number)</a>
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Status)
+                </td>
+                <td>
+                    @{
+                        action = "Details";
+                        if (User.IsInRole("Admin"))
+                            action = "Edit";
+                    }
+                    <a asp-action="@action" asp-controller="Courses" asp-route-id="@item.CourseId">@item.Course.Title</a>
+                </td>
+                <td>
+                    <a href="@item.Teacher?.LinkToProfile">@item.Teacher?.User.FirstName @item.Teacher?.User.LastName</a>
+                </td>
+                <td>
+                    <a href="@item.Methodist?.LinkToContact">@item.Methodist?.User.FirstName @item.Methodist?.User.LastName</a>
+                </td>
+                <td>
+                    <a asp-action="Details" asp-route-id="@item.Id">Details </a>
+                    @if (User.IsInRole("Admin"))
+                    {
+                        <a asp-action="Delete" asp-route-id="@item.Id"> | Delete</a>
+                    }
+                </td>
+            </tr>
         }
     </tbody>
 </table>
+<div class="col-2">
+    @Html.ActionLink("Download as CSV", "DownloadCSV", "Groups", "", new { @class = "btn-success" })
+</div>

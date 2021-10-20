@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc.Rendering;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Threading.Tasks;
 
 namespace IdentityNLayer.BLL.Interfaces
@@ -16,7 +17,8 @@ namespace IdentityNLayer.BLL.Interfaces
         public Task<Group> CancelGroupAsync(int groupId);
         public Task<Group> FinishGroupAsync(int groupId);
         public Task<List<SelectListItem>> GetAvailableStatusAsync(int groupId);
-        Task<Methodist> GetCurrentMethodist(int groupId);
-        Task<IEnumerable<Group>> GetMethodistGroups(string userId);
+        public Task<Methodist> GetCurrentMethodist(int groupId);
+        public Task<IEnumerable<Group>> GetMethodistGroups(string userId);
+        public Task<Stream> GetCsvContent(IEnumerable<Group> groups);
     }
 }

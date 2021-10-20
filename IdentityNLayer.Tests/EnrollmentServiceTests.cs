@@ -86,7 +86,6 @@ namespace IdentityNLayer.Tests
         public async Task Enrol_WhenEnrollmentIsNull_InvokeCreateAsync()
         {
             //arrange
-            int enId = 1;
             string userId = "12345";
             int entityId = 2;
             UserRole role = UserRole.Student;

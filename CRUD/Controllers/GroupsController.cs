@@ -12,6 +12,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Logging;
 using System;
 using IdentityNLayer.Filters;
+using System.IO;
 
 namespace IdentityNLayer.Controllers
 {
@@ -52,12 +53,8 @@ namespace IdentityNLayer.Controllers
         // GET: Groups
         public async Task<IActionResult> Index()
         {
-            if (User.IsInRole("Admin"))
-                return View(_mapper.Map<IEnumerable<GroupModel>>(await _groupService.GetAllAsync()));
-            if (User.IsInRole("Methodist"))
-                return View(_mapper.Map<IEnumerable<GroupModel>>(await _groupService.GetMethodistGroups(_userManager.GetUserId(User))));
             return View(_mapper.Map<IEnumerable<GroupModel>>(await _groupService.GetGroupsByUserIdAsync
-                (_userManager.GetUserId(User))));
+                    (_userManager.GetUserId(User))));
         }
 
         // GET: Groups/Details/5
@@ -274,6 +271,25 @@ namespace IdentityNLayer.Controllers
             return !(await _groupLessonService.GetLessonsByGroupIdAsync(id)).Any()
                 && status == GroupStatus.Started ? Json("To Start Group Please Add Or Manage StartDate Of Lessons.")
                 : Json(true);
+        }
+
+        public async Task<IActionResult> DownloadCSV()
+        {
+            IEnumerable<Group> groups = new List<Group>();
+            
+            try
+            {
+                groups = await _groupService.GetGroupsByUserIdAsync
+                 (_userManager.GetUserId(User));
+                Stream content = await _groupService.GetCsvContent(groups);
+                var contentType = "text/plain";
+                var fileName = "courses.csv";
+                return File(content, contentType, fileName);
+            } catch (Exception e)
+            {
+                _logger.LogError(e.Message);
+                return View(groups);
+            }
         }
     }
 }

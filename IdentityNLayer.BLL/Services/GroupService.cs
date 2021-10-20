@@ -8,6 +8,9 @@ using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using System.IO;
+using System.Text;
+using Microsoft.AspNetCore.Identity;
 
 namespace IdentityNLayer.BLL.Services
 {
@@ -15,11 +18,14 @@ namespace IdentityNLayer.BLL.Services
     {
         private IUnitOfWork Db { get; set; }
         private IStudentMarkService _studentMarkService{ get; set; }
+        private UserManager<Person> _userManager{ get; set; }
         public GroupService(IUnitOfWork db,
-            IStudentMarkService studentMarkService)
+            IStudentMarkService studentMarkService,
+             UserManager<Person> userManager)
         {
             Db = db;
             _studentMarkService = studentMarkService;
+            _userManager = userManager;
         }
 
         public async Task  UpdateAsync(Group entity)
@@ -42,11 +48,21 @@ namespace IdentityNLayer.BLL.Services
         public async Task<IEnumerable<Group>> GetGroupsByUserIdAsync(string userId)
         {
             List<Group> groups = new();
+            foreach(string role in await _userManager.GetRolesAsync
+                (await _userManager.FindByIdAsync(userId)))
+            {
+                if (role == "Admin")
+                    groups = (await GetAllAsync()).ToList();
+                if (role == "Methodist")
+                    groups = (await GetMethodistGroups(userId)).ToList();
+            }
+
             foreach (Enrollment en in await Db.Enrollments.FindAsync(en => en.UserID == userId && en.State == UserGroupState.Applied))
             {
                 if (en.State != UserGroupState.Requested && en.State != UserGroupState.Aborted)
                     groups.Add(await Db.Groups.GetAsync(en.EntityID));
             }
+
             return groups;
         }
 
@@ -203,6 +219,34 @@ namespace IdentityNLayer.BLL.Services
         {
             Methodist methodist = (await Db.Methodists.FindAsync(m => m.UserId == userId)).SingleOrDefault();
             return await Db.Groups.FindAsync(gr => gr.MethodistId == methodist.Id);
+        }
+        public async Task<Stream> GetCsvContent(IEnumerable<Group> groups)
+        {
+            StringBuilder sb = new ();
+            sb.AppendLine("Number;Course;MethodistLink;Status;TeacherLink;NumberOfStudents");
+
+            foreach (var group in groups)
+            {
+                int numberOfStudents = 
+                    (await Db.Enrollments.FindAsync(en => en.EntityID == group.Id
+                        && en.State == UserGroupState.Applied && en.Role == UserRole.Student))
+                            .Count();
+
+                sb.AppendLine($"{group.Number};{group.Course.Title};" +
+                    $"{group.Methodist?.LinkToContact};{group.Status};" +
+                        $"{group.Teacher?.LinkToProfile};{numberOfStudents}");
+            }
+
+            return GenerateStreamFromString(sb.ToString());
+        }
+        private static Stream GenerateStreamFromString(string s)
+        {
+            var stream = new MemoryStream();
+            var writer = new StreamWriter(stream);
+            writer.Write(s);
+            writer.Flush();
+            stream.Position = 0;
+            return stream;
         }
     }
 }

@@ -8,7 +8,6 @@
         let url = "Lessons/Edit";
         let inputFile = accordionItem.querySelector("input[type=File]");
         let buttons = accordionItem.querySelectorAll(".btn");
-        let spanErrorHeader = accordionItem.querySelector('.span-header-error');
         if (inputFile)
             formData.append('File', inputFile.files[0]);
         formData.append('Id', lessonId);

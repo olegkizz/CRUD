@@ -2,6 +2,7 @@
 using IdentityNLayer.Core.Entities;
 using IdentityNLayer.Core.Filters;
 using System.Collections.Generic;
+using System.IO;
 using System.Threading.Tasks;
 
 namespace IdentityNLayer.BLL.Interfaces
@@ -13,6 +14,6 @@ namespace IdentityNLayer.BLL.Interfaces
         public Task<IEnumerable<Group>> GetGroups(int courseId, GroupStatus? status = null);
         public Task<bool> HasRequest(int courseId, string userId, UserRole role);
         public Task<IEnumerable<Course>> Search(string search);
-        Task<IEnumerable<Course>> Filter(CourseFilter courseFilter);
+        public Task<IEnumerable<Course>> Filter(CourseFilter courseFilter);
     }
 }
