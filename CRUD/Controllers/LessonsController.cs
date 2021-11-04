@@ -109,9 +109,9 @@ namespace IdentityNLayer.Controllers
             foreach (GroupLessonModel groupLesson in groupLessons)
             {
                 groupLesson.Lesson = null;
-                if (groupLesson.Id != 0)
-                    await _groupLessonService.UpdateAsync(_mapper.Map<GroupLesson>(groupLesson));
-                else await _groupLessonService.CreateAsync(_mapper.Map<GroupLesson>(groupLesson));
+                    if (groupLesson.Id != 0)
+                        await _groupLessonService.UpdateAsync(_mapper.Map<GroupLesson>(groupLesson));
+                    else await _groupLessonService.CreateAsync(_mapper.Map<GroupLesson>(groupLesson));
             }
             return RedirectToAction("Details", "Groups", new { id = groupId });
         }

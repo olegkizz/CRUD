@@ -49,7 +49,7 @@ namespace IdentityNLayer.BLL.Services
 
             Enrollment enrollment =
               (await Db.Enrollments.FindAsync(en => en.UserID == userId && en.EntityID == courseId
-              && en.Role == role)).SingleOrDefault();
+              && en.Role == role && en.State == UserGroupState.Requested)).SingleOrDefault();
 
             if (enrollment == null)
             {

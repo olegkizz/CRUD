@@ -1,7 +1,6 @@
 ﻿using IdentityNLayer.BLL.Interfaces;
 using IdentityNLayer.Core.Entities;
 using IdentityNLayer.DAL.Interfaces;
-using Microsoft.EntityFrameworkCore.ChangeTracking;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -107,7 +106,13 @@ namespace IdentityNLayer.BLL.Services
         public async Task<int> SetFinalMarkToStudentForCourse(string userId, int courseId)
         {
             Student student = (await Db.Students.FindAsync(s => s.UserId == userId)).SingleOrDefault();
-            int groupId = (await _studentService.GetGroupByCourseIdAsync(student.Id, courseId)).Id;
+            if (student == null)
+                throw new KeyNotFoundException($"Student with userId {userId} not found");
+
+            int? groupId = (await _studentService.GetGroupByCourseIdAsync(student.Id, courseId))?.Id;
+            if (groupId == null)
+                throw new MemberAccessException($"Student with userId {userId} isn't In Course");
+
             int i = 0;
             int mark = 0;
             foreach (GroupLesson groupLesson in (await Db.GroupLessons.FindAsync
@@ -117,7 +122,7 @@ namespace IdentityNLayer.BLL.Services
                 mark += (await Db.StudentMarks.FindAsync(sm => sm.StudentId == student.Id
                         && sm.LessonId == groupLesson.LessonId))?.Select(sm => sm.Mark)?.SingleOrDefault() ?? 0;
             }
-            await CreateAsync(new StudentMark
+            await CreateAsync(new StudentMark 
             {
                 Mark = mark / (i == 0 ? 1 : i),
                 StudentId = student.Id,

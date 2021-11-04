@@ -8,7 +8,9 @@ namespace IdentityNLayer.Models
     {
         [RegularExpression(@"^((https|http)?:\/\/)?([\w-]{1,32}\.[\w-]{1,32})[^\s]*$", ErrorMessage = "Invalid link format.")]
         public new string LinkToContact { get; set; }
+
         [EmailAddress]
+        [Required]
         public string Email { get; set; }
         public string Name
         {

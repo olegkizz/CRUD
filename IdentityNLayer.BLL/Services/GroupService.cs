@@ -156,7 +156,10 @@ namespace IdentityNLayer.BLL.Services
         public async Task<Group> CancelGroupAsync(int groupId)
         {
             Group group = await GetByIdAsync(groupId);
-            Enrollment[] enrollments = Array.Empty<Enrollment>();
+
+            if (group == null)
+                return new Group();
+            
             foreach (Enrollment enrollment in await Db.Enrollments.FindAsync(en => en.EntityID == groupId 
                     && en.State == UserGroupState.Applied))
             {
@@ -178,6 +181,9 @@ namespace IdentityNLayer.BLL.Services
         {
             Group group = await GetByIdAsync(groupId);
 
+            if (group == null)
+                return new Group();
+
             foreach (Enrollment enrollment in await Db.Enrollments.FindAsync(en => en.EntityID == groupId 
             && en.State == UserGroupState.Applied && en.Role == UserRole.Student))
             {
@@ -186,7 +192,6 @@ namespace IdentityNLayer.BLL.Services
             }
                 
             group.Status = GroupStatus.Pending;
-
 
             await UpdateAsync(group);
 
