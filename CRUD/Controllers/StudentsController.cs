@@ -199,7 +199,7 @@ namespace IdentityNLayer.Controllers
             }
             return View(student);
         }
-
+      
         // GET: Students/Delete/5
         [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Delete(int? id)

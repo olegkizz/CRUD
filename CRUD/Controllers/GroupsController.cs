@@ -4,7 +4,6 @@ using Microsoft.AspNetCore.Mvc;
 using AutoMapper;
 using IdentityNLayer.Models;
 using IdentityNLayer.Core.Entities;
-using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
 using System.Linq;
 using Microsoft.AspNetCore.Authorization;
@@ -16,7 +15,7 @@ using System.IO;
 
 namespace IdentityNLayer.Controllers
 {
-    [TypeFilter(typeof(GlobalExceptionFilter))]
+    [TypeFilter(typeof(LocalExceptionFilter))]
     public class GroupsController : Controller
     {
         private readonly IGroupService _groupService;

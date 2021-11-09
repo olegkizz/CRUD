@@ -14,7 +14,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\IdentityNLayer.DAL\IdentityNLayer.DAL.csproj" />
+    <ProjectReference Include="..\IdentityNLayer.DAL\CRMSchool.DAL.csproj" />
   </ItemGroup>
 
   <ItemGroup>

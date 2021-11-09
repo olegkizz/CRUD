@@ -3,21 +3,21 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.31129.286
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "IdentityNLayer", "CRUD\IdentityNLayer.csproj", "{90090590-A479-424B-9182-EAC9777F51B9}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CRMSchool.PL", "CRUD\CRMSchool.PL.csproj", "{90090590-A479-424B-9182-EAC9777F51B9}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "IdentityNLayer.BLL", "IdentityNLayer.BLL\IdentityNLayer.BLL.csproj", "{7CCD8349-284A-4ADA-A926-2372357CC7D5}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CRMSchool.BLL", "IdentityNLayer.BLL\CRMSchool.BLL.csproj", "{7CCD8349-284A-4ADA-A926-2372357CC7D5}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "IdentityNLayer.DAL", "IdentityNLayer.DAL\IdentityNLayer.DAL.csproj", "{B6545B2B-F7C2-4A55-A354-1CC72DA01B02}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CRMSchool.DAL", "IdentityNLayer.DAL\CRMSchool.DAL.csproj", "{B6545B2B-F7C2-4A55-A354-1CC72DA01B02}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "IdentityNLayer.DAL.EF", "IdentityNLayer.DAL.EF\IdentityNLayer.DAL.EF.csproj", "{9F5FB62B-4BEA-454A-8A9C-6DA19B8B1CA9}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CRMSchool.DAL.EF", "IdentityNLayer.DAL.EF\CRMSchool.DAL.EF.csproj", "{9F5FB62B-4BEA-454A-8A9C-6DA19B8B1CA9}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "IdentityNLayer.Core", "IdentityNLayer.Core\IdentityNLayer.Core.csproj", "{3D08E1D0-E9BB-426A-AFF8-FFCC8386485F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CRMSchool.Core", "IdentityNLayer.Core\CRMSchool.Core.csproj", "{3D08E1D0-E9BB-426A-AFF8-FFCC8386485F}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "IdentityNLayer.API", "IdentityNLayer.API\IdentityNLayer.API.csproj", "{7DB0BF63-F129-411C-AE87-01AFF74AC3AA}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CRMSchool.API", "IdentityNLayer.API\CRMSchool.API.csproj", "{7DB0BF63-F129-411C-AE87-01AFF74AC3AA}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "IdentityNLayer.Client", "IdentityNLayer.Client\IdentityNLayer.Client.csproj", "{E4BF11F5-4926-43FB-B7EE-FC685C2C6F82}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CRMSchool.Client", "IdentityNLayer.Client\CRMSchool.Client.csproj", "{E4BF11F5-4926-43FB-B7EE-FC685C2C6F82}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "IdentityNLayer.Tests", "IdentityNLayer.Tests\IdentityNLayer.Tests.csproj", "{FA1ED2FE-373B-48BA-8BDF-01B24693A801}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CRMSchool.Tests", "IdentityNLayer.Tests\CRMSchool.Tests.csproj", "{FA1ED2FE-373B-48BA-8BDF-01B24693A801}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

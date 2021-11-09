@@ -1,14 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.EntityFrameworkCore;
 using IdentityNLayer.Core.Entities;
 using IdentityNLayer.DAL.EF.Context;
 using Microsoft.AspNetCore.Identity;
-using IdentityNLayer.BLL.Services;
 using Microsoft.Extensions.Logging;
 using IdentityNLayer.BLL.Interfaces;
 using IdentityNLayer.Models;
@@ -18,25 +14,23 @@ using IdentityNLayer.Filters;
 
 namespace IdentityNLayer.Controllers
 {
-    [TypeFilter(typeof(GlobalExceptionFilter))]
+    [TypeFilter(typeof(LocalExceptionFilter))]
 
     public class MethodistsController : Controller
     {
-        private readonly ApplicationContext _context;
         private readonly UserManager<Person> _userManager;
         private readonly IMethodistService _methodistService;
         private readonly IEmailService _emailService;
         private readonly ILogger _logger;
         private readonly IMapper _mapper;
 
-        public MethodistsController(ApplicationContext context,
+        public MethodistsController(
             UserManager<Person> userManager,
             IEmailService emailService,
             IMethodistService methodistService,
             IMapper mapper,
             ILogger<MethodistsController> logger)
         {
-            _context = context;
             _userManager = userManager;
             _emailService = emailService;
             _methodistService = methodistService;

@@ -19,10 +19,10 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\CRUD\IdentityNLayer.csproj" />
-    <ProjectReference Include="..\IdentityNLayer.BLL\IdentityNLayer.BLL.csproj" />
-    <ProjectReference Include="..\IdentityNLayer.DAL.EF\IdentityNLayer.DAL.EF.csproj" />
-    <ProjectReference Include="..\IdentityNLayer.DAL\IdentityNLayer.DAL.csproj" />
+    <ProjectReference Include="..\CRUD\CRMSchool.PL.csproj" />
+    <ProjectReference Include="..\IdentityNLayer.BLL\CRMSchool.BLL.csproj" />
+    <ProjectReference Include="..\IdentityNLayer.DAL.EF\CRMSchool.DAL.EF.csproj" />
+    <ProjectReference Include="..\IdentityNLayer.DAL\CRMSchool.DAL.csproj" />
   </ItemGroup>
 
 </Project>

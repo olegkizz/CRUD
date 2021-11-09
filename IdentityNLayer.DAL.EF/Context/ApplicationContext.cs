@@ -1,16 +1,11 @@
 ﻿using IdentityNLayer.Core.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.Extensions.Configuration;
-using System.Collections.Generic;
-using System;
 
 namespace IdentityNLayer.DAL.EF.Context
 {
     public class ApplicationContext : IdentityDbContext<Person>
     {
-
         public ApplicationContext()
         {
 
@@ -34,7 +29,10 @@ namespace IdentityNLayer.DAL.EF.Context
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             optionsBuilder.EnableSensitiveDataLogging();
-            optionsBuilder.UseSqlServer("Server = (localdb)\\mssqllocaldb; Database = WEBApp; Trusted_Connection = True; MultipleActiveResultSets = true");
+            optionsBuilder.UseSqlServer(
+                @"Server=nb_oleg\mssqlserver2;Database=WEBApp;
+                    Trusted_Connection=True;"
+            );
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)

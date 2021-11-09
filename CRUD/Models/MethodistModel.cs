@@ -1,5 +1,4 @@
 ﻿using IdentityNLayer.Core.Entities;
-using IdentityNLayer.Validation;
 using System.ComponentModel.DataAnnotations;
 
 namespace IdentityNLayer.Models

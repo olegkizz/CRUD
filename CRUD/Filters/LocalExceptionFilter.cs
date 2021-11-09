@@ -7,12 +7,12 @@ using Microsoft.Extensions.Hosting;
 
 namespace IdentityNLayer.Filters
 {
-    public class GlobalExceptionFilter : IExceptionFilter
+    public class LocalExceptionFilter : IExceptionFilter
     {
         private readonly IWebHostEnvironment _hostingEnvironment;
         private readonly IModelMetadataProvider _modelMetadataProvider;
 
-        public GlobalExceptionFilter(
+        public LocalExceptionFilter(
             IWebHostEnvironment hostingEnvironment,
             IModelMetadataProvider modelMetadataProvider)
         {
@@ -31,7 +31,7 @@ namespace IdentityNLayer.Filters
             result.ViewData = new ViewDataDictionary(_modelMetadataProvider,
                 context.ModelState);
             result.ViewData.Add("Exception", context.Exception);
-            result.ViewData.Add("ExceptionMessage", $"<b style='color:red;'>Message: {context.Exception} <br/><br/> StackTrace: {context.Exception}</b>");
+            result.ViewData.Add("ExceptionMessage", $"<b style='color:gray;'>Message: {context.Exception} <br/><br/> StackTrace: {context.Exception}</b>");
             // TODO: Pass additional detailed data via ViewData
             context.Result = result;
         }

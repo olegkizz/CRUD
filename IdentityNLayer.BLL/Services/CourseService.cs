@@ -5,9 +5,7 @@ using IdentityNLayer.Core.Filters;
 using IdentityNLayer.DAL.Interfaces;
 using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace IdentityNLayer.BLL.Services

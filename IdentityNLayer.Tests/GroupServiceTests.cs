@@ -6,12 +6,10 @@ using Moq;
 using NUnit.Framework;
 using System;
 using System.Linq;
-
 using System.Collections.Generic;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
 using IdentityNLayer.DAL;
-using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.AspNetCore.Identity;
 
 namespace IdentityNLayer.Tests

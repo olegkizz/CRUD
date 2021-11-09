@@ -65,8 +65,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\IdentityNLayer.BLL\IdentityNLayer.BLL.csproj" />
-    <ProjectReference Include="..\IdentityNLayer.DAL.EF\IdentityNLayer.DAL.EF.csproj" />
+    <ProjectReference Include="..\IdentityNLayer.BLL\CRMSchool.BLL.csproj" />
+    <ProjectReference Include="..\IdentityNLayer.DAL.EF\CRMSchool.DAL.EF.csproj" />
   </ItemGroup>
 
   <ItemGroup>

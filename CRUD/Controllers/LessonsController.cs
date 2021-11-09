@@ -12,7 +12,6 @@ using AutoMapper;
 using IdentityNLayer.Models;
 using IdentityNLayer.Validation;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Hosting;
 
 namespace IdentityNLayer.Controllers
 {
@@ -223,6 +222,7 @@ namespace IdentityNLayer.Controllers
                 if (lesson.File != null)
                     if (!await _lessonService.FileUseAsync((int)lesson.FileId))
                         await _fileService.Delete((await _fileService.GetByPathAsync(lesson.File.Path)).Id);
+                await _lessonService.Delete(lesson.Id);
             }
             catch (Exception e)
             {

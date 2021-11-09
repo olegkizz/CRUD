@@ -12,65 +12,69 @@
 <h4>Course</h4>
 <hr />
 <div class="row">
-    <div class="col-md-4">
+    <div class="col-md-12">
         <form asp-action="Edit">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             @{
                 var availableGroups = await courseService.GetGroups(Model.Id, GroupStatus.Pending);
             }
             <input type="hidden" asp-for="Id" />
-            <div class="form-group">
-                <label asp-for="Title" class="control-label"></label>
-                <input asp-for="Title" class="form-control" />
-                <span asp-validation-for="Title" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Description" class="control-label"></label>
-                <input asp-for="Description" class="form-control" />
-                <span asp-validation-for="Description" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label class="control-label">Topic</label>
-                @Html.DropDownListFor(model => model.TopicId, new SelectList(await topicService.GetAllAsync(),
-                        "Id", "Title", "Select Topic..."))
-            </div>  
-            <div class="form-group">
-                <label asp-for="Lessons" class="control-label"></label>
-                <a asp-controller="Lessons" asp-action="Create" asp-route-courseId="@Model.Id" class="btn btn-primary">
-                    @if (Model.Lessons == null)
-                    {
-                        <span>Add Lessons</span>
-                    }
-                    else
-                    {
-                        <span>See All Lessons</span>
-                    }
-                </a>
-            </div>
-            <div class="form-group">
-                <label class="control-label">StudentRequests</label>
-                <span class="text-danger">@((await courseService.GetStudentRequests(Model.Id)).Count())</span>
-            </div>
-            <div class="form-group">
-                <label class="control-label">TeacherRequests</label>
-                <span class="text-danger">@((await courseService.GetTeacherRequests(Model.Id)).Count())</span>
-            </div>
-            <div class="form-group">
-                <input type="submit" value="Save" class="btn btn-primary" />
-            </div>
-            <div class="form-group">
-                <a asp-controller="Groups" asp-action="Create" asp-route-courseId="@Model.Id.ToString()" class="btn btn-primary">Create Group</a>
-            </div>
-            @if (availableGroups.Any())
-            {
+            <div style="display: inline-block">
                 <div class="form-group">
-                    @Html.DropDownListFor(model => model.AvailableGroupId, new SelectList(availableGroups, "Id", "Number",
-             availableGroups.First().Id), new { @id = "SelectedGroup" })
+                    <label asp-for="Title" class="control-label"></label>
+                    <input asp-for="Title" class="form-control" />
+                    <span asp-validation-for="Title" class="text-danger"></span>
                 </div>
                 <div class="form-group">
-                    <a id="editGroupButton" asp-controller="Groups" asp-action="Edit" asp-route-id="@availableGroups.First().Id.ToString()" class="btn btn-primary">Adding to Selected Group</a>
+                    <label asp-for="Description" class="control-label"></label>
+                    <input asp-for="Description" class="form-control" />
+                    <span asp-validation-for="Description" class="text-danger"></span>
                 </div>
-            }
+                <div class="form-group">
+                    <label class="control-label">Topic</label>
+                    @Html.DropDownListFor(model => model.TopicId, new SelectList(await topicService.GetAllAsync(),
+                            "Id", "Title", "Select Topic..."))
+                </div>
+                <div class="form-group">
+                    <label asp-for="Lessons" class="control-label"></label>
+                    <a asp-controller="Lessons" asp-action="Create" asp-route-courseId="@Model.Id" class="btn btn-primary">
+                        @if (Model.Lessons == null)
+                        {
+                            <span>Add Lessons</span>
+                        }
+                        else
+                        {
+                            <span>See All Lessons</span>
+                        }
+                    </a>
+                </div>
+                <div class="form-group">
+                    <label class="control-label">StudentRequests</label>
+                    <span class="text-danger">@((await courseService.GetStudentRequests(Model.Id)).Count())</span>
+                </div>
+                <div class="form-group">
+                    <label class="control-label">TeacherRequests</label>
+                    <span class="text-danger">@((await courseService.GetTeacherRequests(Model.Id)).Count())</span>
+                </div>
+                <div class="form-group">
+                    <input type="submit" value="Save" class="btn btn-primary" />
+                </div>
+            </div>
+            <div style="display: inline-block">
+                <div class="form-group">
+                    <a asp-controller="Groups" asp-action="Create" asp-route-courseId="@Model.Id.ToString()" class="btn btn-primary">Create Group</a>
+                </div>
+                @if (availableGroups.Any())
+                {
+                    <div class="form-group">
+                        @Html.DropDownListFor(model => model.AvailableGroupId, new SelectList(availableGroups, "Id", "Number",
+                 availableGroups.First().Id), new { @id = "SelectedGroup" })
+                    </div>
+                    <div class="form-group">
+                        <a id="editGroupButton" asp-controller="Groups" asp-action="Edit" asp-route-id="@availableGroups.First().Id.ToString()" class="btn btn-primary">Adding to Selected Group</a>
+                    </div>
+                }
+            </div>
         </form>
     </div>
 </div>

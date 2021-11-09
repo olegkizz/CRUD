@@ -9,8 +9,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\IdentityNLayer.BLL\IdentityNLayer.BLL.csproj" />
-    <ProjectReference Include="..\IdentityNLayer.Core\IdentityNLayer.Core.csproj" />
+    <ProjectReference Include="..\IdentityNLayer.BLL\CRMSchool.BLL.csproj" />
+    <ProjectReference Include="..\IdentityNLayer.Core\CRMSchool.Core.csproj" />
   </ItemGroup>
 
 </Project>

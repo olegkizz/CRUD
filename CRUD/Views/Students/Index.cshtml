@@ -17,22 +17,28 @@
             <th>
                 Groups
             </th>
+            <th>
+                
+            </th>
         </tr>
     </thead>
     <tbody>
         @foreach (var item in Model)
         {
-            <tr>
-                <td>
-                    <a asp-controller="Students" asp-action="Edit" asp-route-id="@item.Id">@item.User.FirstName @item.User.LastName</a>
-                </td>
-                <td>
-                    @foreach (Group gr in await studentService.GetStudentGroupsAsync(item.Id))
-                    {
-                        <a asp-controller="Groups" asp-action="Edit" asp-route-id="@gr.Id">@gr.Number </a>
-                    }
-                </td>
-            </tr>
+        <tr>
+            <td>
+                <a asp-controller="Students" asp-action="Edit" asp-route-id="@item.Id">@item.User.FirstName @item.User.LastName</a>
+            </td>
+            <td>
+                @foreach (Group gr in await studentService.GetStudentGroupsAsync(item.Id))
+                {
+                    <a asp-controller="Groups" asp-action="Edit" asp-route-id="@gr.Id">@gr.Number </a>
+                }
+            </td>
+            <td>
+                <a asp-controller="Students" asp-action="Details" asp-route-id="@item.Id">Details</a>
+            </td>
+        </tr>
         }
     </tbody>
 </table>

@@ -1,10 +1,8 @@
 ﻿using IdentityNLayer.BLL.Interfaces;
 using IdentityNLayer.Core.Entities;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace IdentityNLayer.API.Controllers
